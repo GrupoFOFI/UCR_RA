@@ -10,18 +10,74 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+import android.content.pm.PackageManager;
+import android.location.Location;
 
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.Marker;
+
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener,
+        GoogleMap.OnMarkerDragListener {
+
+    private int count;
     private GoogleMap mMap;
+    /**
+     * Provides the entry point to Google Play services.
+     */
+    protected GoogleApiClient mGoogleApiClient;
+
+    /**
+     * Represents a geographical location.
+     */
+    protected Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+        buildGoogleApiClient();
+    }
+
+    /**
+     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
 
@@ -39,8 +95,99 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        LatLng sydney = new LatLng(9.936553, -84.054162);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marcador en Derecho"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
+    }
+
+
+    public void drawMarker(double varLat, double varLong) {
+
+        String times = "Location # " + count;
+        count ++;
+        String location = "Location has " + varLat + " latitude and " + varLong + " longitude";
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(varLat, varLong))
+                .title(times)
+                .snippet(location));
+    }
+
+    /**
+     * Runs when a GoogleApiClient object successfully connects.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        // Provides a simple way of getting a device's location and is well suited for
+        // applications that do not require a fine-grained location and that do not need location
+        // updates. Gets the best and most recent location currently available, which may be null
+        // in rare cases when a location is not available.
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+
+            drawMarker(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+        } else {
+            String error =getResources().getString(R.string.no_location_detected);
+            toastLog(error);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        String err = "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode();
+        toastLog(err);
+
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // The connection to Google Play services was lost for some reason. We call connect() to
+        // attempt to re-establish the connection.
+        Log.i("TAG", "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        toastLog("Click Info Window");
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        toastLog("Touched marker!!");
+        return false;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+        toastLog("onMarkerDragStart");
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        toastLog("onMarkerDragEnd");
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        String str = "onMarkerDrag.  Current Position: " + marker.getPosition();
+        toastLog(str);
+    }
+
+
+    void toastLog (String str) {
+        Toast.makeText(this,str, Toast.LENGTH_SHORT).show();
     }
 }
