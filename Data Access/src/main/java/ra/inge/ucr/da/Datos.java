@@ -4,7 +4,7 @@ package ra.inge.ucr.da;
 import java.util.ArrayList;
 
 public class Datos {
-    public static ArrayList<Edificio> edificios = new ArrayList<Edificio>() {{
+    public final static ArrayList<Edificio> edificios = new ArrayList<Edificio>() {{
         add(new Edificio(1, "Facultad de Derecho", 9.936463, -84.053772, 0, null));
         add(new Edificio(2, "Oficina de Becas y Atención Socioeconómica", 9.935435, -84.053959, 0, null));
         add(new Edificio(3, "Biblioteca Luis Demetrio Tinoco", 9.935988, -84.052569, 0, null));
@@ -35,4 +35,6 @@ public class Datos {
         add(new Edificio(28, "El Pretil", 9.935895, -84.050638, 0, null));
         add(new Edificio(29, "Edificio de Aulas", 9.936614, -84.050735, 0, null));
     }};
+
+    public static double[] distances = new double[edificios.size()];
 }

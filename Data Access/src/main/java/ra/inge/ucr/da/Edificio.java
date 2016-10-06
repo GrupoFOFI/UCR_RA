@@ -11,7 +11,6 @@ public class Edificio {
     private double alt;
     private String nmbr;
     private String dscrpt;
-
     public Edificio(int id, String nmbr, double lat, double lng, double alt, String dscrpt) {
         this.id = id;
         this.lat = lat;
