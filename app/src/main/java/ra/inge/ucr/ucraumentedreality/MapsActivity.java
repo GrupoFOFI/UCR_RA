@@ -127,28 +127,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            requestLocationPermission();
             return;
         }
         mMap.setMyLocationEnabled(true);
-
-        // Add a marker in Sydney and move the camera
-        LatLng derecho = new LatLng(9.936553, -84.054162);
-        mMap.addMarker(new MarkerOptions().position(derecho).title("Marcador en Derecho"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(derecho));
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.i("Wat", "here");
-        Edificio[] cercanos = locationHelper.getClosestBuildings(new LatLng(location.getLatitude(), location.getLongitude()), 3);
+        LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+        Edificio[] cercanos = locationHelper.getClosestBuildings(loc, 3);
         Log.i("",cercanos[0].getNmbr()+" "+cercanos[1].getNmbr()+" "+cercanos[2].getNmbr() );
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        //mMap.moveCamera(CameraUpdateFactory.zoomBy(50.0f));
+        for(Edificio e : cercanos) {
+            mMap.addMarker(new MarkerOptions().position(new LatLng(e.getLat(), e.getLng())).title(e.getNmbr()));
+        }
     }
 
     public void drawMarker(double varLat, double varLong) {
