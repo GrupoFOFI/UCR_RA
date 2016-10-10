@@ -24,6 +24,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.Marker;
 
+import ra.inge.ucr.da.Edificio;
+import ra.inge.ucr.location.LocationHelper;
+
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -58,6 +63,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *
      */
     private static final long FASTEST_UPDATE_FREQ = 1000;
+
+    LocationHelper locationHelper = new LocationHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +143,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         Log.i("Wat", "here");
+        Edificio[] cercanos = locationHelper.getClosestBuildings(new LatLng(location.getLatitude(), location.getLongitude()), 3);
+        Log.i("",cercanos[0].getNmbr()+" "+cercanos[1].getNmbr()+" "+cercanos[2].getNmbr() );
     }
 
 
