@@ -3,6 +3,7 @@ package ra.inge.ucr.ucraumentedreality;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.model.Marker;
 
 
@@ -27,7 +29,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
-        GoogleMap.OnMarkerDragListener {
+        GoogleMap.OnMarkerDragListener,
+        LocationListener{
 
     private int count;
     private GoogleMap mMap;
@@ -40,6 +43,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Represents a geographical location.
      */
     protected Location mLastLocation;
+
+    /**
+     *
+     */
+    LocationRequest mLocationRequest;
+
+    /**
+     *
+     */
+    private static final long POLLING_FREQ = 200;
+
+    /**
+     *
+     */
+    private static final long FASTEST_UPDATE_FREQ = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +77,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(POLLING_FREQ);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_FREQ);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -94,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
+
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -106,11 +128,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(9.936553, -84.054162);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marcador en Derecho"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng derecho = new LatLng(9.936553, -84.054162);
+        mMap.addMarker(new MarkerOptions().position(derecho).title("Marcador en Derecho"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(derecho));
+    }
 
-
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.i("Wat", "here");
     }
 
 
@@ -144,6 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
 
