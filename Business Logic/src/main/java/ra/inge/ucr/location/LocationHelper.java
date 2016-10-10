@@ -28,6 +28,9 @@ public class LocationHelper {
         Edificio[] closest = new Edificio[ammount];
         topidx = new int[ammount];
         mindist = new double[ammount];
+        for(int i=0;i<ammount;i++){
+            mindist[i] = Double.MAX_VALUE;
+        }
         for(Edificio ed : Datos.edificios){
             double temp = distance(lastLoc.latitude, ed.getLat(), lastLoc.longitude, ed.getLng(), 0,0);
             Datos.distances[ed.getId()-1]= temp;
@@ -39,6 +42,7 @@ public class LocationHelper {
                     }
                     mindist[i]=temp;
                     topidx[i]=ed.getId()-1;
+                    break;
                 }
             }
         }
