@@ -11,6 +11,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -145,7 +146,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for(int i = 0; i<CLOSEST_AMMOUNT;i++) {
             if(markers[i] != null)
                 markers[i].remove();
-            markers[i] = mMap.addMarker(new MarkerOptions().position(new LatLng(cercanos[i].getLat(), cercanos[i].getLng())).title(cercanos[i].getNmbr()));
+            markers[i] = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()))
+                    .title(cercanos[i].getNmbr())
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.building)));
         }
     }
 
@@ -172,8 +176,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude())));
-        mMap.moveCamera(CameraUpdateFactory.zoomBy(25.0f));
         if (mLastLocation == null) {
             String error =getResources().getString(R.string.no_location_detected);
             toastLog(error);
