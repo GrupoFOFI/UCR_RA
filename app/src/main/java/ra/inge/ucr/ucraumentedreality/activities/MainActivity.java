@@ -13,17 +13,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
-import ra.inge.ucr.ucraumentedreality.PoisActivity;
 import ra.inge.ucr.ucraumentedreality.R;
-import ra.inge.ucr.ucraumentedreality.WikitudeActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
+import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.WikitudeFragment;
+import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
 /**
  * <h1> Main Activity </h1>
  * <p>
- *
+ * <p>
  * Main Class for the Application
  *
  * @author Fofis
@@ -33,16 +37,20 @@ import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar toolbar;
+    private Utils utils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        utils = new Utils(this, getApplicationContext());
         setupToolbar();
         setupViewPager();
         setupCollapsingToolbar();
-        setupDrawer();
+    //    setupDrawer();
+        setupStatusBar();
+        utils.requestLocationPermission();
 
     }
 
@@ -59,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void setupCollapsingToolbar () {
+    private void setupCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(
                 R.id.collapse_toolbar);
 
@@ -79,17 +87,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("UCR RA");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+    //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        adapter.addFrag(new TabFragment(), "Tab 1");
-//        adapter.addFrag(new TabFragment(), "Tab 2");
-//        adapter.addFrag(new TabFragment(), "Tab 3");
+         adapter.addFrag(new MapsFragment(), "Mapas");
+        adapter.addFrag(new WikitudeFragment(), "Wikitude");
+        adapter.addFrag(new CloseBuildingsFragment(), "Edificios Más Cercanos");
 
         viewPager.setAdapter(adapter);
+    }
+
+    private  void setupStatusBar () {
+
+        Window window = this.getWindow();
+       window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(this.getResources().getColor(R.color.black));
     }
 
 
@@ -106,52 +122,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+     //   getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
         }
-
         return super.onOptionsItemSelected(item);
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        Intent intent;
 
-        if (id == R.id.nav_camera) {
+        switch (item.getItemId()) {
 
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
+            case R.id.nav_camera:
+                intent = new Intent(this, MapsActivity.class);
+                startActivity(intent);
+                break;
 
-        } else if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(this, WikitudeActivity.class);
-            startActivity(intent);
+            case R.id.nav_gallery:
+                intent = new Intent(this, WikitudeActivity.class);
+                startActivity(intent);
+                break;
 
-        } else if (id == R.id.nav_slideshow) {
-            Intent intent = new Intent(this, PoisActivity.class);
-            startActivity(intent);
+            case R.id.nav_slideshow:
+                intent = new Intent(this, PoisActivity.class);
+                startActivity(intent);
 
-        } else if (id == R.id.nav_manage) {
+            case R.id.nav_manage:
+                break;
 
-        } else if (id == R.id.nav_share) {
+            case R.id.nav_share:
+                break;
 
-        } else if (id == R.id.nav_send) {
-
+            case R.id.nav_send:
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

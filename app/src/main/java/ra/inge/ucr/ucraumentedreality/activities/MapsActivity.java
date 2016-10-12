@@ -39,7 +39,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private int count;
     private GoogleMap mMap;
     private Marker[] markers;
-    private static final int CLOSEST_AMMOUNT = 3;
+    private static final int CLOSEST_AMOUNT = 3;
 
     /**
      * Provides the entry point to Google Play services.
@@ -67,7 +67,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         buildGoogleApiClient();
-        markers = new Marker[CLOSEST_AMMOUNT];
+        markers = new Marker[CLOSEST_AMOUNT];
     }
 
     /**
@@ -123,9 +123,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         Log.i("Wat", "here");
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-        Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
+        Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
         Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
-        for (int i = 0; i < CLOSEST_AMMOUNT; i++) {
+        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
             if (markers[i] != null)
                 markers[i].remove();
             markers[i] = mMap.addMarker(new MarkerOptions()

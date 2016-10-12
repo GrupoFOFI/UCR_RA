@@ -1,16 +1,15 @@
-package ra.inge.ucr.ucraumentedreality;
+package ra.inge.ucr.ucraumentedreality.fragments;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.StartupConfiguration;
@@ -19,32 +18,37 @@ import java.io.IOException;
 
 import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.location.listener.OnDeviceRotationUpdateListener;
+import ra.inge.ucr.ucraumentedreality.R;
 
-public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotationUpdateListener {
+/**
+ * Created by Konrad on 10/12/16.
+ */
+
+public class WikitudeFragment extends Fragment implements OnDeviceRotationUpdateListener {
     ArchitectView architectView;
 
     private static final int PERMISSION_REQUEST_CAMERA = 999;
     private SensorHelper snsrhlpr;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wikitude);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.activity_wikitude, container, false);
         // request camera permission
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
+        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.CAMERA);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(getActivity(),
                     new String[]{Manifest.permission.CAMERA},
                     PERMISSION_REQUEST_CAMERA);
         }
-        snsrhlpr = new SensorHelper(this);
+
+        snsrhlpr = new SensorHelper(getContext());
         snsrhlpr.start();
 
-        architectView = (ArchitectView)findViewById(R.id.architectView); // I am the architect
+        architectView = (ArchitectView)rootView.findViewById(R.id.architectView); // I am the architect
         final StartupConfiguration config = new StartupConfiguration(getResources().getString(R.string.wikitude_key));
         architectView.onCreate(config);
+
+        return rootView;
     }
 
     @Override
@@ -62,9 +66,9 @@ public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotat
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        architectView.onPostCreate();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+         architectView.onPostCreate();
         try {
             architectView.load("index.html");
         } catch (IOException e) {
@@ -73,22 +77,28 @@ public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotat
         }
     }
 
+
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         snsrhlpr.stop();
         architectView.onPause();
     }
 
     @Override
-    protected void onResume() {
+    public void onLowMemory() {
+        super.onLowMemory();
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
         snsrhlpr.start();
         architectView.onResume();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         architectView.onDestroy();
     }
@@ -97,4 +107,7 @@ public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotat
     public void onRotationUpdate(float[] rotationVector) {
 
     }
+
+
+
 }
