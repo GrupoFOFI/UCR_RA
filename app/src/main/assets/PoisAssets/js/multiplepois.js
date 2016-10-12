@@ -34,15 +34,15 @@ var World = {
 
                {"id":11, "name":"Facultad de Letras", "latitude":9.938376, "longitude":-84.052643, "altitude":0, "description":"Facultad de Letras de la Universidad de Costa Rica.\nConstituida por las Escuelas de:\nEscuela de Lenguas Modernas\nEscuela de Filología, Lingüística y Literatura\nEscuela de Filosofía"},
 
-                {"id":12, "name":"Centro de Informática", "latitude":9.937643, "longitude":-84.052352, "altitude":0, "description":"Centro de Informática"},
+                {"id":12, "name":"Centro de Informática", "latitude":9.937643, "longitude":-84.052352, "altitude":0, "description":"El Centro de Informática es una oficina administrativa coadyuvante de la Rectoría y apoyo técnico del Comité Gerencial de Informática en el gobierno de las tecnologías de la información y comunicación, funciona como instancia estratégica, asesora, técnica y de servicio, dedicada a asegurar que la información y tecnología están acordes y soportan los objetivos de la Institución hacia una posición de vanguardia y excelencia."},
 
                 {"id":13, "name":"Escuela Centroamericana de Geología", "latitude":9.93809, "longitude":-84.052524, "altitude":0, "description":"En abril de 1967 se creó la carrera de Geología y en noviembre de ese año se fundó la Escuela Centroamericana de Geología, cuyo promotor fue César Dóndoli, ayudado por varios políticos y geólogos, como el Geólogo Gabriel Dengo (CASTILLO, S., PERALDO, G.; 2000)."},
 
                 {"id":14, "name":"Facultad de Ciencias Económicas", "latitude":9.936922, "longitude":-84.05195, "altitude":0, "description":"Facultad de Ciencias Económicas"},
 
-                {"id":15, "name":"Escuela de Computación e Informática", "latitude":9.937967, "longitude":-84.052035,"altitude": 0, "description":"Escuela de Computación e Informática"},
+                {"id":15, "name":"Escuela de Computación e Informática", "latitude":9.937967, "longitude":-84.052035,"altitude": 0, "description":"La Escuela de Ciencias de la Computación e Infomática de la Universidad de Costa Rica se fundó en 1981, como resultado de la fusión de dos programas distintos pero relacionados, el de Bachillerato en Informática y el de Bachillerato y Licenciatura en Computación."},
 
-                {"id":16, "name":"Facultad de Odontología", "latitude":9.938461, "longitude":-84.051817, "altitude":0, "description":"Facultad de Odontología"},
+                {"id":16, "name":"Facultad de Odontología", "latitude":9.938461, "longitude":-84.051817, "altitude":0, "description":"El 16 de marzo de 1942 se inauguró la Facultad de Cirugía Dental de la Universidad de Costa Rica, tomando como eje de su quehacer:  la promoción y la protección de la salud y prevención de las enfermedades buco-dento-maxilofaciales."},
 
                 {"id":17, "name":"Facultad de Medicina", "latitude":9.938783, "longitude":-84.050774, "altitude":0, "description":"Facultad de Medicina"},
 
