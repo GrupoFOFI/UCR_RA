@@ -9,12 +9,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.StartupConfiguration;
+
+import ra.inge.ucr.da.Edificio;
+import ra.inge.ucr.location.LocationHelper;
 
 public class PoisActivity extends AppCompatActivity {
 
     private ArchitectView architectView;
+    private static final int CLOSEST_AMMOUNT = 3;
+
+    LocationHelper locationHelper = new LocationHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +36,13 @@ public class PoisActivity extends AppCompatActivity {
 
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                architectView.setLocation(location.getLatitude(),location.getLongitude(),location.getAltitude(),location.getAccuracy());
+
+                architectView.setLocation(location.getLatitude(),location.getLongitude(),100);
+
+                LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+                Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
+                architectView.callJavascript("World.loadPoisFromJsonData(" + cercanos[0].getId() + "," + cercanos[1].getId() + "," + cercanos[2].getId() + ")");
+                // + cercanos[0].getId() + "," + cercanos[1].getId() + "," + cercanos[2].getId() +
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}

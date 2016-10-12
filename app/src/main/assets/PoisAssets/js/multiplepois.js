@@ -1,11 +1,9 @@
 // implementation of AR-Experience (aka "World")
 var World = {
-	// true once data was fetched
-	initiallyLoadedData: false,
-
 	// different POI-Marker assets
 	markerDrawable_idle: null,
 	markerDrawable_selected: null,
+	markerDrawable_directionIndicator: null,
 
 	// list of AR.GeoObjects that are currently shown in the scene / World
 	markerList: [],
@@ -13,34 +11,85 @@ var World = {
 	// The last selected marker
 	currentMarker: null,
 
+	//Informacion de Edificios
+	Edificios: [{"id":1, "name":"Facultad de Derecho", "latitude":9.936463, "longitude":-84.053772, "altitude":100, "description":"Facultad de Derecho"},
+               {"id":2, "name":"Oficina de Becas y Atención Socioeconómica", "latitude":9.935435, "longitude":-84.053959, "altitude":100, "description":"Oficina de Becas y Atención Socioeconómica"},
+               {"id":3, "name":"Biblioteca Luis Demetrio Tinoco", "latitude":9.935988, "longitude":-84.052569, "altitude":0, "description":"Biblioteca Luis Demetrio Tinoco"},
+               {"id":4, "name":"Escuela de Arquitectura", "latitude":9.93489, "longitude":-84.052488, "altitude":0, "description":"Escuela de Arquitectura"},
+               {"id":5, "name":"Comedor universitario", "latitude":9.937304, "longitude":-84.052909, "altitude":0, "description":"Comedor universitario"},
+               {"id":6, "name":"Facultad de Ingeniería", "latitude":9.935766, "longitude":-84.052017, "altitude":0, "description":"Facultad de Ingeniería"},
+               {"id":7, "name":"Escuela de Física y Matemáticas", "latitude":9.936493, "longitude":-84.051655, "altitude":0, "description":"Escuela de Física y Matemáticas"},
+               {"id":8, "name":"Escuela de Estudios Generales", "latitude":9.936014, "longitude":-84.05058, "altitude":0, "description":"Escuela de Estudios Generales"},
+               {"id":9, "name":"Biblioteca Carlos Monge", "latitude":9.935944, "longitude":-84.050965, "altitude":0, "description":"Biblioteca Carlos Monge"},
+               {"id":10, "name":"Sección de Educación Preescolar", "latitude":9.9386838, "longitude":-84.0536305, "altitude":0, "description":"Sección de Educación Preescolar"},
+               {"id":11, "name":"Facultad de Letras", "latitude":9.938376, "longitude":-84.052643, "altitude":0, "description":"Facultad de Letras"},
+                {"id":12, "name":"Centro de Informática", "latitude":9.937643, "longitude":-84.052352, "altitude":0, "description":"Centro de Informática"},
+                {"id":13, "name":"Escuela Centroamericana de Geología", "latitude":9.93809, "longitude":-84.052524, "altitude":0, "description":"Escuela Centroamericana de Geología"},
+                {"id":14, "name":"Facultad de Ciencias Económicas", "latitude":9.936922, "longitude":-84.05195, "altitude":0, "description":"Facultad de Ciencias Económicas"},
+                {"id":15, "name":"Escuela de Computación e Informática", "latitude":9.937967, "longitude":-84.052035,"altitude": 0, "description":"Escuela de Computación e Informática"},
+                {"id":16, "name":"Facultad de Odontología", "latitude":9.938461, "longitude":-84.051817, "altitude":0, "description":"Facultad de Odontología"},
+                {"id":17, "name":"Facultad de Medicina", "latitude":9.938783, "longitude":-84.050774, "altitude":0, "description":"Facultad de Medicina"},
+                {"id":18, "name":"Facultad de Farmacia", "latitude":9.938934, "longitude":-84.049986, "altitude":0, "description":"Facultad de Farmacia"},
+                {"id":19, "name":"Facultad de Microbiología", "latitude":9.93794, "longitude":-84.049238, "altitude":0, "description":"Facultad de Microbiología"},
+                {"id":20, "name":"Escuela de Biología", "latitude":9.937623, "longitude":-84.049312, "altitude":0, "description":"Escuela de Biología"},
+                {"id":21, "name":"Escuela de Química", "latitude":9.937465, "longitude":-84.048789, "altitude":0,"description": "Escuela de Química"},
+                {"id":22, "name":"Escuela de Artes Musicales", "latitude":9.937571, "longitude":-84.048044, "altitude":0, "description":"Escuela de Artes Musicales"},
+                 {"id":23,"name": "Escuela de Bellas Artes", "latitude":9.936529, "longitude":-84.048112, "altitude":0, "description":"Escuela de Bellas Artes"},
+                 {"id":24, "name":"Facultad de Educación", "latitude":9.935826, "longitude":-84.048699, "altitude":0,"description": "Facultad de Educación"},
+                 {"id":25, "name":"Bosque Leonel Oviedo", "latitude":9.93758, "longitude":-84.051405, "altitude":0, "description":"Bosque Leonel Oviedo"},
+                 {"id":26, "name":"Mariposario","latitude":0 ,"longitude":0 , "altitude":0,"description": "Mariposario"},
+                 {"id":27, "name":"Plaza 24 de abril", "latitude":9.936244, "longitude":-84.050692, "altitude":0, "description":"Plaza 24 de abril"},
+                 {"id":28, "name":"El Pretil", "latitude":9.935895, "longitude":-84.050638, "altitude":0, "description":"El Pretil"},
+                 {"id":29,"name": "Edificio de Aulas", "latitude":9.936614, "longitude":-84.050735, "altitude":0,"description": "Edificio de Aulas"}],
+
+	/*
+		Have a look at the native code to get a better understanding of how data can be injected to JavaScript.
+		Besides loading data from assets it is also possible to load data from a database, or to create it in native code. Use the platform common way to create JSON Objects of your data and use native 'architectView.callJavaScript()' to pass them to the ARchitect World's JavaScript.
+		'World.loadPoisFromJsonData' is called directly in native code to pass over the poiData JSON, which then creates the AR experience.
+	*/
 	// called to inject new POI data
-	loadPoisFromJsonData: function loadPoisFromJsonDataFn(poiData) {
+	loadPoisFromJsonData: function loadPoisFromJsonDataFn(id1,id2,id3) {
+
 		// empty list of visible markers
 		World.markerList = [];
 
 		// start loading marker assets
 		World.markerDrawable_idle = new AR.ImageResource("assets/marker_idle.png");
 		World.markerDrawable_selected = new AR.ImageResource("assets/marker_selected.png");
+		World.markerDrawable_directionIndicator = new AR.ImageResource("assets/indi.png");
 
 		// loop through POI-information and create an AR.GeoObject (=Marker) per POI
-		for (var currentPlaceNr = 0; currentPlaceNr < poiData.length; currentPlaceNr++) {
-			var singlePoi = {
-				"id": poiData[currentPlaceNr].id,
-				"latitude": parseFloat(poiData[currentPlaceNr].latitude),
-				"longitude": parseFloat(poiData[currentPlaceNr].longitude),
-				"altitude": parseFloat(poiData[currentPlaceNr].altitude),
-				"title": poiData[currentPlaceNr].name,
-				"description": poiData[currentPlaceNr].description
-			};
+        var edificio1 = {
+            "id": World.Edificios[id1].id,
+            "latitude": parseFloat(World.Edificios[id1].latitude),
+            "longitude": parseFloat(World.Edificios[id1].longitude),
+            "altitude": parseFloat(World.Edificios[id1].altitude),
+            "title": World.Edificios[id1].name,
+            "description": World.Edificios[id1].description
+        };
+        World.markerList.push(new Marker(edificio1));
 
-			/*
-				To be able to deselect a marker while the user taps on the empty screen, 
-				the World object holds an array that contains each marker.
-			*/
-			World.markerList.push(new Marker(singlePoi));
-		}
+        var edificio2 = {
+                    "id": World.Edificios[id2].id,
+                    "latitude": parseFloat(World.Edificios[id2].latitude),
+                    "longitude": parseFloat(World.Edificios[id2].longitude),
+                    "altitude": parseFloat(World.Edificios[id2].altitude),
+                    "title": World.Edificios[id2].name,
+                    "description": World.Edificios[id2].description
+                };
+                World.markerList.push(new Marker(edificio2));
 
-		World.updateStatusMessage(currentPlaceNr + ' places loaded');
+        var edificio3 = {
+                    "id": World.Edificios[id3].id,
+                    "latitude": parseFloat(World.Edificios[id3].latitude),
+                    "longitude": parseFloat(World.Edificios[id3].longitude),
+                    "altitude": parseFloat(World.Edificios[id3].altitude),
+                    "title": World.Edificios[id3].name,
+                    "description": World.Edificios[id3].description
+                };
+                World.markerList.push(new Marker(edificio3));
+
+		World.updateStatusMessage(3 + ' places loaded');
 	},
 
 	// updates status message shon in small "i"-button aligned bottom center
@@ -60,17 +109,10 @@ var World = {
 
 	// location updates, fired every time you call architectView.setLocation() in native environment
 	locationChanged: function locationChangedFn(lat, lon, alt, acc) {
-
 		/*
-			The custom function World.onLocationChanged checks with the flag World.initiallyLoadedData if the function was already called. With the first call of World.onLocationChanged an object that contains geo information will be created which will be later used to create a marker using the World.loadPoisFromJsonData function.
+			No action required in JS, in this sample places are injected via native code.
+			Although it is recommended to inject any geo-content >after< first location update was fired.
 		*/
-		if (!World.initiallyLoadedData) {
-			/* 
-				requestDataFromLocal with the geo information as parameters (latitude, longitude) creates different poi data to a random location in the user's vicinity.
-			*/
-			World.requestDataFromLocal(lat, lon);
-			World.initiallyLoadedData = true;
-		}
 	},
 
 	// fired when user pressed maker in cam
@@ -94,38 +136,12 @@ var World = {
 		if (World.currentMarker) {
 			World.currentMarker.setDeselected(World.currentMarker);
 		}
-	},
-
-	// request POI data
-	requestDataFromLocal: function requestDataFromLocalFn(centerPointLatitude, centerPointLongitude) {
-		var poiData = [];
-
-		poiData.push({  "id": 1,  "longitude": -84.0537921,    "latitude": 9.9364001,  "description": "Facultad de Derecho",   "altitude": "100.0",    "name": "Facultad de Derecho"});
-		poiData.push({  "id": 2,  "longitude": -84.054207,    "latitude": 9.935489,  "description": "Oficina de Becas y Atención Socioeconómica",   "altitude": "100.0",    "name": "Oficina de Becas y Atención Socioeconómica"});
-		poiData.push({  "id": 3,  "longitude": -84.052692,    "latitude": 9.935999,  "description": "Biblioteca Luis Demetrio Tinoco",   "altitude": "100.0",    "name": "Biblioteca Luis Demetrio Tinoco"});
-		poiData.push({  "id": 4,  "longitude": -84.052488,    "latitude": 9.935016,  "description": "Escuela de Arquitectura",   "altitude": "100.0",    "name": "Escuela de Arquitectura"});
-		poiData.push({  "id": 5,  "longitude": -84.05311,    "latitude": 9.937234,  "description": "Comedor universitario",   "altitude": "100.0",    "name": "Comedor universitario"});
-		poiData.push({  "id": 6,  "longitude": -84.05192,    "latitude": 9.935885,  "description": "Facultad de Ingeniería",   "altitude": "100.0",    "name": "Facultad de Ingeniería"});
-		poiData.push({  "id": 7,  "longitude": -84.051574,    "latitude": 9.936476,  "description": "Escuela de Física y Matemáticas",   "altitude": "100.0",    "name": "Escuela de Física y Matemáticas"});
-		poiData.push({  "id": 8,  "longitude": -84.050466,    "latitude": 9.936159,  "description": "Escuela de Estudios Generales",   "altitude": "100.0",    "name": "Escuela de Estudios Generales"});
-		poiData.push({  "id": 9,  "longitude": -84.051018,    "latitude": 9.936038,  "description": "Biblioteca Carlos Monge",   "altitude": "100.0",    "name": "Biblioteca Carlos Monge"});
-		poiData.push({  "id": 10,  "longitude": -84.0536305,    "latitude": 9.9386838,  "description": "Sección de Educación Preescolar",   "altitude": "100.0",    "name": "Sección de Educación Preescolar"});
-		poiData.push({  "id": 11,  "longitude": -84.052917,    "latitude": 9.938561,  "description": "Facultad de Letras",   "altitude": "100.0",    "name": "Facultad de Letras"});
-		poiData.push({  "id": 12,  "longitude": -84.052172,    "latitude": 9.937683,  "description": "Centro de Informática",   "altitude": "100.0",    "name": "Centro de Informática"});
-		poiData.push({  "id": 13,  "longitude": -84.052298,    "latitude": 9.938111,  "description": "Escuela Centroamericana de Geología",   "altitude": "100.0",    "name": "Escuela Centroamericana de Geología"});
-		poiData.push({  "id": 14,  "longitude": -84.051732,    "latitude": 9.937144,  "description": "Facultad de Ciencias Económicas",   "altitude": "100.0",    "name": "Facultad de Ciencias Económicas"});
-		poiData.push({  "id": 15,  "longitude": -84.051925,    "latitude": 9.937922,  "description": "Escuela de Computación e Informática",   "altitude": "100.0",    "name": "Escuela de Computación e Informática"});
-		World.loadPoisFromJsonData(poiData);
 	}
 
 };
 
-/* 
-	Set a custom function where location changes are forwarded to. There is also a possibility to set AR.context.onLocationChanged to null. In this case the function will not be called anymore and no further location updates will be received. 
-*/
+/* forward locationChanges to custom function */
 AR.context.onLocationChanged = World.locationChanged;
 
-/*
-	To detect clicks where no drawable was hit set a custom function on AR.context.onScreenClick where the currently selected marker is deselected.
-*/
+/* forward clicks in empty area to World */
 AR.context.onScreenClick = World.onScreenClick;
