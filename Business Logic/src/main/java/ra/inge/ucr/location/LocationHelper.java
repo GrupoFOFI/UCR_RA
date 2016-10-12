@@ -21,13 +21,13 @@ public class LocationHelper {
     public int topidx[];
     public double mindist[];
     public int closestAmmount = 0;
-    private LatLng mLastLocation;
+    private static LatLng mLastLocation;
 
-    public void updateLastLocation(LatLng location) {
+    public static void updateLastLocation(LatLng location) {
         mLastLocation = location;
     }
 
-    public LatLng getLastLocation() {
+    public static LatLng getLastLocation() {
         return mLastLocation;
     }
 

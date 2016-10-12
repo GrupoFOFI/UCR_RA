@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 
 /**
@@ -16,6 +17,7 @@ public class SensorHelper implements SensorEventListener {
     private SensorManager snsrmngr;
     private Sensor accl, mgnt;
     private OnLookAtBuildingListener mListener;
+    Edificio mBuilding = null;
 
     float[] acclReading = new float[3], mgntReading = new float[3];
     float[] orientationAngles = new float[3];
@@ -83,7 +85,16 @@ public class SensorHelper implements SensorEventListener {
         rotationVector[0] = (float)Math.sin(orientationAngles[0]);// x
         rotationVector[1] = (float)Math.cos(orientationAngles[1]);// y
         // z doesn't matter
-        //locationHelper.pointingCamera((double)rotationVector[0], (double)rotationVector[1]);
+        Edificio ed = locationHelper.pointingCamera((double)rotationVector[0], (double)rotationVector[1], LocationHelper.getLastLocation());
+        if (mListener != null) {
+            if (mBuilding != ed) {
+                if (mBuilding != null)
+                    mListener.onStopLookingAtBuilding(mBuilding);
+                mBuilding = ed;
+                if (ed != null)
+                    mListener.onStartLookingAtBuilding(ed);
+            }
+        }
         //if (mListener != null) mListener.onRotationUpdate(rotationVector);
     }
 
