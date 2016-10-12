@@ -70,3 +70,47 @@ public class LocationHelper {
         return Math.sqrt(distance);
     }
 }
+
+public int pointingCamera (double xCam, double yCam , Latlng loc ){
+        //calculate distance
+        float errorAngle =0;
+        double v1 = 0; double v2=0 ; // first vector
+        double productoPunto = 0;
+        double mod1 = 0 ; double mod2=0;
+        double angulo = 0;
+        id = -1;
+        Edificio c = getClosestBuildings(loc,3);
+        for(i = 0 ; i < 3 ; i++){
+            errorAngle= getErrorAngle (loc, c[i].getLat() , c[i].getLng() );
+            if(-1 =! buildAngle ) {
+                v1 = loc.latitude - c[i].getLat();
+                v2 = loc.longitude -c[i].getLng();
+                productoPunto = v1* xCam + v2*yCam;
+                mod1 = Math.sqrt(Math.pow(v1,2) + Math.pow(v2,2) );
+                mod2 = Math.sqrt(Math.pow(xCam,2) + Math.pow(yCam,2) );
+                angulo = productoPunto / (mod1 *mod2);
+                if (  angulo < errorAngle ){
+                    id = c[i].getId;
+                    i=3;
+                }
+            }
+        }
+        return id;
+    }
+
+   
+ public float getErrorAngle (Latlng loc , double xBuild , double yBuild){
+        Location newLocation=new Location("newlocation");
+        newLocation.setLatitude(xBuild);
+        newLocation.setLongitude(yBuild);
+        float dist = Latlng.distanceTo(newLocation);
+        if(dist < 20 ) {
+            float a =   80 - dist * 5  ;
+        } else {
+            a = -1;
+        }
+        return a;
+    }
+
+}
+
