@@ -215,7 +215,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.building)));
         }
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(loc, 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(loc, 12);
         googleMap.animateCamera(cameraUpdate);
      //   locationManager.removeUpdates(getContext());
 
