@@ -84,14 +84,13 @@ public class LocationHelper {
     }
 
 
-    public int pointingCamera (double xCam, double yCam , LatLng loc ){
+    public Edificio pointingCamera (double xCam, double yCam , LatLng loc ){
         //calculate distance
         float errorAngle =0;
         double v1 = 0; double v2=0 ; // first vector
         double productoPunto = 0;
         double mod1 = 0 ; double mod2=0;
         double angulo = 0;
-        int d = -1;
         Edificio c[] = getClosestBuildings(loc,3);
         for(int i = 0 ; i < 3 ; i++){
             errorAngle= getErrorAngle (loc, c[i].getLat() , c[i].getLng() );
@@ -102,13 +101,13 @@ public class LocationHelper {
                 mod1 = Math.sqrt(Math.pow(v1,2) + Math.pow(v2,2) );
                 mod2 = Math.sqrt(Math.pow(xCam,2) + Math.pow(yCam,2) );
                 angulo = productoPunto / (mod1 *mod2);
+                angulo = angulo * 180 / Math.PI;// a grados
                 if (  angulo < errorAngle ){
-                    d = c[i].getId();
-                    i=3;
+                   return  c[i];
                 }
             }
         }
-        return d;
+        return null;
     }
 
    
