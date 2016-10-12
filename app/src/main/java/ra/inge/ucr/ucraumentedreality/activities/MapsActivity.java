@@ -1,4 +1,4 @@
-package ra.inge.ucr.ucraumentedreality;
+package ra.inge.ucr.ucraumentedreality.activities;
 
 import android.app.AlertDialog;
 import android.os.Build;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.Manifest;
 
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -31,21 +30,17 @@ import com.google.android.gms.maps.model.Marker;
 
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
+import ra.inge.ucr.ucraumentedreality.R;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
-
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener,
-        GoogleMap.OnMarkerDragListener,
-        LocationListener{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener, LocationListener {
 
     private int count;
     private GoogleMap mMap;
     private Marker[] markers;
     private static final int CLOSEST_AMMOUNT = 3;
+
     /**
      * Provides the entry point to Google Play services.
      */
@@ -55,22 +50,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Represents a geographical location.
      */
     protected Location mLastLocation;
-
-    /**
-     *
-     */
-    LocationRequest mLocationRequest;
-
-    /**
-     *
-     */
+    private LocationRequest mLocationRequest;
     private static final long POLLING_FREQ = 200;
-
-    /**
-     *
-     */
     private static final long FASTEST_UPDATE_FREQ = 1000;
-
     LocationHelper locationHelper = new LocationHelper();
 
     @Override
@@ -142,9 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.i("Wat", "here");
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
         Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
-        Log.i("",cercanos[0].getNmbr()+" "+cercanos[1].getNmbr()+" "+cercanos[2].getNmbr() );
-        for(int i = 0; i<CLOSEST_AMMOUNT;i++) {
-            if(markers[i] != null)
+        Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
+        for (int i = 0; i < CLOSEST_AMMOUNT; i++) {
+            if (markers[i] != null)
                 markers[i].remove();
             markers[i] = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()))
@@ -156,7 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void drawMarker(double varLat, double varLong) {
 
         String times = "Location # " + count;
-        count ++;
+        count++;
         String location = "Location has " + varLat + " latitude and " + varLong + " longitude";
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(varLat, varLong))
@@ -177,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation == null) {
-            String error =getResources().getString(R.string.no_location_detected);
+            String error = getResources().getString(R.string.no_location_detected);
             toastLog(error);
         }
     }
@@ -225,8 +207,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         toastLog(str);
     }
 
-    void toastLog (String str) {
-        Toast.makeText(this,str, Toast.LENGTH_SHORT).show();
+    void toastLog(String str) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
     }
 
     private void requestLocationPermission() {
@@ -236,9 +218,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
                     new AlertDialog.Builder(this).setTitle("Permiso de ubicación").setMessage("Necesitamos tu ubicación para que el app funcione").show();
-                    // Show an expanation to the user *asynchronously* -- don't block
-                    // this thread waiting for the user's response! After the user
-                    // sees the explanation, try again to request the permission.
 
                 } else {
 
@@ -247,4 +226,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
+
 }
