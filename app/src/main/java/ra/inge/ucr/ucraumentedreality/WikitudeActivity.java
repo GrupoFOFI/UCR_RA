@@ -1,7 +1,12 @@
 package ra.inge.ucr.ucraumentedreality;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,10 +17,14 @@ import com.wikitude.architect.StartupConfiguration;
 
 import java.io.IOException;
 
-public class WikitudeActivity extends AppCompatActivity {
+import ra.inge.ucr.location.SensorHelper;
+import ra.inge.ucr.location.listener.OnDeviceRotationUpdateListener;
+
+public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotationUpdateListener {
     ArchitectView architectView;
 
     private static final int PERMISSION_REQUEST_CAMERA = 999;
+    private SensorHelper snsrhlpr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +39,8 @@ public class WikitudeActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.CAMERA},
                     PERMISSION_REQUEST_CAMERA);
         }
+        snsrhlpr = new SensorHelper(this);
+        snsrhlpr.start();
 
         architectView = (ArchitectView)findViewById(R.id.architectView); // I am the architect
         final StartupConfiguration config = new StartupConfiguration(getResources().getString(R.string.wikitude_key));
@@ -65,12 +76,14 @@ public class WikitudeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        snsrhlpr.stop();
         architectView.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        snsrhlpr.start();
         architectView.onResume();
     }
 
@@ -78,5 +91,10 @@ public class WikitudeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         architectView.onDestroy();
+    }
+
+    @Override
+    public void onRotationUpdate(float[] rotationVector) {
+
     }
 }
