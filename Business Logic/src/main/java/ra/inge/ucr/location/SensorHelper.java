@@ -6,16 +6,16 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import ra.inge.ucr.location.listener.OnDeviceRotationUpdateListener;
+import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 
 /**
  * Created by tete on 10/12/16.
  */
 public class SensorHelper implements SensorEventListener {
-
+    LocationHelper locationHelper = new LocationHelper();
     private SensorManager snsrmngr;
     private Sensor accl, mgnt;
-    private OnDeviceRotationUpdateListener mListener;
+    private OnLookAtBuildingListener mListener;
 
     float[] acclReading = new float[3], mgntReading = new float[3];
     float[] orientationAngles = new float[3];
@@ -33,7 +33,7 @@ public class SensorHelper implements SensorEventListener {
      *
      * @param listener the class implenenting OnDeviceRotationListener interface
      */
-    public void setOnDeviceRotationUpdateListener(OnDeviceRotationUpdateListener listener) {
+    public void setOnDeviceRotationUpdateListener(OnLookAtBuildingListener listener) {
         mListener = listener;
     }
 
@@ -83,7 +83,8 @@ public class SensorHelper implements SensorEventListener {
         rotationVector[0] = (float)Math.sin(orientationAngles[0]);// x
         rotationVector[1] = (float)Math.cos(orientationAngles[1]);// y
         // z doesn't matter
-        if (mListener != null) mListener.onRotationUpdate(rotationVector);
+        locationHelper.
+        //if (mListener != null) mListener.onRotationUpdate(rotationVector);
     }
 
     @Override

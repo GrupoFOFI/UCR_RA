@@ -1,4 +1,4 @@
-package ra.inge.ucr.ucraumentedreality;
+package ra.inge.ucr.ucraumentedreality.activities;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -15,6 +15,7 @@ import com.wikitude.architect.StartupConfiguration;
 
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
+import ra.inge.ucr.ucraumentedreality.R;
 
 public class PoisActivity extends AppCompatActivity {
 
