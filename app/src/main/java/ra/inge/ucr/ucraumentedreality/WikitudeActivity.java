@@ -1,12 +1,7 @@
 package ra.inge.ucr.ucraumentedreality;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +12,11 @@ import com.wikitude.architect.StartupConfiguration;
 
 import java.io.IOException;
 
+import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.SensorHelper;
-import ra.inge.ucr.location.listener.OnDeviceRotationUpdateListener;
+import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 
-public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotationUpdateListener {
+public class WikitudeActivity extends AppCompatActivity implements OnLookAtBuildingListener {
     ArchitectView architectView;
 
     private static final int PERMISSION_REQUEST_CAMERA = 999;
@@ -94,7 +90,12 @@ public class WikitudeActivity extends AppCompatActivity implements OnDeviceRotat
     }
 
     @Override
-    public void onRotationUpdate(float[] rotationVector) {
+    public void onStartLookingAtBuilding(Edificio edificio) {
+
+    }
+
+    @Override
+    public void onStopLookingAtBuilding(Edificio edificio) {
 
     }
 }
