@@ -16,15 +16,16 @@ import com.wikitude.architect.StartupConfiguration;
 
 import java.io.IOException;
 
+import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.SensorHelper;
-import ra.inge.ucr.location.listener.OnDeviceRotationUpdateListener;
+import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 import ra.inge.ucr.ucraumentedreality.R;
 
 /**
  * Created by Konrad on 10/12/16.
  */
 
-public class WikitudeFragment extends Fragment implements OnDeviceRotationUpdateListener {
+public class WikitudeFragment extends Fragment implements OnLookAtBuildingListener {
     ArchitectView architectView;
 
     private static final int PERMISSION_REQUEST_CAMERA = 999;
@@ -104,10 +105,12 @@ public class WikitudeFragment extends Fragment implements OnDeviceRotationUpdate
     }
 
     @Override
-    public void onRotationUpdate(float[] rotationVector) {
+    public void onStartLookingAtBuilding(Edificio edificio) {
 
     }
 
+    @Override
+    public void onStopLookingAtBuilding(Edificio edificio) {
 
-
+    }
 }
