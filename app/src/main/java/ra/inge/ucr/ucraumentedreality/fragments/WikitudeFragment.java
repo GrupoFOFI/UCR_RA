@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,11 +107,11 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
 
     @Override
     public void onStartLookingAtBuilding(Edificio edificio) {
-
+        Log.i("WIKITUDE_FRAGMENT", "Estoy viendo el edificio " + edificio.getNmbr());
     }
 
     @Override
     public void onStopLookingAtBuilding(Edificio edificio) {
-
+        Log.i("WIKITUDE_FRAGMENT", "Ya no estoy viendo el edificio " + edificio.getNmbr());
     }
 }
