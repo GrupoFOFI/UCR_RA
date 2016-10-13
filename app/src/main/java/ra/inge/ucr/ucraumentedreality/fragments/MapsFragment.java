@@ -48,6 +48,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private View rootView;
     private Utils utils;
+    private  Edificio[] cercanos;
 
     /**
      * Provides the entry point to Google Play services.
@@ -211,7 +212,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mLastLocation = location;
         locationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-        Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
+        cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
         //Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
         for (int i = 0; i < CLOSEST_AMOUNT; i++) {
             markers[i].setPosition(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()));
@@ -246,6 +247,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
-
+    public Edificio[] getCercanos() {
+        return cercanos;
+    }
 }
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.ucraumentedreality.R;
 
 /**
@@ -17,10 +18,10 @@ import ra.inge.ucr.ucraumentedreality.R;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
-    List<String> mListData;
+    private Edificio [] cercanos;
 
-    public CustomAdapter(List<String> mListData) {
-        this.mListData = mListData;
+    public CustomAdapter(Edificio[] cercanos) {
+        this.cercanos = cercanos;
     }
 
     @Override
@@ -31,12 +32,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int i) {
-        myViewHolder.title.setText(mListData.get(i));
+        myViewHolder.title.setText(cercanos[i].getNmbr());
     }
 
     @Override
     public int getItemCount() {
-        return mListData == null ? 0 : mListData.size();
+        return cercanos == null ? 0 : cercanos.length;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
