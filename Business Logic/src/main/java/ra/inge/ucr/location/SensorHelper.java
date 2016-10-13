@@ -85,7 +85,10 @@ public class SensorHelper implements SensorEventListener {
         rotationVector[0] = (float)Math.sin(orientationAngles[0]);// x
         rotationVector[1] = (float)Math.cos(orientationAngles[1]);// y
         // z doesn't matter
-        Edificio ed = locationHelper.pointingCamera((double)rotationVector[0], (double)rotationVector[1], LocationHelper.getLastLocation());
+        Edificio ed =null;
+        if(LocationHelper.getLastLocation()!= null) {
+            ed = locationHelper.pointingCamera((double) rotationVector[0], (double) rotationVector[1], LocationHelper.getLastLocation());
+        }
         if (mListener != null) {
             if (mBuilding != ed) {
                 if (mBuilding != null)

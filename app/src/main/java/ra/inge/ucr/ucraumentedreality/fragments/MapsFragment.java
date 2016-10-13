@@ -187,6 +187,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             String error = getResources().getString(R.string.no_location_detected);
             Log.e("ERROR",error);
         }else{
+            locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
         }

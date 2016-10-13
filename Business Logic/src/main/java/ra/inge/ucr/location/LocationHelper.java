@@ -38,6 +38,7 @@ public class LocationHelper {
      * @return
      */
     public Edificio[] getClosestBuildings(LatLng lastLoc, int ammount){
+        mLastLocation = lastLoc;
         Edificio[] closest = new Edificio[ammount];
         topidx = new int[ammount];
         mindist = new double[ammount];
