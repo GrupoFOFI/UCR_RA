@@ -35,7 +35,7 @@ public class Edificio {
 
     /** Getters & Setters */
 
-    
+
     public int getId() {
         return id;
     }
