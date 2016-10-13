@@ -7,12 +7,23 @@ package ra.inge.ucr.da;
  * </p>
  */
 public class Edificio {
+
     private int id;
     private double lat;
     private double lng;
     private double alt;
     private String nmbr;
     private String dscrpt;
+
+    /***
+     * Complete constructor for the class
+     * @param id
+     * @param nmbr
+     * @param lat
+     * @param lng
+     * @param alt
+     * @param dscrpt
+     */
     public Edificio(int id, String nmbr, double lat, double lng, double alt, String dscrpt) {
         this.id = id;
         this.lat = lat;
@@ -22,6 +33,9 @@ public class Edificio {
         this.dscrpt = dscrpt;
     }
 
+    /** Getters & Setters */
+
+    
     public int getId() {
         return id;
     }
