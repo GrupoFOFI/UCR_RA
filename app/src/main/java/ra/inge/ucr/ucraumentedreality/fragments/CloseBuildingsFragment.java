@@ -18,8 +18,16 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
 
 /**
- * Class to manage the closest buildings
- */
+ * <h1> CloseBuildingsFragment </h1>
+ * <p>
+ * <p>
+ *
+ * Fragment to manage the nearest buildings to show the user
+ *
+ * @author Fofis
+ * @version 1.0
+ * @since 1.0
+ * */
 public class CloseBuildingsFragment extends Fragment {
 
     private CustomAdapter mAdapter;

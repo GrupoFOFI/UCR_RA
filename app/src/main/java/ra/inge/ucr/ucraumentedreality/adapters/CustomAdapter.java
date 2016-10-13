@@ -13,9 +13,16 @@ import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.ucraumentedreality.R;
 
 /**
- * Created by Konrad on 10/12/16.
- */
-
+ * <h1> Custom Adapter </h1>
+ * <p>
+ * <p>
+ *
+ * Adapter personalizado para agarrar los edificios más cercanos
+ *
+ * @author Fofis
+ * @version 1.0
+ * @since 1.0
+ * */
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
     private Edificio [] cercanos;
