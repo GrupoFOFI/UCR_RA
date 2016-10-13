@@ -6,8 +6,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -25,11 +27,19 @@ public class Utils {
         this.activity = activity;
         this.context = context;
     }
-
+    /**
+     * Toast logs
+     */
     public  void toastLog(String str) {
         Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Snack bar logs
+     */
+    public void snack_log(View view, String log) {
+        Snackbar.make(view, log, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -45,5 +55,9 @@ public class Utils {
             }
         }
     }
+
+
+
+
 
 }

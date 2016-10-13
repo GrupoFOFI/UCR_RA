@@ -27,10 +27,11 @@ import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
 /**
- * 
+ *
  */
 public class WikitudeFragment extends Fragment implements OnLookAtBuildingListener {
 
@@ -40,10 +41,14 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
     private ArchitectView architectView;
     private static final int CLOSEST_AMMOUNT = 3;
 
+    private Utils utils;
+
     LocationHelper locationHelper = new LocationHelper();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_wikitude, container, false);
+
+        utils = new Utils(getActivity(), getContext());
         // request camera permission
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.CAMERA);
@@ -61,13 +66,7 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         final StartupConfiguration config = new StartupConfiguration(getResources().getString(R.string.wikitude_key));
         architectView.onCreate(config);
 
-
-//        this.architectView = (ArchitectView)this.findViewById( R.id.architectView );
-//        final StartupConfiguration config = new StartupConfiguration( "1hsmqaiLrz0eulhaoOuBV1FbRWwWPySQhwqHtYrHmL4VaI50+xUwQmVX3S9+BWbrvp4J/j9r02qgJy1ly6S9bIPebl5rZG6yFRPKWu3KjsTy1dZ8PDbn6yn9ryjGs/VD7SeUixQEL0N69ob1t0On92IfKewqTx2ZO3T70wCS2OBTYWx0ZWRfX8bLwGfis2idadBGCUBLdyKhoheWTi8lINhm//8Cn7piRjsxTzSrDZI/xv8gIC/K2d64rPmLb8dYmq4wXNQePEi/oa5dJ0/N4v1khlw0pfzC/ldFbebljN3qvukSmTm44MlE2QSwAxwtR1/duAm6flIuj6KY9rf2eDNjCUDG2g8gK2jI/idt0xBcRyx+c3qyLs3w2z4QQkSVsmXHA3g0gBhh+nCkX1ttI/jZqU/1H+5b2o89W61gweuPQUfkSdr8LtAOyF4agK2os+pEZ/odPUxKplZshD2rXSO/5+745gzR0MBlBAW876radrowAgSzKskuyahpKv0kcWYWUXeFfZcb//Yr/JzcHizF5J+QoFrzC8mL3vXLQbi1s8MMWpelsrlHf4Xl+S9OCei5zyisAsXkAEQyJ/CYk+oPW4AZYyZg9HnGNGZHTQkenkeHRGijeQGaog+crA9uI/gyCKyfGV2Qht2dzGha2KTTVBXpU6sZX9VIhGbVBYo=" );
-//        this.architectView.onCreate( config );
-
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
 
@@ -159,11 +158,14 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
 
     @Override
     public void onStartLookingAtBuilding(Edificio edificio) {
+        utils.snack_log(getActivity().getWindow().getDecorView(),"Estoy viendo el edificio " + edificio.getNmbr());
         Log.i("WIKITUDE_FRAGMENT", "Estoy viendo el edificio " + edificio.getNmbr());
+
     }
 
     @Override
     public void onStopLookingAtBuilding(Edificio edificio) {
+        utils.snack_log(getActivity().getWindow().getDecorView(),"Ya no estoy viendo el edificio " + edificio.getNmbr());
         Log.i("WIKITUDE_FRAGMENT", "Ya no estoy viendo el edificio " + edificio.getNmbr());
     }
 }
