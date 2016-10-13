@@ -35,7 +35,7 @@ public class SensorHelper implements SensorEventListener {
      *
      * @param listener the class implenenting OnDeviceRotationListener interface
      */
-    public void setOnDeviceRotationUpdateListener(OnLookAtBuildingListener listener) {
+    public void setOnLookAtBuildingListener(OnLookAtBuildingListener listener) {
         mListener = listener;
     }
 

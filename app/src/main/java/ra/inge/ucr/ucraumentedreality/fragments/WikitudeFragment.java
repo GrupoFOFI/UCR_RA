@@ -44,6 +44,7 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         }
 
         snsrhlpr = new SensorHelper(getContext());
+        snsrhlpr.setOnLookAtBuildingListener(this);
         snsrhlpr.start();
 
         architectView = (ArchitectView)rootView.findViewById(R.id.architectView); // I am the architect
