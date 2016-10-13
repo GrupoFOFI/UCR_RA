@@ -72,11 +72,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         setupMap(savedInstanceState);
 
         utils = new Utils(getActivity(), getContext());
-        markers = new Marker[CLOSEST_AMOUNT];
-        locationHelper  = new LocationHelper();
+
         buildGoogleApiClient();
-
-
         return rootView;
     }
 
@@ -104,6 +101,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             return;
         }
         this.googleMap.setMyLocationEnabled(true);
+        markers = new Marker[CLOSEST_AMOUNT];
+        for(int i = 0;i< CLOSEST_AMOUNT;i++){
+            markers[i] = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.building)).visible(false)
+                    .position(new LatLng(0.0,0.0)).title(""));
+        }
+        locationHelper  = new LocationHelper();
     }
 
 
@@ -179,11 +182,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation == null) {
             String error = getResources().getString(R.string.no_location_detected);
             Log.e("ERROR",error);
+        }else{
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
+            googleMap.animateCamera(cameraUpdate);
         }
     }
 
@@ -202,23 +207,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i("Wat", "here");
+        mLastLocation = location;
+        locationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
         Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
-        Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
+        //Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
         for (int i = 0; i < CLOSEST_AMOUNT; i++) {
-            if (markers[i] != null)
-                markers[i].remove();
-            markers[i] = googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()))
-                    .title(cercanos[i].getNmbr())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.building)));
+            markers[i].setPosition(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()));
+            markers[i].setTitle(cercanos[i].getNmbr());
+            if(!markers[i].isVisible())
+                markers[i].setVisible(true);
         }
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(loc, 12);
-        googleMap.animateCamera(cameraUpdate);
-     //   locationManager.removeUpdates(getContext());
-
     }
 
     @Override
