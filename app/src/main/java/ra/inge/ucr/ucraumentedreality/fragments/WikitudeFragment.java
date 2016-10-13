@@ -62,7 +62,7 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         snsrhlpr.setOnLookAtBuildingListener(this);
         snsrhlpr.start();
 
-        architectView = (ArchitectView)rootView.findViewById(R.id.architectView); // I am the architect
+        architectView = (ArchitectView) rootView.findViewById(R.id.architectView); // I am the architect
         final StartupConfiguration config = new StartupConfiguration(getResources().getString(R.string.wikitude_key));
         architectView.onCreate(config);
 
@@ -70,7 +70,7 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
 
-                architectView.setLocation(location.getLatitude(),location.getLongitude(),100);
+                architectView.setLocation(location.getLatitude(), location.getLongitude(), 100);
 
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
                 Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
@@ -78,11 +78,14 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
                 // + cercanos[0].getId() + "," + cercanos[1].getId() + "," + cercanos[2].getId() +
             }
 
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
 
-            public void onProviderEnabled(String provider) {}
+            public void onProviderEnabled(String provider) {
+            }
 
-            public void onProviderDisabled(String provider) {}
+            public void onProviderDisabled(String provider) {
+            }
         };
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -98,10 +101,8 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
 
-
         return rootView;
     }
-
 
 
     @Override
@@ -121,15 +122,18 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-         architectView.onPostCreate();
+        architectView.onPostCreate();
         try {
-            architectView.load("index.html");
-        } catch (IOException e) {
-            System.out.println("IOException");
-            e.printStackTrace();
+            String[] perms = {"android.permission.RECORD_AUDIO", "android.permission.CAMERA"};
+
+            int permsRequestCode = 200;
+
+            requestPermissions(perms, permsRequestCode);
+
+            this.architectView.load("file:///android_asset/PoisAssets/index.html");
+        } catch (Exception e) {
         }
     }
-
 
     @Override
     public void onPause() {
@@ -158,14 +162,14 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
 
     @Override
     public void onStartLookingAtBuilding(Edificio edificio) {
-        utils.snack_log(getActivity().getWindow().getDecorView(),"Estoy viendo el edificio " + edificio.getNmbr());
+        utils.snack_log(getActivity().getWindow().getDecorView(), "Estoy viendo el edificio " + edificio.getNmbr());
         Log.i("WIKITUDE_FRAGMENT", "Estoy viendo el edificio " + edificio.getNmbr());
 
     }
 
     @Override
     public void onStopLookingAtBuilding(Edificio edificio) {
-        utils.snack_log(getActivity().getWindow().getDecorView(),"Ya no estoy viendo el edificio " + edificio.getNmbr());
+        utils.snack_log(getActivity().getWindow().getDecorView(), "Ya no estoy viendo el edificio " + edificio.getNmbr());
         Log.i("WIKITUDE_FRAGMENT", "Ya no estoy viendo el edificio " + edificio.getNmbr());
     }
 }
