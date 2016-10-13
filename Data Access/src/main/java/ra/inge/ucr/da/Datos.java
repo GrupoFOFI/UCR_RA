@@ -27,7 +27,7 @@ public class Datos {
         add(new Edificio(13, "Escuela Centroamericana de Geología", 9.93809, -84.052524, 0, null));
         add(new Edificio(14, "Facultad de Ciencias Económicas", 9.936922, -84.05195, 0, null));
         add(new Edificio(15, "Escuela de Computación e Informática", 9.937967, -84.052035, 0, null));
-        add(new Edificio(16, "Facultad de Odontología", 9.938461, -84.051817, 0, null));
+        add(new Edificio(16, "Facultad de Odontología", 9.938455, -84.051475, 0, null));
         add(new Edificio(17, "Facultad de Medicina", 9.938783, -84.050774, 0, null));
         add(new Edificio(18, "Facultad de Farmacia", 9.938934, -84.049986, 0, null));
         add(new Edificio(19, "Facultad de Microbiología", 9.93794, -84.049238, 0, null));
