@@ -20,8 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.wikitude.architect.ArchitectView;
 import com.wikitude.architect.StartupConfiguration;
 
-import java.io.IOException;
-
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.SensorHelper;
@@ -31,7 +29,16 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
 /**
+ * <h1> Wikitude Fragment </h1>
  *
+ * <p>
+ *  Fragment to handle the points of Interest using Wikitude
+ * </p>
+ *
+ *
+ * @author Fofis
+ * @version 1.0
+ * @since 1.0
  */
 public class WikitudeFragment extends Fragment implements OnLookAtBuildingListener {
 
@@ -45,10 +52,19 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
 
     LocationHelper locationHelper = new LocationHelper();
 
+    /**
+     *  Method that prepares the components the fragment needs
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_wikitude, container, false);
 
         utils = new Utils(getActivity(), getContext());
+
         // request camera permission
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.CAMERA);
@@ -89,14 +105,6 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         };
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
@@ -105,6 +113,13 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
     }
 
 
+    /**
+     * Method that requests for permision to use the Camera
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -119,6 +134,11 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         }
     }
 
+    /**
+     * Methods used by Wikitude to invoke the HTML file with the relevant info needed
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -135,6 +155,9 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         }
     }
 
+    /**
+     * On Pause Fragment Method
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -142,11 +165,17 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         architectView.onPause();
     }
 
+    /**
+     * Method to warn in case the app has low memory to run
+     */
     @Override
     public void onLowMemory() {
         super.onLowMemory();
     }
 
+    /**
+     * On Resume Fragment Method
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -154,12 +183,21 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
         architectView.onResume();
     }
 
+
+    /**
+     * On Destroy Fragment Method
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         architectView.onDestroy();
     }
 
+    /**
+     * Method used to create UX when the user is looking at a building
+     *
+     * @param edificio
+     */
     @Override
     public void onStartLookingAtBuilding(Edificio edificio) {
         utils.snack_log(getActivity().getWindow().getDecorView(), "Estoy viendo el edificio " + edificio.getNmbr());
@@ -167,6 +205,10 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
 
     }
 
+    /**
+     * Method used to create de UX when the user stops looking at a building
+     * @param edificio
+     */
     @Override
     public void onStopLookingAtBuilding(Edificio edificio) {
         utils.snack_log(getActivity().getWindow().getDecorView(), "Ya no estoy viendo el edificio " + edificio.getNmbr());

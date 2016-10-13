@@ -3,8 +3,15 @@ package ra.inge.ucr.da;
 
 import java.util.ArrayList;
 
+/**
+ * <h1> Datos </h1>
+ * <p>
+ * Class used to load all the buildings to the app
+ * </p>
+ */
 public class Datos {
     public final static ArrayList<Edificio> edificios = new ArrayList<Edificio>() {{
+
         add(new Edificio(1, "Facultad de Derecho", 9.936463, -84.053772, 0, null));
         add(new Edificio(2, "Oficina de Becas y Atención Socioeconómica", 9.935435, -84.053959, 0, null));
         add(new Edificio(3, "Biblioteca Luis Demetrio Tinoco", 9.935988, -84.052569, 0, null));
@@ -30,7 +37,7 @@ public class Datos {
         add(new Edificio(23, "Escuela de Bellas Artes", 9.936529, -84.048112, 0, null));
         add(new Edificio(24, "Facultad de Educación", 9.935826, -84.048699, 0, null));
         add(new Edificio(25, "Bosque Leonel Oviedo", 9.93758, -84.051405, 0, null));
-        add(new Edificio(26, "Mariposario",0 ,0 , 0, null));
+        add(new Edificio(26, "Mariposario", 0, 0, 0, null));
         add(new Edificio(27, "Plaza 24 de abril", 9.936244, -84.050692, 0, null));
         add(new Edificio(28, "El Pretil", 9.935895, -84.050638, 0, null));
         add(new Edificio(29, "Edificio de Aulas", 9.936614, -84.050735, 0, null));

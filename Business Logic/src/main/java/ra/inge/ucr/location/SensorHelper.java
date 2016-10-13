@@ -10,9 +10,19 @@ import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 
 /**
- * Created by tete on 10/12/16.
+ * <h1> Sensor Helper </h1>
+ *
+ * <p>
+ *  Fragment to handle the points of Interest using Wikitude
+ * </p>
+ *
+ *
+ * @author Fofis
+ * @version 1.0
+ * @since 1.0
  */
 public class SensorHelper implements SensorEventListener {
+
     LocationHelper locationHelper = new LocationHelper();
     private SensorManager snsrmngr;
     private Sensor accl, mgnt;
@@ -70,6 +80,11 @@ public class SensorHelper implements SensorEventListener {
         return (accl != null && mgnt != null);
     }
 
+    /**
+     * Method that creates the logic when a sensor changes
+     *
+     * @param sensorEvent
+     */
     @Override
     public synchronized void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == accl.getType()) {
@@ -101,6 +116,11 @@ public class SensorHelper implements SensorEventListener {
         //if (mListener != null) mListener.onRotationUpdate(rotationVector);
     }
 
+    /**
+     * Method used to notify when a sensor changes its accuracy
+     * @param sensor
+     * @param accuracy
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 

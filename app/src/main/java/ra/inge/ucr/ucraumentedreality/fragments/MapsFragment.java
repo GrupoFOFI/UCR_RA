@@ -6,7 +6,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -36,37 +35,50 @@ import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
-
+/**
+ * <h1> ViewPager Adapter </h1>
+ * <p>
+ * Adapter for the fragments on the Application
+ * </p>
+ *
+ * @author Fofis
+ * @version 1.0
+ * @since 1.0
+ */
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener, LocationListener {
 
     private MapView mMapView;
     private GoogleMap googleMap;
     private Marker[] markers;
-    private LocationManager locationManager;
     private static final int CLOSEST_AMOUNT = 3;
 
     private View rootView;
     private Utils utils;
     private  Edificio[] cercanos;
 
-    /**
-     * Provides the entry point to Google Play services.
-     */
     protected GoogleApiClient mGoogleApiClient;
-    /**
-     * Represents a geographical location.
-     */
     protected Location mLastLocation;
     private LocationRequest mLocationRequest;
     private static final long POLLING_FREQ = 200;
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
 
+    /**
+     * Empty constructor for the class
+     */
     public MapsFragment() {
     }
 
 
+    /**
+     * Method that prepares the components that google maps need to work
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_maps, container, false);
@@ -79,6 +91,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
+    /**
+     * Method that sets up the map
+     *
+     * @param savedInstanceState
+     */
     void setupMap(Bundle savedInstanceState) {
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -94,6 +111,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
+    /**
+     * Method notified when the map is ready
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -111,12 +133,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
+    /**
+     * On Start Class method
+     */
     @Override
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
 
+    /**
+     * On Stop Class method
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -125,28 +153,37 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-    /**
-     * Fragment methods
-     */
 
+    /**
+     * On Resume Class method
+     */
     @Override
     public void onResume() {
         super.onResume();
         mMapView.onResume();
     }
 
+    /**
+     * On Pause Class method
+     */
     @Override
     public void onPause() {
         super.onPause();
         mMapView.onPause();
     }
 
+    /**
+     * On Destroy Class method
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
     }
 
+    /**
+     * On Low Memory Class method
+     */
     @Override
     public void onLowMemory() {
         super.onLowMemory();
@@ -155,11 +192,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
 
     /**
-     * Location Methods
-     */
-
-    /**
-     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+     *  Method that builds a GoogleApiClient and uses the addApi() method to request the LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
         mLocationRequest = LocationRequest.create();
@@ -194,19 +227,33 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
-
+    /**
+     * Method called when tha connection is suspended
+     *
+     * @param i
+     */
     @Override
     public void onConnectionSuspended(int i) {
         Log.i("TAG", "Connection suspended");
 //        mGoogleApiClient.connect();
     }
 
+    /**
+     * Method called when tha connection failed
+     *
+     * @param connectionResult
+     */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         String err = "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode();
         Log.e("ERROR", err);
     }
 
+    /**
+     * Method that updates the custom markers when the location changes
+     *
+     * @param location
+     */
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
@@ -222,31 +269,62 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
+    /**
+     * Method called when the user taps the marker info
+     * @param marker
+     */
     @Override
     public void onInfoWindowClick(Marker marker) {
 
     }
 
+    /**
+     * Method that handles when a user taps a marker
+     *
+     * @param marker
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
 
+    /**
+     * Method that handles when a user drags a marker
+     * @param marker
+     */
     @Override
     public void onMarkerDragStart(Marker marker) {
 
     }
 
+    /**
+     * Method that handles when a user drags a marker
+     *
+     *
+     * @param marker
+     */
     @Override
     public void onMarkerDrag(Marker marker) {
 
     }
 
+    /**
+     * Method that handles when a user ends dragging a marker
+     *
+     * @param marker
+     */
     @Override
     public void onMarkerDragEnd(Marker marker) {
 
     }
 
+    /**
+     * Method that retrieves the closest buildings so the ClosesBuildingFragment can use them
+     *  {@link CloseBuildingsFragment};
+     .}
+     * @return
+     */
     public Edificio[] getCercanos() {
         return cercanos;
     }

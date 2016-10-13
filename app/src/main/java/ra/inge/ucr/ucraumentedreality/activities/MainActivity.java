@@ -1,6 +1,5 @@
 package ra.inge.ucr.ucraumentedreality.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -27,8 +26,8 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
 /**
  * <h1> Main Activity </h1>
  * <p>
- * <p>
  * Main Class for the Application
+ * </p>
  *
  * @author Fofis
  * @version 1.0
@@ -39,6 +38,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private Utils utils;
 
+    /**
+     * Method that prepares all the components displayed this activity
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +52,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupToolbar();
         setupViewPager();
         setupCollapsingToolbar();
-    //    setupDrawer();
+        //    setupDrawer();
         setupStatusBar();
         utils.requestLocationPermission();
 
     }
 
+    /**
+     * Method that sets up the navigation drawer feature
+     */
     private void setupDrawer() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -66,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
+    /**
+     * Method that sets up the collapsing toolbar
+     */
     private void setupCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(
                 R.id.collapse_toolbar);
@@ -75,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    /**
+     * Method that sets up the view pager
+     */
     private void setupViewPager() {
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -84,34 +96,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    /**
+     * Method that sets up the toolbar
+     */
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
-    //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    /**
+     *
+     * @param viewPager
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         MapsFragment mapsFragment = new MapsFragment();
-         adapter.addFrag(mapsFragment, "Mapas");
+        adapter.addFrag(mapsFragment, "Mapas");
         adapter.addFrag(new WikitudeFragment(), "Wikitude");
         adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
 
         viewPager.setAdapter(adapter);
     }
 
-    private  void setupStatusBar () {
+    /**
+     *
+     */
+    private void setupStatusBar() {
 
         Window window = this.getWindow();
-       window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(this.getResources().getColor(R.color.black));
     }
 
 
+    /**
+     *
+     */
     @Override
-
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -121,12 +145,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     *
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-     //   getMenuInflater().inflate(R.menu.main, menu);
+        //   getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -138,27 +172,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /**
+     *
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        Intent intent;
+//        Intent intent;
 
         switch (item.getItemId()) {
 
             case R.id.nav_camera:
-                intent = new Intent(this, MapsActivity.class);
-                startActivity(intent);
                 break;
 
             case R.id.nav_gallery:
-                intent = new Intent(this, WikitudeActivity.class);
-                startActivity(intent);
                 break;
 
             case R.id.nav_slideshow:
-                intent = new Intent(this, PoisActivity.class);
-                startActivity(intent);
 
             case R.id.nav_manage:
                 break;

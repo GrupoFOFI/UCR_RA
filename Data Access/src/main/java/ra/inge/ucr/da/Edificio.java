@@ -1,9 +1,11 @@
 package ra.inge.ucr.da;
 
 /**
- * Created by Ricardo on 10/6/2016.
+ * <h1>Edificio</h1>
+ * <p>
+ *     Class that contains all the attributes needed to map a Building
+ * </p>
  */
-
 public class Edificio {
     private int id;
     private double lat;

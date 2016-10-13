@@ -33,18 +33,32 @@ public class CloseBuildingsFragment extends Fragment {
     private CustomAdapter mAdapter;
     private MapsFragment mapsFragment;
 
+    /**
+     * Empty constructor for the fragment
+     */
     public CloseBuildingsFragment() {
     }
 
+    /**
+     * Constructor that receives the mapsFragmentReference that handles the closest buildings
+     * @param mapsFragment
+     */
     @SuppressLint("ValidFragment")
     public CloseBuildingsFragment(MapsFragment mapsFragment) {
         this.mapsFragment = mapsFragment;
     }
 
 
+    /**
+     * Method that prepares all the components for the fragment
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_close_buildings, container, false);
 
@@ -55,9 +69,10 @@ public class CloseBuildingsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        mAdapter = new CustomAdapter(mapsFragment.getCercanos());
-        recyclerView.setAdapter(mAdapter);
-
+        if (mapsFragment.getCercanos() != null) {
+            mAdapter = new CustomAdapter(mapsFragment.getCercanos());
+            recyclerView.setAdapter(mAdapter);
+        }
         return view;
     }
 }

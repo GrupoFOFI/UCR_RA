@@ -20,26 +20,41 @@ import android.widget.Toast;
  */
 public class Utils {
 
+    /**
+     * The activity that calls the helpers
+     */
     private Activity activity;
+    /**
+     * The context of the app
+     */
     private Context context;
 
+    /**
+     *
+     * @param activity
+     * @param context
+     */
     public Utils(Activity activity, Context context) {
         this.activity = activity;
         this.context = context;
     }
     /**
-     * Toast logs
+     * Generic method to create toast logs
      */
     public  void toastLog(String str) {
         Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
     }
 
     /**
-     * Snack bar logs
+     * Generic method to create snack bar logs
      */
     public void snack_log(View view, String log) {
         Snackbar.make(view, log, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
+
+    /**
+     *  Method used to request for the location permision
+     */
     public void requestLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -55,9 +70,5 @@ public class Utils {
             }
         }
     }
-
-
-
-
 
 }
