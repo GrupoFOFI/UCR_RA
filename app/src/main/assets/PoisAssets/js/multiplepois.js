@@ -42,7 +42,7 @@ var World = {
 
                 {"id":15, "name":"Escuela de Computación e Informática", "latitude":9.937967, "longitude":-84.052035,"altitude": 0, "description":"La Escuela de Ciencias de la Computación e Infomática de la Universidad de Costa Rica se fundó en 1981, como resultado de la fusión de dos programas distintos pero relacionados, el de Bachillerato en Informática y el de Bachillerato y Licenciatura en Computación."},
 
-                {"id":16, "name":"Facultad de Odontología", "latitude":9.938461, "longitude":-84.051817, "altitude":0, "description":"El 16 de marzo de 1942 se inauguró la Facultad de Cirugía Dental de la Universidad de Costa Rica, tomando como eje de su quehacer:  la promoción y la protección de la salud y prevención de las enfermedades buco-dento-maxilofaciales."},
+                {"id":16, "name":"Facultad de Odontología", "latitude":9.938425, "longitude": -84.051431, "altitude":0, "description":"El 16 de marzo de 1942 se inauguró la Facultad de Cirugía Dental de la Universidad de Costa Rica, tomando como eje de su quehacer:  la promoción y la protección de la salud y prevención de las enfermedades buco-dento-maxilofaciales."},
 
                 {"id":17, "name":"Facultad de Medicina", "latitude":9.938783, "longitude":-84.050774, "altitude":0, "description":"Facultad de Medicina"},
 
