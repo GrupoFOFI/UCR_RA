@@ -61,7 +61,7 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
      * @return
      */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_wikitude, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_wikitude, container, false);
 
         utils = new Utils(getActivity(), getContext());
 
@@ -92,6 +92,7 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
                 Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
                 architectView.callJavascript("World.loadPoisFromJsonData(" + cercanos[0].getId() + "," + cercanos[1].getId() + "," + cercanos[2].getId() + ")");
                 // + cercanos[0].getId() + "," + cercanos[1].getId() + "," + cercanos[2].getId() +
+                architectView.callJavascript("World.worldLoaded()");
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -151,6 +152,8 @@ public class WikitudeFragment extends Fragment implements OnLookAtBuildingListen
             requestPermissions(perms, permsRequestCode);
 
             this.architectView.load("file:///android_asset/PoisAssets/index.html");
+            this.architectView.callJavascript("World.init()");
+            this.architectView.callJavascript("World.worldLoaded()");
         } catch (Exception e) {
         }
     }
