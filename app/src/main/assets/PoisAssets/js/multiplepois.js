@@ -212,7 +212,7 @@ var World = {
                 			}
                 		});
 
-                		var pageThree = new AR.Trackable2DObject(this.tracker, "derecho", {
+                		var pageThree = new AR.Trackable2DObject(this.tracker, "JoseJoaquin_Odonto_2", {
                                         			drawables: {
                                         				cam: overlayOne
                                         			}
