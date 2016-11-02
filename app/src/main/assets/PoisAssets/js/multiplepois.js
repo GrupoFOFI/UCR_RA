@@ -5,13 +5,10 @@ var World = {
 	markerDrawable_selected: null,
 	markerDrawable_directionIndicator: null,
 
-	// list of AR.GeoObjects that are currently shown in the scene / World
 	markerList: [],
 
-	// The last selected marker
 	currentMarker: null,
 
-	//Informacion de Edificios
 	Edificios: [{"id":1, "name":"Facultad de Derecho", "latitude":9.936463, "longitude":-84.053772, "altitude":100, "description":"Facultad de Derecho"},
 
                {"id":2, "name":"Oficina de Becas y Atención Socioeconómica", "latitude":9.935435, "longitude":-84.053959, "altitude":100, "description":"Oficina de Becas y Atención Socioeconómica"},
@@ -177,81 +174,135 @@ var World = {
     	},
 
         init: function initFn() {
-                		this.createOverlays();
-                	},
+        		this.createOverlays();
+        	},
 
-                	createOverlays: function createOverlaysFn() {
-                		/*
-                			First an AR.ClientTracker needs to be created in order to start the recognition engine. It is initialized with a URL specific to the target collection. Optional parameters are passed as object in the last argument. In this case a callback function for the onLoaded trigger is set. Once the tracker is fully loaded the function worldLoaded() is called.
-                			Important: If you replace the tracker file with your own, make sure to change the target name accordingly.
-                			Use a specific target name to respond only to a certain target or use a wildcard to respond to any or a certain group of targets.
-                			Adding multiple targets to a target collection is straightforward. Simply follow our Target Management Tool documentation. Each target in the target collection is identified by its target name. By using this target name, it is possible to create an AR.Trackable2DObject for every target in the target collection.
-                		*/
-                		this.tracker = new AR.ClientTracker("assets/tracker.wtc", {
-                			onLoaded: this.worldLoaded
-                		});
+        	createOverlays: function createOverlaysFn() {
 
-                		/*
-                			The next step is to create the augmentation. In this example an image resource is created and passed to the AR.ImageDrawable. A drawable is a visual component that can be connected to an IR target (AR.Trackable2DObject) or a geolocated object (AR.GeoObject). The AR.ImageDrawable is initialized by the image and its size. Optional parameters allow for position it relative to the recognized target.
-                		*/
+        	    var htmlDerecho = "<div style='background-color:black;color:white;padding:10px;'><h3>Facultad de Derecho</h2><p>Es la bienvenida en la entrada de la UCR. Sus orígenes se remontan a la Escuela de Derecho de la Universidad de Santo Tomás por lo que se le considera, junto con la Facultad de Farmacia de la misma universidad, como la facultad más antigua del país. Por sus aulas han pasado catorce ex presidentes de Costa Rica.</p></div>";
 
-                		// Create overlay for page one
-                		var imgOne = new AR.ImageResource("assets/imageOne.png");
-                		var overlayOne = new AR.ImageDrawable(imgOne, 1, {
-                			offsetX: -0.15,
-                			offsetY: 0
-                		});
+        		this.tracker = new AR.ClientTracker("assets/tracker.wtc", {
+        			onLoaded: this.worldLoaded
+        		});
 
-                		/*
-                			This combines everything by creating an AR.Trackable2DObject with the previously created tracker, the name of the image target as defined in the target collection and the drawable that should augment the recognized image.
-                			Note that this time a specific target name is used to create a specific augmentation for that exact target.
-                		*/
-                		var pageOne = new AR.Trackable2DObject(this.tracker, "Facultad de Medicina Universidad de Costa Rica", {
-                			drawables: {
-                				cam: overlayOne
-                			}
-                		});
 
-                		var pageThree = new AR.Trackable2DObject(this.tracker, "derecho", {
-                                        			drawables: {
-                                        				cam: overlayOne
-                                        			}
-                                        		});
+        		var videoDerecho = new AR.VideoDrawable("assets/video-comedor.mp4", 0.4, {
+                	offsetY: -0.3,
+                });
 
-                		/*
-                			Similar to the first part, the image resource and the AR.ImageDrawable for the second overlay are created.
-                		*/
-                		var imgTwo = new AR.ImageResource("assets/imageTwo.png");
-                		var overlayTwo = new AR.ImageDrawable(imgTwo, 0.5, {
-                			offsetX: 0.12,
-                			offsetY: -0.01
-                		});
+                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
+                     drawables: {
+                     cam: [videoDerecho]
+                     },
+                     onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
+                        videoDerecho.play(-1);
+                        document.getElementById("html").innerHTML = htmlDerecho;
+                     },
+                        onExitFieldOfVision: function onExitFieldOfVisionFn() {
+                        videoDerecho.pause();
+                        document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
+                     }
+                });
 
-                		/*
-                			The AR.Trackable2DObject for the second page uses the same tracker but with a different target name and the second overlay.
-                		*/
-                		var pageTwo = new AR.Trackable2DObject(this.tracker, "infoi", {
-                			drawables: {
-                				cam: overlayTwo
-                			}
-                		});
-                	},
 
-                	worldLoaded: function worldLoadedFn() {
-                		var cssDivInstructions = " style='display: table-cell;vertical-align: middle; text-align: right; width: 50%; padding-right: 15px;'";
-                		var cssDivSurfer = " style='display: table-cell;vertical-align: middle; text-align: left; padding-right: 15px; width: 38px'";
-                		var cssDivBiker = " style='display: table-cell;vertical-align: middle; text-align: left; padding-right: 15px;'";
-                		document.getElementById('loadingMessage').innerHTML =
-                			"<div" + cssDivInstructions + ">Scan Target &#35;1 (surfer) or &#35;2 (biker):</div>" +
-                			"<div" + cssDivSurfer + "><img src='assets/surfer.png'></img></div>" +
-                			"<div" + cssDivBiker + "><img src='assets/bike.png'></img></div>";
+               /*var videoDerecho = new AR.VideoDrawable("assets/video.mp4", 0.4, {
+                     offsetY: -0.3,
+                });
 
-                		// Remove Scan target message after 10 sec.
-                		setTimeout(function() {
-                			var e = document.getElementById('loadingMessage');
-                			e.parentElement.removeChild(e);
-                		}, 10000);
-                	}
+                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
+                     drawables: {
+                         cam: videoDerecho
+                     },
+                    onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
+                         videoDerecho.play(-1);
+                         document.getElementById("html").innerHTML = htmlDerecho;
+                    },
+                    onExitFieldOfVision: function onExitFieldOfVisionFn() {
+                         videoDerecho.pause();
+                         document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
+                    }
+                });
+
+
+                var videoDerecho = new AR.VideoDrawable("assets/video.mp4", 0.4, {
+                    offsetY: -0.3,
+                });
+
+                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
+                    drawables: {
+                         cam: videoDerecho
+                    },
+                    onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
+                         videoDerecho.play(-1);
+                         document.getElementById("html").innerHTML = htmlDerecho;
+                    },
+                    onExitFieldOfVision: function onExitFieldOfVisionFn() {
+                         videoDerecho.pause();
+                         document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
+                    }
+                });
+
+
+                var videoDerecho = new AR.VideoDrawable("assets/video.mp4", 0.4, {
+                     offsetY: -0.3,
+                });
+
+                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
+                     drawables: {
+                          cam: videoDerecho
+                     },
+                     onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
+                          videoDerecho.play(-1);
+                          document.getElementById("html").innerHTML = htmlDerecho;
+                     },
+                     onExitFieldOfVision: function onExitFieldOfVisionFn() {
+                          videoDerecho.pause();
+                          document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
+                     }
+                });
+
+
+                var videoDerecho = new AR.VideoDrawable("assets/video.mp4", 0.4, {
+                     offsetY: -0.3,
+                });
+
+                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
+                     drawables: {
+                          cam: videoDerecho
+                     },
+                     onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
+                          videoDerecho.play(-1);
+                          document.getElementById("html").innerHTML = htmlDerecho;
+                     },
+                     onExitFieldOfVision: function onExitFieldOfVisionFn() {
+                          videoDerecho.pause();
+                          document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
+                     }
+                });
+
+
+                var videoDerecho = new AR.VideoDrawable("assets/video-comedor.mp4", 0.4, {
+                     offsetY: -0.3,
+                });
+
+                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
+                     drawables: {
+                           cam: videoDerecho
+                     },
+                     onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
+                           videoDerecho.play(-1);
+                           document.getElementById("html").innerHTML = htmlDerecho;
+                     },
+                     onExitFieldOfVision: function onExitFieldOfVisionFn() {
+                           videoDerecho.pause();
+                           document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
+                     }
+                });*/
+
+        	},
+
+        	worldLoaded: function worldLoadedFn() {
+        	}
 };
 
 /* forward locationChanges to custom function */
