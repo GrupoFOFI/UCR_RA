@@ -278,25 +278,6 @@ var World = {
                           videoDerecho.pause();
                           document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
                      }
-                });
-
-
-                var videoDerecho = new AR.VideoDrawable("assets/video-comedor.mp4", 0.4, {
-                     offsetY: -0.3,
-                });
-
-                var pageOne = new AR.Trackable2DObject(this.tracker, "ECCI", {
-                     drawables: {
-                           cam: videoDerecho
-                     },
-                     onEnterFieldOfVision: function onEnterFieldOfVisionFn() {
-                           videoDerecho.play(-1);
-                           document.getElementById("html").innerHTML = htmlDerecho;
-                     },
-                     onExitFieldOfVision: function onExitFieldOfVisionFn() {
-                           videoDerecho.pause();
-                           document.getElementById("html").innerHTML = '<div id="html" class="info"></div>';
-                     }
                 });*/
 
         	},
