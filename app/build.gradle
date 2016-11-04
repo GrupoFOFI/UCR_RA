@@ -1,8 +1,12 @@
 apply plugin: 'com.android.application'
 
+def VUFORIA_SDK_DIR = '../vuforia-sdk-android-6-0-117'
+def NATIVE_LIB_DIR = 'build/lib'
+def JAR_DIR = 'build/java/vuforia'
+
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "ra.inge.ucr.ucraumentedreality"
         minSdkVersion 15
