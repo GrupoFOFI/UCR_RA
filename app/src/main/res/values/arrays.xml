@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="targets">
+        <item>Escultura “Antárticos”</item>
+        <item>Escultura "Osos Amorosos"</item>
+        <item>Escuela de Física y Matemáticas</item>
+        <item>Leda y el Cisne</item>
+        <item>Placa de Plaza 24 de Abril</item>
+        <item>Biblioteca Carlos Monge</item>
+        <item>Comedor Universitario</item>
+        <item>Busto de José Joaquín Gutiérrez</item>
+        <item>Facultad de Derecho</item>
+        <item>Centro de Informática</item>
+        <item>Escuela de Estudios Generales</item>
+        <item>Licenciado Fernando Bauza</item>
+        <item>Centro de Informática</item>
+    </string-array>
+
+    <string-array name="descriptions">
+        <item>Escultura hecha en acero doblado y pintado. </item>
+        <item>Escultura  hecha en mármol blanco, en 1992, por el escultor José Sancho.</item>
+        <item>Esta Facultad trajo consigo la apertura del Departamento de Física y Matemática</item>
+        <item>Monumento formado por granito de escazú, esculpido por el reconocido José Sancho en 1980</item>
+        <item>Placa conmemorativa de  la gesta de ALCOA en   la UCR y en ella, escrita en mármol.</item>
+        <item>Biblioteca principal de la Universidad de Costa Rica. Lleva este nombre en honor de su ex-rector, Carlos Monge Alfaro.</item>
+        <item>Lugar amplio y abierto para que los estudiantes puedan realizar sus trabajos y probar alimentos económicos de buena calidad. </item>
+        <item>Decano de la Facultad de Cirugía Dental de la UCR y primer odontólogo de América Latina.</item>
+        <item>Sus orígenes se remontan a la Escuela de Derecho de la Universidad de Santo Tomás por lo que se le considera como la facultad más antigua del país.</item>
+        <item>Uno de los edificios más relevantes, pues toda la universidad depende del mismo tanto para gestiones de conexión con la Red como asuntos de TI.</item>
+        <item>Cátedra universitaria que reúne gran cantidad de estudiantes con el objetivo de difundir valores y principios.</item>
+        <item>Decano de la Facultad de Derecho en 1939 y rector de la Universidad de Costa Rica por primera vez en 1946.</item>
+        <item>Uno de los edificios más relevantes, pues toda la universidad depende del mismo tanto para gestiones de conexión con la Red como asuntos de TI.</item>
+    </string-array>
+
+</resources>

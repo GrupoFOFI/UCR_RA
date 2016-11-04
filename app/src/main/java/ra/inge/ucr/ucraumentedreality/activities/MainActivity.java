@@ -16,10 +16,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
-import ra.inge.ucr.ucraumentedreality.fragments.WikitudeFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.VuforiaFragment;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         MapsFragment mapsFragment = new MapsFragment();
         adapter.addFrag(mapsFragment, "Mapas");
-        adapter.addFrag(new WikitudeFragment(), "Wikitude");
+        adapter.addFrag(new VideoPlayback(), "Vuforia");
         adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
 
         viewPager.setAdapter(adapter);

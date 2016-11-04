@@ -1,6 +1,12 @@
+com.enrico.businesslogic
+com.enrico.dataaccess
 ra.inge.ucr.da
 ra.inge.ucr.location
 ra.inge.ucr.location.listener
+ra.inge.ucr.ucraumentedreality
+ra.inge.ucr.ucraumentedreality.Vuforia
+ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback
+ra.inge.ucr.ucraumentedreality.Vuforia.utils
 ra.inge.ucr.ucraumentedreality.activities
 ra.inge.ucr.ucraumentedreality.adapters
 ra.inge.ucr.ucraumentedreality.fragments
