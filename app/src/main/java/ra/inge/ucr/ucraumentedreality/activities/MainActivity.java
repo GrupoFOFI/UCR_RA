@@ -2,10 +2,10 @@ package ra.inge.ucr.ucraumentedreality.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +20,6 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Vi
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
-import ra.inge.ucr.ucraumentedreality.fragments.VuforiaFragment;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
@@ -183,26 +182,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
 
 //        Intent intent;
-
-        switch (item.getItemId()) {
-
-            case R.id.nav_camera:
-                break;
-
-            case R.id.nav_gallery:
-                break;
-
-            case R.id.nav_slideshow:
-
-            case R.id.nav_manage:
-                break;
-
-            case R.id.nav_share:
-                break;
-
-            case R.id.nav_send:
-                break;
-        }
+//
+//        switch (item.getItemId()) {
+//
+//            case R.id.nav_camera:
+//                break;
+//
+//            case R.id.nav_gallery:
+//                break;
+//
+//            case R.id.nav_slideshow:
+//
+//            case R.id.nav_manage:
+//                break;
+//
+//            case R.id.nav_share:
+//                break;
+//
+//            case R.id.nav_send:
+//                break;
+//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

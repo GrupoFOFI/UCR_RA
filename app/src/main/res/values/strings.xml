@@ -40,4 +40,17 @@
     <string name="menu_camera">CAMERA</string>
     <string name="menu_camera_front">Front</string>
     <string name="menu_camera_back">Rear</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+
+    <!--Menu-->
+    <string name="menu_home">Inicio</string>
+    <string name="menu_maps">Ver Mapa</string>
+    <string name="menu_ra">Reconocimiento</string>
+    <string name="menu_share"></string>
+    <string name="menu_accessibility">Accesibilidad</string>
+    <string name="menu_settings">Ajustes</string>
+
+
+
 </resources>
