@@ -24,9 +24,7 @@ import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
-/**
- * Created by enrico on 11/3/16.
- */
+
 
 public class VuforiaFragment extends Fragment implements OnLookAtBuildingListener {
     private static final int PERMISSION_REQUEST_CAMERA = 999;
@@ -47,10 +45,11 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
      * @return
      */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_wikitude, container, false);
+        View rootView = inflater.inflate(R.layout.vuforia_ui, container, false);
 
         utils = new Utils(getActivity(), getContext());
 
+        addVideoPlayBack();
         // request camera permission
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.CAMERA);
@@ -85,6 +84,14 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         return rootView;
+    }
+
+
+
+    void addVideoPlayBack () {
+
+
+
     }
 
 

@@ -144,7 +144,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
         View rootView = inflater.inflate(R.layout.vuforia_ui, container, false);
 
 
-        startLoadingAnimation();
+       // startLoadingAnimation();
 
         vuforiaAppSession
                 .initAR(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
