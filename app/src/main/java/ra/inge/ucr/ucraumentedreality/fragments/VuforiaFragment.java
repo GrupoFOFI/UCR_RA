@@ -9,6 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,11 +24,12 @@ import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
-
 public class VuforiaFragment extends Fragment implements OnLookAtBuildingListener {
+
     private static final int PERMISSION_REQUEST_CAMERA = 999;
     private SensorHelper snsrhlpr;
 
@@ -36,8 +39,12 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
 
     LocationHelper locationHelper = new LocationHelper();
 
+
+    View rootView;
+
+
     /**
-     *  Method that prepares the components the fragment needs
+     * Method that prepares the components the fragment needs
      *
      * @param inflater
      * @param container
@@ -45,11 +52,12 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
      * @return
      */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.vuforia_ui, container, false);
 
+        rootView = inflater.inflate(R.layout.content_vuforia, container, false);
         utils = new Utils(getActivity(), getContext());
 
         addVideoPlayBack();
+
         // request camera permission
         int permissionCheck = ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.CAMERA);
@@ -87,10 +95,14 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
     }
 
 
+    void addVideoPlayBack() {
 
-    void addVideoPlayBack () {
+        VideoPlayback videoPlayback = new VideoPlayback();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-
+//        fragmentTransaction.replace(R.id.content_vuforia_fragment, videoPlayback);
+//        fragmentTransaction.commit();
 
     }
 
@@ -165,6 +177,7 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
 
     /**
      * Method used to create de UX when the user stops looking at a building
+     *
      * @param edificio
      */
     @Override
@@ -172,4 +185,6 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
         utils.snack_log(getActivity().getWindow().getDecorView(), "Ya no estoy viendo el edificio " + edificio.getNmbr());
         Log.i("VUFORIA_FRAGMENT", "Ya no estoy viendo el edificio " + edificio.getNmbr());
     }
+
+
 }

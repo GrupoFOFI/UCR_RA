@@ -143,7 +143,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
         // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
-        mSampleAppRenderer = new SampleAppRenderer(this, mActivity.getActivity(), Device.MODE.MODE_AR, false, 10f, 5000f);
+        mSampleAppRenderer = new SampleAppRenderer(this, mActivity, Device.MODE.MODE_AR, false, 10f, 5000f);
 
         titleArray = mActivity.getResources().getStringArray(R.array.targets);
         descriptionArray = mActivity.getResources().getStringArray(R.array.descriptions);
@@ -570,7 +570,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             final String mTitle = titleArray [currentTarget];
             final String mDescription = descriptionArray [currentTarget];
             // Método para updeitear los textfields
-            mActivity.getActivity().runOnUiThread(new Runnable() {
+            mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mActivity.updateTextFields(mTitle, mDescription);
@@ -867,7 +867,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         // Vec3F lineEnd = new Vec3F();
 
         DisplayMetrics metrics = new DisplayMetrics();
-        mActivity.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        mActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
         intersection = SampleMath.getPointToPlaneIntersection(SampleMath
                         .Matrix44FInverse(tappingProjectionMatrix),
                 modelViewMatrix[target], metrics.widthPixels, metrics.heightPixels,

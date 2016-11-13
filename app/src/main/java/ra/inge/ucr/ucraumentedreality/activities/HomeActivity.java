@@ -1,45 +1,46 @@
 package ra.inge.ucr.ucraumentedreality.activities;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
+import ra.inge.ucr.ucraumentedreality.adapters.HomeFragment;
+import ra.inge.ucr.ucraumentedreality.adapters.SettingsActivity;
+import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.VuforiaFragment;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private Class currentFragmentType;
+    private String[] drawerTitles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
-        setupDrawer();
         setupToolbar();
-        setupStatusBar();
+        setupDrawer();
+        drawerTitles = getResources().getStringArray(R.array.drawer_titles);
+        setFragment(getResources().getString(R.string.app_name), new HomeFragment());
     }
 
     /**
@@ -48,8 +49,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("UCR Realidad Aumentada");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
     }
 
 
@@ -57,7 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      * Method that sets up the navigation drawer feature
      */
     private void setupDrawer() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -85,7 +88,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -94,18 +96,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     *
-     * @param menu
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //   getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    /**
-     *
      * @param item
      * @return
      */
@@ -121,7 +111,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     *
      * @param item
      * @return
      */
@@ -129,37 +118,116 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-//        Intent intent;
-
+        Fragment fragment = null;
+        boolean isFragment = true;
         switch (item.getItemId()) {
 
+            case R.id.nav_home:
+                fragment = new HomeFragment();
+
+                break;
+
             case R.id.nav_camera:
+//                fragment = new VuforiaFragment();
+                isFragment = false;
+                startActivity(new Intent(getApplicationContext(), VideoPlayback.class));
                 break;
 
-            case R.id.nav_gallery:
+            case R.id.nav_maps:
+                fragment = new MapsFragment();
                 break;
 
-            case R.id.nav_slideshow:
+//            case R.id.nav_takeme:
+//                fragment = new MapsFragment();
+//                break;
 
-            case R.id.nav_manage:
+            case R.id.nav_accessibility:
+                isFragment = false;
+                accessibilityDialog();
                 break;
 
             case R.id.nav_share:
+                isFragment = false;
+                shareApp();
                 break;
 
-            case R.id.nav_send:
+            case R.id.nav_settings:
+                isFragment = false;
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                break;
+
+            default:
+                isFragment = false;
                 break;
         }
 
+        if (isFragment) {
+            Log.i("Tag", "is fragment");
+            setFragment("Reste", fragment);
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    /**
+     * Method that creates the android's native share function
+     */
+    void shareApp() {
+
+    }
+
+    void accessibilityDialog() {
+        showDialog("Aviso", "Se cambiará la modalidad a accesibilidad");
+
+    }
+
+    /**
+     * Generic method to show errors in case the user enters invalid parameters
+     *
+     * @param title
+     * @param message
+     */
+    private void showDialog(String title, String message) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+    }
 
 
+    /**
+     * Method used to setup the fragment memory
+     *
+     * @param title
+     * @param fragment
+     */
+    private void setFragment(String title, Fragment fragment) {
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        fragmentTransaction.replace(R.id.home_fragment_container, fragment);
+        if (currentFragmentType == HomeFragment.class)
+            fragmentTransaction.addToBackStack("HomeFragment");
+        currentFragmentType = fragment.getClass();
+        fragmentTransaction.commit();
+    }
 
 
 }

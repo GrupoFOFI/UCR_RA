@@ -18,14 +18,11 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -47,19 +44,18 @@ import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationControl;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationException;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationSession;
+import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayerHelper.MEDIA_STATE;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.LoadingDialogHandler;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.SampleApplicationGLView;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.Texture;
 
-import static android.app.Activity.RESULT_OK;
-
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends Fragment implements SampleApplicationControl {
+public class VideoPlayback extends Activity implements SampleApplicationControl {
+
     private static final String LOGTAG = "VideoPlayback";
 
     SampleApplicationSession vuforiaAppSession;
-
     Activity mActivity;
 
     // Helpers to detect events such as double tapping:
@@ -105,9 +101,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
 
     private boolean mPlayFullscreenVideo = false;
 
-    private LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(
-            getActivity());
-
+    private LoadingDialogHandler loadingDialogHandler = new LoadingDialogHandler(this);
 
     // Alert Dialog used to display SDK errors
     private AlertDialog mErrorDialog;
@@ -121,33 +115,25 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
     private TextView titleTextView;
     private TextView descriptionTextView;
 
-
     // Called when the activity first starts or the user navigates back
     // to an activity.
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         Log.d(LOGTAG, "onCreate");
         super.onCreate(savedInstanceState);
 
-        //setContentView(R.layout.vuforia_ui);
+        setContentView(R.layout.vuforia_ui);
 
 //        mUILayout = (RelativeLayout) findViewById(R.id.rel_layout);
 //        Log.i("YUPI", mUILayout.toString());
 
         vuforiaAppSession = new SampleApplicationSession(this);
 
-        mActivity = getActivity();
+        mActivity = this;
 
-
-    }
-
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.vuforia_ui, container, false);
-
-
-       // startLoadingAnimation();
+        startLoadingAnimation();
 
         vuforiaAppSession
-                .initAR(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         // Load any sample specific textures:
         mTextures = new Vector<Texture>();
@@ -156,7 +142,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
         // Create the gesture detector that will handle the single and
         // double taps:
         mSimpleListener = new SimpleOnGestureListener();
-        mGestureDetector = new GestureDetector(getActivity().getApplicationContext(),
+        mGestureDetector = new GestureDetector(getApplicationContext(),
                 mSimpleListener);
 
         mVideoPlayerHelper = new VideoPlayerHelper[NUM_TARGETS];
@@ -169,7 +155,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
         for (int i = 0; i < NUM_TARGETS; i++) {
             mVideoPlayerHelper[i] = new VideoPlayerHelper();
             mVideoPlayerHelper[i].init();
-            mVideoPlayerHelper[i].setActivity(getActivity());
+            mVideoPlayerHelper[i].setActivity(this);
         }
 
         mMovieName[0] = "VideoPlayback/antarticos.mp4";
@@ -219,21 +205,21 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
                         if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
                             // We can play only if the movie was paused, ready
                             // or stopped
-                            if ((mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.PAUSED)
-                                    || (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.READY)
-                                    || (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.STOPPED)
-                                    || (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.REACHED_END)) {
+                            if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
+                                    || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
+                                    || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
+                                    || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
                                 // Pause all other media
                                 pauseAll(i);
 
                                 // If it has reached the end then rewind
-                                if ((mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.REACHED_END))
+                                if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
                                     mSeekPosition[i] = 0;
 
                                 mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
                                         mSeekPosition[i]);
                                 mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
-                            } else if (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.PLAYING) {
+                            } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
                                 // If it is playing then we pause it
                                 mVideoPlayerHelper[i].pause();
                             }
@@ -258,25 +244,25 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
                 return isSingleTapHandled;
             }
         });
-
-        return rootView;
     }
+
 
 
     // We want to load specific textures from the APK, which we will later
     // use for rendering.
     private void loadTextures() {
         mTextures.add(Texture.loadTextureFromApk(
-                "VideoPlayback/VuforiaSizzleReel_1.png", getActivity().getAssets()));
+                "VideoPlayback/VuforiaSizzleReel_1.png", getAssets()));
         mTextures.add(Texture.loadTextureFromApk(
-                "VideoPlayback/VuforiaSizzleReel_2.png", getActivity().getAssets()));
+                "VideoPlayback/VuforiaSizzleReel_2.png", getAssets()));
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/play.png",
-                getActivity().getAssets()));
+                getAssets()));
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/busy.png",
-                getActivity().getAssets()));
+                getAssets()));
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png",
-                getActivity().getAssets()));
+                getAssets()));
     }
+
 
 
     // Called when the activity will start interacting with the user.
@@ -435,7 +421,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
 
 
     private void startLoadingAnimation() {
-        mUILayout = (RelativeLayout) View.inflate(getActivity(), R.layout.camera_overlay,
+        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
                 null);
 
         mUILayout.setVisibility(View.VISIBLE);
@@ -450,9 +436,10 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
                 .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
 
         // Adds the inflated layout to the view
-        getActivity().addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
+        addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
     }
+
 
 
     // Initializes AR application components.
@@ -462,7 +449,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
         int stencilSize = 0;
         boolean translucent = true;//Vuforia.requiresAlpha();
 
-        mGlView = new SampleApplicationGLView(getActivity());
+        mGlView = new SampleApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
         mRenderer = new VideoPlaybackRenderer(this, vuforiaAppSession);
@@ -486,7 +473,6 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
         }
 
     }
-
 
     // We do not handle the touch event here, we just forward it to the
     // gesture detector
@@ -641,17 +627,16 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
 
     private void addMainView() {
 
-        linearLayout = (LinearLayout) View.inflate(getActivity(), R.layout.vuforia_ui,
+        linearLayout = (LinearLayout) View.inflate(this, R.layout.vuforia_ui,
                 null);
 
         linearLayout.setVisibility(View.VISIBLE);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
 
         // Adds the inflated layout to the view
-        getActivity().addContentView(linearLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
+        addContentView(linearLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT));
     }
-
 
     @Override
     public void onInitARDone(SampleApplicationException exception) {
@@ -667,7 +652,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
             // BEFORE the camera is started and video
             // background is configured.
 
-            northLayout = (LinearLayout) getView().findViewById(R.id.test_lay);
+            northLayout = (LinearLayout) findViewById(R.id.test_lay);
             Log.i("yupi", northLayout.toString());
 
             northLayout.addView(mGlView, new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -675,16 +660,16 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
 
             northLayout.setBackgroundColor(Color.TRANSPARENT);
 
-            southLayout = (LinearLayout) getView().findViewById(R.id.rel_layout);
+            southLayout = (LinearLayout) findViewById(R.id.rel_layout);
             Log.i("yupi", southLayout.toString());
 
             southLayout.setBackgroundColor(Color.TRANSPARENT);
             southLayout.setBackgroundColor(getResources().getColor(R.color.white));
 
-            titleTextView = (TextView) getView().findViewById(R.id.testview);
+            titleTextView = (TextView) findViewById(R.id.testview);
             titleTextView.setText("- -");
 
-            descriptionTextView = (TextView) getView().findViewById(R.id.testview2);
+            descriptionTextView = (TextView) findViewById(R.id.testview2);
             descriptionTextView.setText("No hay ningún punto de interés seleccionado");
 
             // Sets the UILayout to be drawn in front of the camera
@@ -725,7 +710,8 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
     // Shows initialization error messages as System dialogs
     public void showInitializationErrorMessage(String message) {
         final String errorMessage = message;
-        getActivity().runOnUiThread(new Runnable() {
+//        getActivity().
+        runOnUiThread(new Runnable() {
             public void run() {
                 if (mErrorDialog != null) {
                     mErrorDialog.dismiss();
@@ -733,7 +719,9 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
 
                 // Generates an Alert Dialog to show the error message
                 AlertDialog.Builder builder = new AlertDialog.Builder(
-                        VideoPlayback.this.getActivity());
+                        VideoPlayback.this
+//                                .getActivity());
+                );
                 builder
                         .setMessage(errorMessage)
                         .setTitle(getString(R.string.INIT_ERROR))
@@ -742,7 +730,8 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        getActivity().finish();
+//                                        getActivity().
+                                        finish();
                                     }
                                 });
 
@@ -760,7 +749,7 @@ public class VideoPlayback extends Fragment implements SampleApplicationControl 
     final private static int CMD_BACK = -1;
     final private static int CMD_FULLSCREEN_VIDEO = 1;
 
-    public void updateTextFields (String title, String description) {
+    public void updateTextFields(String title, String description) {
         titleTextView.setText(title);
         descriptionTextView.setText(description);
     }

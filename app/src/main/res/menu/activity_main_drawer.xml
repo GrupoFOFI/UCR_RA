@@ -4,38 +4,46 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:tint="@color/white"
             android:icon="@drawable/ic_dashboard"
+            android:tint="@color/white"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_camera"
-            android:tint="@color/white"
             android:icon="@drawable/floating_camera"
+            android:tint="@color/white"
             android:title="@string/menu_ra" />
+
         <item
             android:id="@+id/nav_maps"
-            android:tint="@color/white"
             android:icon="@drawable/ic_menu_slideshow"
+            android:tint="@color/white"
             android:title="@string/menu_maps" />
+
         <item
             android:id="@+id/nav_takeme"
+            android:icon="@drawable/ic_menu_slideshow"
             android:tint="@color/white"
-            android:icon="@drawable/ic_menu_manage"
             android:title="Llévame" />
+
     </group>
 
     <item android:title="@string/menu_accessibility">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:tint="@color/white"
                 android:icon="@drawable/ic_menu_share"
+                android:tint="@color/white"
                 android:title="@string/menu_share" />
+            <item
+                android:id="@+id/nav_accessibility"
+                android:icon="@drawable/ic_menu_share"
+                android:tint="@color/white"
+                android:title="Modalidad 2" />
 
             <item
-                android:id="@+id/nav_send"
-                android:tint="@color/white"
+                android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_menu_send"
+                android:tint="@color/white"
                 android:title="@string/menu_settings" />
         </menu>
     </item>

@@ -33,4 +33,17 @@
         <item>Uno de los edificios más relevantes, pues toda la universidad depende del mismo tanto para gestiones de conexión con la Red como asuntos de TI.</item>
     </string-array>
 
+    <string-array name="drawer_titles">
+        <item>Inicio</item>
+        <item>Reconocimiento</item>
+        <item>Ver Mapa</item>
+        <item>Comandos de voz</item>
+        <item>Edificios cercanos</item>
+        <item>Llévame</item>
+        <item>Compartir</item>
+        <item>Ajustes</item>
+    </string-array>
+
+
+
 </resources>

@@ -11,9 +11,4 @@
         android:layout_height="match_parent"
         tools:listitem="@layout/custom_list_item" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="89dp"
-        app:fabSize="mini"
-        android:paddingEnd="@dimen/fab_margin"
-        android:layout_height="54dp" />
 </FrameLayout>

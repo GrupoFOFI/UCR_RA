@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         MapsFragment mapsFragment = new MapsFragment();
         adapter.addFrag(mapsFragment, "Mapas");
-        adapter.addFrag(new VideoPlayback(), "Vuforia");
+//        adapter.addFrag(new VideoPlayback(), "Vuforia");
         adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
 
         viewPager.setAdapter(adapter);
