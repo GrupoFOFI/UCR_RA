@@ -611,6 +611,11 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         return result;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
 
     @Override
     public boolean doDeinitTrackers() {

@@ -473,6 +473,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     }
 
 
+
+
     @SuppressLint("InlinedApi")
     // The render function called from SampleAppRendering by using RenderingPrimitives views.
     // The state is owned by SampleAppRenderer which is controlling it's lifecycle.
@@ -515,67 +517,47 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             ImageTarget imageTarget = (ImageTarget) trackableResult
                     .getTrackable();
 
-            int currentTarget;
+            int currentTarget = 0;
 
             // We store the modelview matrix to be used later by the tap
             // calculation
-//            if (imageTarget.getName().compareTo("stones") == 0)
-
-            switch (imageTarget.getName()) {
-                case "antarticos":
-                    currentTarget = VideoPlayback.ANTART;
-                    break;
-                case "osos_amorosos":
-                    currentTarget = VideoPlayback.OSOS;
-                    break;
-                case "mate":
-                    currentTarget = VideoPlayback.MATE;
-                    break;
-                case "leda":
-                    currentTarget = VideoPlayback.LEDA;
-                    break;
-                case "plaza-24-min":
-                    currentTarget = VideoPlayback.PLAZA;
-                    break;
-                case "monge-1":
-                    currentTarget = VideoPlayback.MONGE;
-                    break;
-                case "comedor-1":
-                    currentTarget = VideoPlayback.COMEDOR;
-                    break;
-                case "derecho":
-                    currentTarget = VideoPlayback.DERECHO;
-                    break;
-                case "busto2":
-                    currentTarget = VideoPlayback.BUSTO;
-                    break;
-                case "ecci":
-                    currentTarget = VideoPlayback.ECCI;
-                    break;
-                case "Girasol-UCR_Generales":
-                    currentTarget = VideoPlayback.GIRASOL;
-                    break;
-                case "fernando_baud":
-                    currentTarget = VideoPlayback.FERNANDO;
-                    break;
-                case "centro_inform":
-                    currentTarget = VideoPlayback.INFO;
-                    break;
-                default:
-                    currentTarget = 0;
-                    break;
-
+            if (imageTarget.getName().toLowerCase().contains("antarticos")) {
+                currentTarget = VideoPlayback.ANTART;
+            } else if (imageTarget.getName().toLowerCase().contains("osos_amorosos")) {
+                currentTarget = VideoPlayback.OSOS;
+            } else if (imageTarget.getName().toLowerCase().contains("mate")) {
+                currentTarget = VideoPlayback.MATE;
+            } else if (imageTarget.getName().toLowerCase().contains("leda")) {
+                currentTarget = VideoPlayback.LEDA;
+            } else if (imageTarget.getName().toLowerCase().contains("plaza24")) {
+                currentTarget = VideoPlayback.PLAZA;
+            } else if (imageTarget.getName().toLowerCase().contains("carlos_monge")) {
+                currentTarget = VideoPlayback.MONGE;
+            } else if (imageTarget.getName().toLowerCase().contains("comedor")) {
+                currentTarget = VideoPlayback.COMEDOR;
+            } else if (imageTarget.getName().toLowerCase().contains("derecho")) {
+                currentTarget = VideoPlayback.DERECHO;
+            } else if (imageTarget.getName().toLowerCase().contains("busto2")) {
+                currentTarget = VideoPlayback.BUSTO;
+            } else if (imageTarget.getName().toLowerCase().contains("ecci")) {
+                currentTarget = VideoPlayback.ECCI;
+            } else if (imageTarget.getName().toLowerCase().contains("generales")) {
+                currentTarget = VideoPlayback.GIRASOL;
+            } else if (imageTarget.getName().toLowerCase().contains("fernando")) {
+                currentTarget = VideoPlayback.FERNANDO;
+            } else if (imageTarget.getName().toLowerCase().contains("centro_inform")) {
             }
 
-            final String mTitle = titleArray [currentTarget];
-            final String mDescription = descriptionArray [currentTarget];
+            final String mTitle = titleArray[currentTarget];
+            final String mDescription = descriptionArray[currentTarget];
+
             // Método para updeitear los textfields
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     mActivity.updateTextFields(mTitle, mDescription);
                 }
-            });
+            });//
 
 
             modelViewMatrix[currentTarget] = Tool
@@ -587,7 +569,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             // The pose delivers the center of the target, thus the dimensions
             // go from -width/2 to width/2, same for height
             temp[0] =  //200;
-                    (targetPositiveDimensions[currentTarget].getData()[0] / 2.0f) +100;
+                    (targetPositiveDimensions[currentTarget].getData()[0] / 2.0f) + 100;
             temp[1] = //200;
                     targetPositiveDimensions[currentTarget].getData()[1] / 2.0f;
             targetPositiveDimensions[currentTarget].setData(temp);
@@ -610,7 +592,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 // is likely that it is not a perfect square
 
                 float ratio = 1.0f;
-                if (mTextures.get(currentTarget%2).mSuccess)
+                if (mTextures.get(currentTarget % 2).mSuccess)
                     ratio = keyframeQuadAspectRatio[currentTarget];
                 else
                     ratio = targetPositiveDimensions[currentTarget].getData()[1]
@@ -648,7 +630,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 // The first loaded texture from the assets folder is the
                 // keyframe
                 GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
-                        mTextures.get(currentTarget%2).mTextureID[0]);
+                        mTextures.get(currentTarget % 2).mTextureID[0]);
                 GLES20.glUniformMatrix4fv(keyframeMVPMatrixHandle, 1, false,
                         modelViewProjectionKeyframe, 0);
                 GLES20.glUniform1i(keyframeTexSampler2DHandle, 0);
@@ -806,6 +788,9 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 // texture to display. Notice that unlike the video these are
                 // regular
                 // GL_TEXTURE_2D textures
+
+                Log.i("STATUS", ""+currentTarget);
+                Log.i("STATUS", "" +currentStatus[currentTarget]);
                 switch (currentStatus[currentTarget]) {
                     case READY:
                         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
@@ -858,6 +843,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         Renderer.getInstance().end();
 
     }
+
 
 
     boolean isTapOnScreenInsideTarget(int target, float x, float y) {

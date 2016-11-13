@@ -45,5 +45,21 @@
     </string-array>
 
 
+    <string-array name="monuments">
+        <item>Test 1</item>
+        <item>Test 2</item>
+        <item>Test 3</item>
+    </string-array>
+
+
+    <string-array name="buildings">
+        <item>Test 1</item>
+        <item>Test 2</item>
+        <item>Test 3</item>
+    </string-array>
+
+
+
+
 
 </resources>

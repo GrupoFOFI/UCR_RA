@@ -1,4 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!--  Categoria 1 :: Ajustes -->
+
+    <PreferenceCategory android:title="Ajustes" />
+
+    <Preference
+        android:icon="@drawable/ic_action_iconusername"
+        android:key="settings_profile"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:title="Perfil" />
+
+
+    <Preference
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:key="settings_notifications"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:title="Notificaciones"></Preference>
+
+
+    <!--  Categoria 2 :: Accesibilidad -->
+
+    <PreferenceCategory android:title="Accesibilidad" />
+
+    <Preference
+        android:icon="@drawable/ic_language_black_24dp"
+        android:key="settings_language"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:title="Idioma" />
+
+    <Preference
+        android:icon="@drawable/ic_dashboard"
+        android:key="settings_help"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:title="Ayuda" />
+
+
+    <!--  Categoria 3 :: Adicionales -->
+
+    <PreferenceCategory android:title="Adicionales" />
+
+    <Preference
+        android:icon="@drawable/ic_feedback_black_24dp"
+        android:key="settings_feedback"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:title="Feedback" />
+
+    <Preference
+        android:icon="@drawable/ic_track_changes_black_24dp"
+        android:key="settings_version"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:title="Versión" />
+
+    <PreferenceCategory android:title="" />
+
+
 </PreferenceScreen>

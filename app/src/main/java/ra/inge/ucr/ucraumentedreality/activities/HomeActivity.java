@@ -23,7 +23,6 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Vi
 import ra.inge.ucr.ucraumentedreality.adapters.HomeFragment;
 import ra.inge.ucr.ucraumentedreality.adapters.SettingsActivity;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
-import ra.inge.ucr.ucraumentedreality.fragments.VuforiaFragment;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -70,7 +69,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
 
     /**
      *
