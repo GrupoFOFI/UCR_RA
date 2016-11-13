@@ -1,10 +1,13 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +36,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
@@ -47,6 +58,10 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
  */
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener, LocationListener {
+
+    private TextView txtSpeechInput;
+    private Button btnSpeak;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
 
     private MapView mMapView;
     private GoogleMap googleMap;
@@ -85,6 +100,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         setupMap(savedInstanceState);
 
         utils = new Utils(getActivity(), getContext());
+
+        txtSpeechInput = (TextView) rootView.findViewById(R.id.txtSpeechInput);
+        btnSpeak = (Button) rootView.findViewById(R.id.btnSpeak);
+
+        btnSpeak.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                promptSpeechInput();
+            }
+        });
 
         buildGoogleApiClient();
         return rootView;
@@ -267,6 +293,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             if(!markers[i].isVisible())
                 markers[i].setVisible(true);
         }
+        PolylineOptions lineOptions = new PolylineOptions();
+        ArrayList points = new ArrayList<>();
+
+        double lat = 9.998020;
+        double lng = -84.112338;
+        LatLng position = new LatLng(lat, lng);
+        points.add(position);
+
+        double lat2 = 9.979326;
+        double lng2 = -84.090859;
+        LatLng position2 = new LatLng(lat2, lng2);
+        points.add(position2);
+
+        lineOptions.addAll(points);
+        if(lineOptions != null) {
+            googleMap.addPolyline(lineOptions);
+        }
+        else {
+            Log.d("onPostExecute","without Polylines drawn");
+        }
     }
 
     /**
@@ -327,6 +373,42 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
      */
     public Edificio[] getCercanos() {
         return cercanos;
+    }
+
+    //Speech to Text
+
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES");
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQ_CODE_SPEECH_INPUT: {
+                if ( null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    txtSpeechInput.setText(result.get(0));
+                }
+                break;
+            }
+
+        }
     }
 }
 
