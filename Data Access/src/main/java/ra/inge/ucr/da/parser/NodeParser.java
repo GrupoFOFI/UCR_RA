@@ -1,5 +1,7 @@
 package ra.inge.ucr.da.parser;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -9,7 +11,12 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by enrico on 11/14/16.
  */
 public class NodeParser {
+    private Context m_Context;
     private LatLng[] m_Nodes;
+
+    public NodeParser(Context context) {
+        m_Context = context;
+    }
 
     /**
      * Fetches all the available nodes

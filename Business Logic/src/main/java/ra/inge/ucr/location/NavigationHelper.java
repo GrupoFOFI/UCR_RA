@@ -1,5 +1,7 @@
 package ra.inge.ucr.location;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import ra.inge.ucr.da.Path;
@@ -11,6 +13,11 @@ import ra.inge.ucr.da.Path;
  */
 public class NavigationHelper {
     private LocationHelper locationHelper = new LocationHelper();
+    private Context m_Context;
+
+    public NavigationHelper(Context context) {
+        m_Context = context;
+    }
 
     /**
      * Default constructor
