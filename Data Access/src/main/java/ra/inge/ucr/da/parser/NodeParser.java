@@ -1,4 +1,4 @@
-package ra.inge.ucr.location.parser;
+package ra.inge.ucr.da.parser;
 
 import com.google.android.gms.maps.model.LatLng;
 
