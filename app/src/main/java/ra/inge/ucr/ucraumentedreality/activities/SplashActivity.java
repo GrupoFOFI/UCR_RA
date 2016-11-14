@@ -24,9 +24,7 @@ import ra.inge.ucr.ucraumentedreality.R;
  */
 public class SplashActivity extends AppCompatActivity {
 
-
     private static long SPLASH_MILLIS = 450;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

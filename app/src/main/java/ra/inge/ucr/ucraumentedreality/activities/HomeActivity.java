@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String text2Speech = "";
     private CommandHandler commandHandler;
 
+    private FloatingActionButton fab;
     private SharedPreferences prefs;
 
     @Override
@@ -58,8 +61,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        setupToolbar();
-        setupDrawer();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("UCR Realidad Aumentada");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
         setFragment(getResources().getString(R.string.app_name), new HomeFragment());
 
@@ -70,6 +86,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openVuforia();
+            }
+        });
+
 
     }
 
@@ -89,7 +114,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
 
 
     private void promptSpeechInput() {
@@ -130,59 +154,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    /**
-     * Method that sets up the toolbar
-     */
-    private void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("UCR Realidad Aumentada");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
-    }
-
-
-    /**
-     * Method that sets up the navigation drawer feature
-     */
-    private void setupDrawer() {
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    /**
-     *
-     */
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            return;
+            super.onBackPressed();
         }
     }
 
     /**
-     * @param item
-     * @return
+     * Opens the Vuforia Activity to use Videos
      */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-
+    void openVuforia() {
+        startActivity(new Intent(getApplicationContext(), VideoPlayback.class));
     }
 
     /**
@@ -204,7 +189,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_camera:
                 isFragment = false;
-                startActivity(new Intent(getApplicationContext(), VideoPlayback.class));
+                openVuforia();
                 break;
 
             case R.id.nav_maps:
@@ -251,6 +236,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /**
+     * Method that enables the user to change the mode of the app
+     */
     void accessibilityDialog() {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
