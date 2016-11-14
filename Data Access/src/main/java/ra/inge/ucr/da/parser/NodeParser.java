@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Extracts the points and matrices from the resource files
- * The resource files are R.values.nodes.xml, R.values.adjacencies, R.values.floyd_dist and R.values.floyd_path
+ * The resource files are R.raw.nodes.txt, R.raw.adjacencies.txt, R.values.floyd_dist.txt and R.values.floyd_path.txt
  *
  * Created by enrico on 11/14/16.
  */
