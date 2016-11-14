@@ -33,7 +33,7 @@ public class CommandHandler {
                 break;
         }
     }
-    
+
     public void toastLog(String str) {
         Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
     }
