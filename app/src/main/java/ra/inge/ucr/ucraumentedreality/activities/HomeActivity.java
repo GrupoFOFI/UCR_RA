@@ -28,6 +28,7 @@ import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.adapters.HomeFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
+import ra.inge.ucr.ucraumentedreality.utils.CommandHandler;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean showingPopUp = false;
     private String text2Speech = "";
+    private CommandHandler commandHandler;
 
 
     @Override
@@ -63,6 +65,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         shakeHandler.setOnShakeListener(this);
 
         utils = new Utils(this, getApplicationContext());
+        commandHandler = new CommandHandler(getApplicationContext());
 
     }
 
@@ -107,7 +110,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     text2Speech = result.get(0);
-                    utils.toastLog(text2Speech);
+                    commandHandler.translate(text2Speech);
+
                 }
                 break;
             }
