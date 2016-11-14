@@ -1,4 +1,4 @@
-package ra.inge.ucr.ucraumentedreality.adapters;
+package ra.inge.ucr.ucraumentedreality.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

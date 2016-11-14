@@ -1,11 +1,14 @@
 package ra.inge.ucr.ucraumentedreality.adapters;
 
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Vi
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseMonumentsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
+import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 /**
  * Class that handles the main commands or actions that can be used by the user
@@ -32,7 +36,8 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
     }
 
-
+    private ShakeHandler shakeHandler;
+    private Vibrator vibe;
     private View root;
 
     @Nullable
@@ -40,8 +45,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root  = inflater.inflate(R.layout.fragment_home, container, false);
         setupViewPager();
-        return root;
-
+        return  root;
     }
 
     /**

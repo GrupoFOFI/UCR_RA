@@ -25,6 +25,7 @@ import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
+import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 

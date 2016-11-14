@@ -1,8 +1,12 @@
 package ra.inge.ucr.ucraumentedreality.activities;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,21 +19,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.adapters.HomeFragment;
-import ra.inge.ucr.ucraumentedreality.adapters.SettingsActivity;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
+import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
+import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
-public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        ShakeHandler.OnShakeListener {
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private Class currentFragmentType;
     private String[] drawerTitles;
+
+    private ShakeHandler shakeHandler;
+    private Vibrator vibe;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+    private Utils utils;
+
+    private boolean showingPopUp = false;
+    private String text2Speech = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +57,64 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setupDrawer();
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
         setFragment(getResources().getString(R.string.app_name), new HomeFragment());
+
+        shakeHandler = new ShakeHandler(this);
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        shakeHandler.setOnShakeListener(this);
+
+        utils = new Utils(this, getApplicationContext());
+
     }
+
+    @Override
+    public void onShake() {
+        vibe.vibrate(100);
+//        new AlertDialog.Builder(this)
+//                .setPositiveButton(android.R.string.ok, null)
+//                .setMessage("Shooken!")
+//                .show();
+        if (showingPopUp == false) {
+            promptSpeechInput();
+        }
+
+    }
+
+
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES");
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+            showingPopUp = true;
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQ_CODE_SPEECH_INPUT: {
+                if (null != data) {
+
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    text2Speech = result.get(0);
+                    utils.toastLog(text2Speech);
+                }
+                break;
+            }
+        }
+        showingPopUp = false;
+    }
+
 
     /**
      * Method that sets up the toolbar
@@ -68,17 +142,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    /**
-     *
-     */
-    private void setupStatusBar() {
-
-        Window window = this.getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.black));
     }
 
     /**

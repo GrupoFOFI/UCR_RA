@@ -1,4 +1,4 @@
-package ra.inge.ucr.ucraumentedreality.adapters;
+package ra.inge.ucr.ucraumentedreality.activities;
 
 
 import android.app.Dialog;
@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.activities.AppCompatPreferenceActivity;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -48,10 +49,11 @@ import ra.inge.ucr.ucraumentedreality.R;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity implements Preference.OnPreferenceClickListener {
+public class SettingsActivity extends AppCompatPreferenceActivity implements Preference.OnPreferenceClickListener{
 
     private static String appVersion;
     private Toolbar toobar;
+
 
     /**
      * @param savedInstanceState
@@ -61,6 +63,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
         getSupportActionBar().hide();
+
     }
 
     /**
@@ -355,9 +358,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
             return true;
         }
     };
-
-
-
 
 
 }

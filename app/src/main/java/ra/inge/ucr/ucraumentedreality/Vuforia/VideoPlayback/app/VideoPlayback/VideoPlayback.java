@@ -48,6 +48,7 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Vi
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.LoadingDialogHandler;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.SampleApplicationGLView;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.Texture;
+import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
@@ -115,6 +116,9 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
     private TextView titleTextView;
     private TextView descriptionTextView;
 
+    // Shake Handler
+    ShakeHandler shakeHandler;
+
     // Called when the activity first starts or the user navigates back
     // to an activity.
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,13 +175,9 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         mMovieName[10] = "VideoPlayback/generales.mp4";
         mMovieName[11] = "VideoPlayback/fernando.mp4";
         mMovieName[12] = "VideoPlayback/centro-info.mp4";
-//
-//        for(int i = 0; i<NUM_TARGETS ; i=i+2) {
-//            mMovieName[i] = "VideoPlayback/video-comedor.mp4";
-//
-//            if(i<12)
-//            mMovieName[i+1] = "VideoPlayback/video-comedor.mp4";
-//        }
+
+
+        shakeHandler = new ShakeHandler(this.getApplicationContext());
 
         // Set the double tap listener:
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {

@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 /**
  * Fragment used to present the result of the latest buildings that the user has passed by
  */
-
 public class LatestRecognitionFragment extends Fragment {
 
     public LatestRecognitionFragment() {

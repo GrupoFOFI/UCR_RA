@@ -2,21 +2,23 @@ package ra.inge.ucr.ucraumentedreality.fragments;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ import java.util.Locale;
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
@@ -58,10 +61,6 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener, LocationListener {
 
-    private TextView txtSpeechInput;
-    private Button btnSpeak;
-    private final int REQ_CODE_SPEECH_INPUT = 100;
-
     private MapView mMapView;
     private GoogleMap googleMap;
     private Marker[] markers;
@@ -69,7 +68,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private View rootView;
     private Utils utils;
-    private  Edificio[] cercanos;
+    private Edificio[] cercanos;
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
@@ -98,18 +97,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         setupMap(savedInstanceState);
 
-        utils = new Utils(getActivity(), getContext());
-
-        txtSpeechInput = (TextView) rootView.findViewById(R.id.txtSpeechInput);
-        btnSpeak = (Button) rootView.findViewById(R.id.btnSpeak);
-
-        btnSpeak.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                promptSpeechInput();
-            }
-        });
 
         buildGoogleApiClient();
         return rootView;
@@ -150,11 +137,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         }
         this.googleMap.setMyLocationEnabled(true);
         markers = new Marker[CLOSEST_AMOUNT];
-        for(int i = 0;i< CLOSEST_AMOUNT;i++){
+        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
             markers[i] = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.building)).visible(false)
-                    .position(new LatLng(0.0,0.0)).title(""));
+                    .position(new LatLng(0.0, 0.0)).title(""));
         }
-        locationHelper  = new LocationHelper();
+        locationHelper = new LocationHelper();
     }
 
 
@@ -217,7 +204,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
 
     /**
-     *  Method that builds a GoogleApiClient and uses the addApi() method to request the LocationServices API.
+     * Method that builds a GoogleApiClient and uses the addApi() method to request the LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
         mLocationRequest = LocationRequest.create();
@@ -244,8 +231,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation == null) {
             String error = getResources().getString(R.string.no_location_detected);
-            Log.e("ERROR",error);
-        }else{
+            Log.e("ERROR", error);
+        } else {
             locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
@@ -289,7 +276,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         for (int i = 0; i < CLOSEST_AMOUNT; i++) {
             markers[i].setPosition(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()));
             markers[i].setTitle(cercanos[i].getNmbr());
-            if(!markers[i].isVisible())
+            if (!markers[i].isVisible())
                 markers[i].setVisible(true);
         }
         PolylineOptions lineOptions = new PolylineOptions();
@@ -306,16 +293,16 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         points.add(position2);
 
         lineOptions.addAll(points);
-        if(lineOptions != null) {
+        if (lineOptions != null) {
             googleMap.addPolyline(lineOptions);
-        }
-        else {
-            Log.d("onPostExecute","without Polylines drawn");
+        } else {
+            Log.d("onPostExecute", "without Polylines drawn");
         }
     }
 
     /**
      * Method called when the user taps the marker info
+     *
      * @param marker
      */
     @Override
@@ -336,6 +323,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     /**
      * Method that handles when a user drags a marker
+     *
      * @param marker
      */
     @Override
@@ -345,7 +333,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     /**
      * Method that handles when a user drags a marker
-     *
      *
      * @param marker
      */
@@ -366,48 +353,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     /**
      * Method that retrieves the closest buildings so the ClosesBuildingFragment can use them
-     *  {@link CloseBuildingsFragment};
-     .}
+     * {@link CloseBuildingsFragment};
+     * .}
+     *
      * @return
      */
     public Edificio[] getCercanos() {
         return cercanos;
     }
 
-    //Speech to Text
 
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES");
-        try {
-            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getActivity().getApplicationContext(),
-                    getString(R.string.speech_not_supported),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case REQ_CODE_SPEECH_INPUT: {
-                if ( null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    txtSpeechInput.setText(result.get(0));
-                }
-                break;
-            }
-
-        }
-    }
 }
 
