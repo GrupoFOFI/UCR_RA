@@ -4,8 +4,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -49,6 +51,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String text2Speech = "";
     private CommandHandler commandHandler;
 
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,21 +69,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
     }
 
     @Override
     public void onShake() {
-        vibe.vibrate(100);
+        if (prefs.getBoolean("accessibility", false) == true) {
+
+            vibe.vibrate(100);
 //        new AlertDialog.Builder(this)
 //                .setPositiveButton(android.R.string.ok, null)
 //                .setMessage("Shooken!")
 //                .show();
-        if (showingPopUp == false) {
-            promptSpeechInput();
+            if (showingPopUp == false) {
+                promptSpeechInput();
+            }
+
         }
 
     }
+
 
 
     private void promptSpeechInput() {
@@ -110,6 +119,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     text2Speech = result.get(0);
+                    Log.i("totoo", "Le entendí: " + text2Speech);
                     commandHandler.translate(text2Speech);
 
                 }
@@ -156,7 +166,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            return;
         }
     }
 
@@ -193,7 +203,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_camera:
-//                fragment = new VuforiaFragment();
                 isFragment = false;
                 startActivity(new Intent(getApplicationContext(), VideoPlayback.class));
                 break;
@@ -243,32 +252,41 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     void accessibilityDialog() {
-        showDialog("Aviso", "Se cambiará la modalidad a accesibilidad");
 
-    }
-
-    /**
-     * Generic method to show errors in case the user enters invalid parameters
-     *
-     * @param title
-     * @param message
-     */
-    private void showDialog(String title, String message) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+        if (prefs.getBoolean("accessibility", false) == true) {
+            alertDialogBuilder.setTitle("Aviso");
+            alertDialogBuilder
+                    .setMessage("Se cambiará la modalidad a normal")
+                    .setCancelable(false)
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            prefs.edit().putBoolean("accessibility", false).commit();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
 
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+        } else {
+            alertDialogBuilder.setTitle("Aviso");
+            alertDialogBuilder
+                    .setMessage("Se cambiará la modalidad a accesibilidad")
+                    .setCancelable(false)
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            prefs.edit().putBoolean("accessibility", true).commit();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+        }
+
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
