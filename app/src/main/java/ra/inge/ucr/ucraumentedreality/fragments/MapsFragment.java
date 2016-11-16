@@ -5,7 +5,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
+import android.hardware.Sensor;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.speech.RecognizerIntent;
@@ -44,6 +47,7 @@ import java.util.Locale;
 
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
+import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
@@ -76,6 +80,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static final long POLLING_FREQ = 200;
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
+    private SensorHelper sensorHelper;
+    private TextView textView;
 
     /**
      * Empty constructor for the class
@@ -97,7 +103,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         utils = new Utils(getActivity(), getContext());
         setupMap(savedInstanceState);
-
+        sensorHelper = new SensorHelper(getContext());
+        //sensorHelper.setOnLookAtBuildingListener(this);
+        sensorHelper.start();
 
         buildGoogleApiClient();
         return rootView;
@@ -143,6 +151,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
         locationHelper = new LocationHelper();
+        textView = (TextView)getView().findViewById(R.id.angulo);
     }
 
 
@@ -280,25 +289,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             if (!markers[i].isVisible())
                 markers[i].setVisible(true);
         }
-        PolylineOptions lineOptions = new PolylineOptions();
-        ArrayList points = new ArrayList<>();
-
-        double lat = 9.998020;
-        double lng = -84.112338;
-        LatLng position = new LatLng(lat, lng);
-        points.add(position);
-
-        double lat2 = 9.979326;
-        double lng2 = -84.090859;
-        LatLng position2 = new LatLng(lat2, lng2);
-        points.add(position2);
-
-        lineOptions.addAll(points);
-        if (lineOptions != null) {
-            googleMap.addPolyline(lineOptions);
-        } else {
-            Log.d("onPostExecute", "without Polylines drawn");
-        }
+        LatLng point1 = new LatLng(9.993123, -84.098054);
+        LatLng point2 = new LatLng(9.993931, -84.098034);
+        directionSound(point1,point2);
     }
 
     /**
@@ -363,6 +356,72 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return cercanos;
     }
 
+    public void drawRoute(ArrayList points){
+        PolylineOptions lineOptions = new PolylineOptions();
 
+        lineOptions.addAll(points);
+        if (lineOptions != null) {
+            googleMap.addPolyline(lineOptions);
+        } else {
+            Log.d("onPostExecute", "without Polylines drawn");
+        }
+    }
+
+    public void directionSound(LatLng point1, LatLng point2){
+        int azimuth = sensorHelper.getAzimuth();
+
+        double dLon = (point2.longitude - point1.longitude);
+
+        double y = Math.sin(dLon) * Math.cos(point2.latitude);
+        double x = Math.cos(point1.latitude) * Math.sin(point2.latitude) - Math.sin(point1.latitude)
+                * Math.cos(point2.latitude) * Math.cos(dLon);
+
+        double angle = Math.atan2(y, x);
+
+        angle = Math.toDegrees(angle);
+        angle = (angle + 360) % 360;
+
+        double direccion = Math.abs(azimuth - angle);
+        if(direccion >= 315 || direccion < 45) {
+            textView.setText("Continue");
+            try {
+                AssetFileDescriptor afd = getContext().getAssets().openFd("Continue.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+        else if(direccion >= 45 && direccion < 135) {
+            textView.setText("Derecha");
+            try {
+                AssetFileDescriptor afd = getContext().getAssets().openFd("Derecha.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+        else if(direccion >= 135 && direccion < 225) {
+            textView.setText("De la vuelta");
+            try {
+                AssetFileDescriptor afd = getContext().getAssets().openFd("Vuelta.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+        else {
+            textView.setText("Izquierda");
+            try {
+                AssetFileDescriptor afd = getContext().getAssets().openFd("Izquierda.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+    }
 }
 
