@@ -25,11 +25,11 @@ public class CommandHandler {
             case "Hola":
                 toastLog("Como estás?");
                 break;
-            case "Mae":
+            case "Dime":
                 toastLog("Qué pasó?");
                 break;
-            case "Fofi":
-                toastLog("Su madre");
+            case "Está bien":
+                toastLog("Bueno");
                 break;
         }
     }

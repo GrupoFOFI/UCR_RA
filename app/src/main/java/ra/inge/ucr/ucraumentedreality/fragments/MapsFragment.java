@@ -1,29 +1,20 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.hardware.Sensor;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Vibrator;
-import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,13 +34,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.ucraumentedreality.R;
-import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**

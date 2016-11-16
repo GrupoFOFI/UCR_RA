@@ -4,9 +4,12 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -49,14 +53,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private String text2Speech = "";
     private CommandHandler commandHandler;
 
+    private FloatingActionButton fab;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        setupToolbar();
-        setupDrawer();
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("UCR Realidad Aumentada");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
         setFragment(getResources().getString(R.string.app_name), new HomeFragment());
 
@@ -66,18 +85,32 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openVuforia();
+            }
+        });
+
 
     }
 
     @Override
     public void onShake() {
-        vibe.vibrate(100);
+        if (prefs.getBoolean("accessibility", false) == true) {
+
+            vibe.vibrate(100);
 //        new AlertDialog.Builder(this)
 //                .setPositiveButton(android.R.string.ok, null)
 //                .setMessage("Shooken!")
 //                .show();
-        if (showingPopUp == false) {
-            promptSpeechInput();
+            if (showingPopUp == false) {
+                promptSpeechInput();
+            }
+
         }
 
     }
@@ -110,6 +143,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     text2Speech = result.get(0);
+                    Log.i("totoo", "Le entendí: " + text2Speech);
                     commandHandler.translate(text2Speech);
 
                 }
@@ -120,37 +154,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    /**
-     * Method that sets up the toolbar
-     */
-    private void setupToolbar() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("UCR Realidad Aumentada");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
-    }
-
-
-    /**
-     * Method that sets up the navigation drawer feature
-     */
-    private void setupDrawer() {
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    /**
-     *
-     */
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -161,18 +164,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     * @param item
-     * @return
+     * Opens the Vuforia Activity to use Videos
      */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-
-        }
-        return super.onOptionsItemSelected(item);
-
+    void openVuforia() {
+        startActivity(new Intent(getApplicationContext(), VideoPlayback.class));
     }
 
     /**
@@ -193,9 +188,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_camera:
-//                fragment = new VuforiaFragment();
                 isFragment = false;
-                startActivity(new Intent(getApplicationContext(), VideoPlayback.class));
+                openVuforia();
                 break;
 
             case R.id.nav_maps:
@@ -242,33 +236,45 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    void accessibilityDialog() {
-        showDialog("Aviso", "Se cambiará la modalidad a accesibilidad");
-
-    }
-
     /**
-     * Generic method to show errors in case the user enters invalid parameters
-     *
-     * @param title
-     * @param message
+     * Method that enables the user to change the mode of the app
      */
-    private void showDialog(String title, String message) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+    void accessibilityDialog() {
 
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        if (prefs.getBoolean("accessibility", false) == true) {
+            alertDialogBuilder.setTitle("Aviso");
+            alertDialogBuilder
+                    .setMessage("Se cambiará la modalidad a normal")
+                    .setCancelable(false)
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            prefs.edit().putBoolean("accessibility", false).commit();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+        } else {
+            alertDialogBuilder.setTitle("Aviso");
+            alertDialogBuilder
+                    .setMessage("Se cambiará la modalidad a accesibilidad")
+                    .setCancelable(false)
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            prefs.edit().putBoolean("accessibility", true).commit();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+        }
+
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();

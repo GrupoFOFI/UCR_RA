@@ -9,15 +9,19 @@ import android.view.ViewGroup;
 
 /**
  * Fragment used to present the result of the latest buildings that the user has passed by
+ *
  */
 public class LatestRecognitionFragment extends Fragment {
 
     public LatestRecognitionFragment() {
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+
+
+
 }
