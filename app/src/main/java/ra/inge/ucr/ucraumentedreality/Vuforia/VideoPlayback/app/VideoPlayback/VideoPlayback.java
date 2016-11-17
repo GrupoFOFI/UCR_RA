@@ -192,12 +192,12 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
                 return false;
             }
 
-
             // Handle the single tap
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 boolean isSingleTapHandled = false;
                 // Do not react if the StartupScreen is being displayed
                 for (int i = 0; i < NUM_TARGETS; i++) {
+
                     // Verify that the tap happened inside the target
                     if (mRenderer != null && mRenderer.isTapOnScreenInsideTarget(i, e.getX(),
                             e.getY())) {
@@ -209,6 +209,7 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
                                     || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
                                     || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
                                     || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
+
                                 // Pause all other media
                                 pauseAll(i);
 
@@ -220,6 +221,7 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
                                         mSeekPosition[i]);
                                 mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
                             } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
+
                                 // If it is playing then we pause it
                                 mVideoPlayerHelper[i].pause();
                             }
@@ -240,12 +242,10 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
                         break;
                     }
                 }
-
                 return isSingleTapHandled;
             }
         });
     }
-
 
 
     // We want to load specific textures from the APK, which we will later
@@ -262,8 +262,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png",
                 getAssets()));
     }
-
-
 
     // Called when the activity will start interacting with the user.
     public void onResume() {
@@ -298,6 +296,54 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         mReturningFromFullScreen = false;
     }
 
+
+    public void playCurrentVideo() {
+        // Do not react if the StartupScreen is being displayed
+        for (int i = 0; i < NUM_TARGETS; i++) {
+
+            // Verify that the tap happened inside the target
+            if (mRenderer != null) {
+                // Check if it is playable on texture
+                if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+                    // We can play only if the movie was paused, ready
+                    // or stopped
+                    if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
+                            || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
+                            || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
+                            || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
+
+                        // Pause all other media
+                        pauseAll(i);
+
+                        // If it has reached the end then rewind
+                        if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
+                            mSeekPosition[i] = 0;
+
+                        mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
+                                mSeekPosition[i]);
+                        mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
+                    } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
+
+                        // If it is playing then we pause it
+                        mVideoPlayerHelper[i].pause();
+                    }
+                } else if (mVideoPlayerHelper[i].isPlayableFullscreen()) {
+                    // If it isn't playable on texture
+                    // Either because it wasn't requested or because it
+                    // isn't supported then request playback fullscreen.
+                    mVideoPlayerHelper[i].play(true,
+                            VideoPlayerHelper.CURRENT_POSITION);
+                }
+
+
+                // Even though multiple videos can be loaded only one
+                // can be playing at any point in time. This break
+                // prevents that, say, overlapping videos trigger
+                // simultaneously playback.
+                break;
+            }
+        }
+    }
 
     // Called when returning from the full screen player
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -398,7 +444,7 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
     // Pause all movies except one
     // if the value of 'except' is -1 then
     // do a blanket pause
-    private void pauseAll(int except) {
+    public void pauseAll(int except) {
         // And pause all the playing videos:
         for (int i = 0; i < NUM_TARGETS; i++) {
             // We can make one exception to the pause all calls:
@@ -439,7 +485,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
     }
-
 
 
     // Initializes AR application components.
@@ -686,6 +731,7 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
 
             // Sets the layout background to transparent
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
+
             // Original
 //            addContentView(testLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
 //                    LayoutParams.WRAP_CONTENT));
@@ -715,7 +761,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
     // Shows initialization error messages as System dialogs
     public void showInitializationErrorMessage(String message) {
         final String errorMessage = message;
-//        getActivity().
         runOnUiThread(new Runnable() {
             public void run() {
                 if (mErrorDialog != null) {
@@ -723,10 +768,7 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
                 }
 
                 // Generates an Alert Dialog to show the error message
-                AlertDialog.Builder builder = new AlertDialog.Builder(
-                        VideoPlayback.this
-//                                .getActivity());
-                );
+                AlertDialog.Builder builder = new AlertDialog.Builder(VideoPlayback.this);
                 builder
                         .setMessage(errorMessage)
                         .setTitle(getString(R.string.INIT_ERROR))
@@ -735,7 +777,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-//                                        getActivity().
                                         finish();
                                     }
                                 });

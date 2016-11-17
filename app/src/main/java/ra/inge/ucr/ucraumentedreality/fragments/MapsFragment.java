@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.google.android.gms.analytics.internal.Command;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -39,6 +41,7 @@ import ra.inge.ucr.da.Edificio;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.utils.CommandHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
@@ -71,6 +74,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private LocationHelper locationHelper;
     private SensorHelper sensorHelper;
     private TextView textView;
+    private CommandHandler commandHandler;
 
     /**
      * Empty constructor for the class
@@ -97,6 +101,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         sensorHelper.start();
 
         buildGoogleApiClient();
+        commandHandler = new CommandHandler(getContext());
         return rootView;
     }
 

@@ -95,6 +95,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        commandHandler.setOnCommandInteraction(this);
+
     }
 
     @Override
@@ -117,6 +119,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onDenial() {
         prefs.edit().putBoolean("accessibility", false).commit();
+    }
+
+    @Override
+    public void onDialogMessage() {
+     promptSpeechInput();
     }
 
     private void promptSpeechInput() {
@@ -260,7 +267,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             dialog.cancel();
                         }
                     });
-            commandHandler.talkUserHelp(true);
+            commandHandler.talkUserHelp(false);
         } else {
             alertDialogBuilder.setTitle("Aviso");
             alertDialogBuilder
@@ -276,7 +283,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             dialog.cancel();
                         }
                     });
-            commandHandler.talkUserHelp(false);
+            commandHandler.talkUserHelp(true);
         }
 
 

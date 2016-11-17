@@ -2,9 +2,12 @@ package ra.inge.ucr.ucraumentedreality.utils;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * <h1>Command Handler</h1>
@@ -22,28 +25,35 @@ public class CommandHandler {
     private TextToSpeech textToSpeech;
 
     private OnCommandInteraction onCommandInteraction;
+    private Timer timer;
 
-    public interface OnCommandInteraction  {
+    public interface OnCommandInteraction {
         void onApproval();
+
         void onDenial();
+
+        void onDialogMessage();
     }
 
-    public void setOnCommandInteraction( OnCommandInteraction onCommandInteraction) {
+    public void setOnCommandInteraction(OnCommandInteraction onCommandInteraction) {
         this.onCommandInteraction = onCommandInteraction;
     }
+
     public CommandHandler(Context context) {
         this.context = context;
-
-        textToSpeech =new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+        timer = new Timer();
+        textToSpeech = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {Locale locSpanish = new Locale("spa", "MEX");
+                if (status != TextToSpeech.ERROR) {
+                    Locale locSpanish = new Locale("spa", "MEX");
                     textToSpeech.setLanguage(locSpanish);
 
                 }
             }
         });
     }
+
     public void translate(String command) {
 
         switch (command) {
@@ -97,15 +107,32 @@ public class CommandHandler {
             talk2User("Para utilizar esta aplicación hemos desarrollado una modalidad que permite ejecutar instrucciones mediante comandos de voz");
             toastLog("Para utilizar esta aplicación hemos desarrollado una modalidad que permite ejecutar instrucciones mediante comandos de voz");
 
+            talk2User("Responda Sí o pulse aceptar para ingresar al modo de accesibilidad");
+            toastLog("Responda Sí o pulse aceptar para ingresar al modo de accesibilidad");
         } else {
 
             talk2User("Desea apagar el modo de accesibilidad?");
             toastLog("Desea apagar el modo de accesibilidad?");
+
+
+            talk2User("Responda Sí o pulse aceptar para apagar el modo de accesibilidad");
+            toastLog("Responda Sí o pulse aceptar para apagar el modo de accesibilidad");
         }
 
-        talk2User("Responda Sí o pulse aceptar para ingresar al modo de accesibilidad");
-        toastLog("Responda Sí o pulse aceptar para ingresar al modo de accesibilidad");
 
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+               Log.i("Waiting", "waiting to finish");
+            }
+        }, 6*1000);
+
+        onCommandInteraction.onDialogMessage();
+
+}
+
+    private void accesibilityMessage(String str) {
 
     }
 
