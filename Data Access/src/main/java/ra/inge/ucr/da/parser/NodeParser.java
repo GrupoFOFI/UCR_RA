@@ -2,7 +2,14 @@ package ra.inge.ucr.da.parser;
 
 import android.content.Context;
 
+import com.enrico.dataaccess.R;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 
 /**
  * Extracts the points and matrices from the resource files
@@ -11,12 +18,22 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by enrico on 11/14/16.
  */
 public class NodeParser {
+    private static final int NODES_FILE = R.raw.nodes;
+    private static final int ADJACENCIES_FILE = R.raw.adjacencies;
+    private static final int FLOYD_DIST_FILE = R.raw.floyd_dist;
+    private static final int FLOYD_PATH_FILE = R.raw.floyd_path;
+
     private Context m_Context;
     private LatLng[] m_Nodes;
+    private int[][] m_Adjacencies = null;
+    private int[][] m_Paths = null;
+    private float[][] m_Distances = null;
 
     public NodeParser(Context context) {
         m_Context = context;
     }
+
+
 
     /**
      * Fetches all the available nodes
@@ -26,8 +43,38 @@ public class NodeParser {
     public LatLng[] getNodes() {
         if (m_Nodes == null) {
             // get nodes
+            try {
+                int N = getLineAmount(NODES_FILE);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(m_Context.getResources().openRawResource(NODES_FILE)));
+                String line = "";
+                LatLng[] nodes = new LatLng[N];
+                int count = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    if (split.length != 2) return null;
+                    float lat = Float.parseFloat(split[0]);
+                    float lng = Float.parseFloat(split[1]);
+                    nodes[count] = new LatLng(lat, lng);
+                    count++;
+                }
+                m_Nodes = nodes;
+                reader.close();
+            } catch (Exception ex) { }
         }
         return m_Nodes;
+    }
+
+    private int getLineAmount(int resourceId) {
+        try {
+            LineNumberReader lnr = new LineNumberReader(new FileReader(m_Context.getResources().openRawResourceFd(resourceId).getFileDescriptor()));
+            lnr.skip(Long.MAX_VALUE);
+            int N = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+            lnr.close();
+            return N;
+        } catch (Exception ex) {
+
+        }
+        return 0;
     }
 
     /**
@@ -37,6 +84,30 @@ public class NodeParser {
      * @return
      */
     public int[] getAdjacencies(int nodeIndex) {
+        if (m_Adjacencies == null) {
+            try {
+                int N = getLineAmount(ADJACENCIES_FILE);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(m_Context.getResources().openRawResource(ADJACENCIES_FILE)));
+                String line = "";
+                int[][] adjacencies = new int[N][N];
+                int count = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    for (int i = 0; i < split.length; i++) {
+                        int num = Integer.parseInt(split[i]);
+                        adjacencies[count][i] = num;
+                    }
+                    count++;
+                }
+                reader.close();
+                m_Adjacencies = adjacencies;
+                return m_Adjacencies[nodeIndex - 1];
+            } catch (Exception ex) {
+
+            }
+        } else {
+            return m_Adjacencies[nodeIndex-1];
+        }
         return null;
     }
 
@@ -47,16 +118,64 @@ public class NodeParser {
      * @return
      */
     public float[] getClosestDistances(int nodeIndex) {
+        if (m_Distances == null) {
+            try {
+                int N = getLineAmount(FLOYD_DIST_FILE);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(m_Context.getResources().openRawResource(FLOYD_DIST_FILE)));
+                String line = "";
+                float[][] distances = new float[N][N];
+                int count = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    for (int i = 0; i < split.length; i++) {
+                        int num = Integer.parseInt(split[i]);
+                        distances[count][i] = num;
+                    }
+                    count++;
+                }
+                reader.close();
+                m_Distances = distances;
+                return m_Distances[nodeIndex-1];
+            } catch (Exception ex) {
+
+            }
+        } else {
+            return m_Distances[nodeIndex-1];
+        }
         return null;
     }
 
     /**
-     * Fetches the row of paths from the Floyd-Warshall distance matrix
+     * Fetches the row of paths from the Floyd-Warshall path matrix
      *
      * @param nodeIndex
      * @return
      */
-    public float[] getClosestPaths(int nodeIndex) {
+    public int[] getClosestPaths(int nodeIndex) {
+        if (m_Paths == null) {
+            try {
+                int N = getLineAmount(FLOYD_PATH_FILE);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(m_Context.getResources().openRawResource(FLOYD_PATH_FILE)));
+                String line = "";
+                int[][] paths = new int[N][N];
+                int count = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    for (int i = 0; i < split.length; i++) {
+                        int num = Integer.parseInt(split[i]);
+                        paths[count][i] = num;
+                    }
+                    count++;
+                }
+                reader.close();
+                m_Paths = paths;
+                return m_Paths[nodeIndex-1];
+            } catch (Exception ex) {
+
+            }
+        } else {
+            return m_Paths[nodeIndex-1];
+        }
         return null;
     }
 }
