@@ -47,6 +47,7 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.utils.SampleUtils;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.Texture;
 
 import static android.opengl.GLES20.GL_CULL_FACE;
+import static ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback.NUM_TARGETS;
 
 
 // The renderer class for the VideoPlayback sample.
@@ -64,7 +65,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     private int videoPlaybackTexSamplerOESHandle = 0;
 
     // Video Playback Textures for the two targets
-    int videoPlaybackTextureID[] = new int[VideoPlayback.NUM_TARGETS];
+    int videoPlaybackTextureID[] = new int[NUM_TARGETS];
 
     // Keyframe and icon rendering specific
     private int keyframeShaderID = 0;
@@ -88,7 +89,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,};
 
     // Trackable dimensions
-    Vec3F targetPositiveDimensions[] = new Vec3F[VideoPlayback.NUM_TARGETS];
+    Vec3F targetPositiveDimensions[] = new Vec3F[NUM_TARGETS];
 
     static int NUM_QUAD_VERTEX = 4;
     static int NUM_QUAD_INDEX = 6;
@@ -120,23 +121,22 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     VideoPlayback mActivity;
 
     // Needed to calculate whether a screen tap is inside the target
-    Matrix44F modelViewMatrix[] = new Matrix44F[VideoPlayback.NUM_TARGETS];
+    Matrix44F modelViewMatrix[] = new Matrix44F[NUM_TARGETS];
 
     private Vector<Texture> mTextures;
 
-    boolean isTracking[] = new boolean[VideoPlayback.NUM_TARGETS];
-    VideoPlayerHelper.MEDIA_STATE currentStatus[] = new VideoPlayerHelper.MEDIA_STATE[VideoPlayback.NUM_TARGETS];
+    boolean isTracking[] = new boolean[NUM_TARGETS];
+    VideoPlayerHelper.MEDIA_STATE currentStatus[] = new VideoPlayerHelper.MEDIA_STATE[NUM_TARGETS];
 
     // These hold the aspect ratio of both the video and the
     // keyframe
-    float videoQuadAspectRatio[] = new float[VideoPlayback.NUM_TARGETS];
-    float keyframeQuadAspectRatio[] = new float[VideoPlayback.NUM_TARGETS];
+    float videoQuadAspectRatio[] = new float[NUM_TARGETS];
+    float keyframeQuadAspectRatio[] = new float[NUM_TARGETS];
 
 
     String [] titleArray, descriptionArray;
 
-    public VideoPlaybackRenderer(VideoPlayback activity,
-                                 SampleApplicationSession session) {
+    public VideoPlaybackRenderer(VideoPlayback activity, SampleApplicationSession session) {
 
         mActivity = activity;
         vuforiaAppSession = session;
@@ -149,17 +149,17 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         descriptionArray = mActivity.getResources().getStringArray(R.array.descriptions);
 
         // Create an array of the size of the number of targets we have
-        mVideoPlayerHelper = new VideoPlayerHelper[VideoPlayback.NUM_TARGETS];
-        mMovieName = new String[VideoPlayback.NUM_TARGETS];
-        mCanRequestType = new VideoPlayerHelper.MEDIA_TYPE[VideoPlayback.NUM_TARGETS];
-        mSeekPosition = new int[VideoPlayback.NUM_TARGETS];
-        mShouldPlayImmediately = new boolean[VideoPlayback.NUM_TARGETS];
-        mLostTrackingSince = new long[VideoPlayback.NUM_TARGETS];
-        mLoadRequested = new boolean[VideoPlayback.NUM_TARGETS];
-        mTexCoordTransformationMatrix = new float[VideoPlayback.NUM_TARGETS][16];
+        mVideoPlayerHelper = new VideoPlayerHelper[NUM_TARGETS];
+        mMovieName = new String[NUM_TARGETS];
+        mCanRequestType = new VideoPlayerHelper.MEDIA_TYPE[NUM_TARGETS];
+        mSeekPosition = new int[NUM_TARGETS];
+        mShouldPlayImmediately = new boolean[NUM_TARGETS];
+        mLostTrackingSince = new long[NUM_TARGETS];
+        mLoadRequested = new boolean[NUM_TARGETS];
+        mTexCoordTransformationMatrix = new float[NUM_TARGETS][16];
 
         // Initialize the arrays to default values
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
             mVideoPlayerHelper[i] = null;
             mMovieName[i] = "";
             mCanRequestType[i] = VideoPlayerHelper.MEDIA_TYPE.ON_TEXTURE_FULLSCREEN;
@@ -169,10 +169,10 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             mLoadRequested[i] = false;
         }
 
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++)
+        for (int i = 0; i < NUM_TARGETS; i++)
             targetPositiveDimensions[i] = new Vec3F();
 
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++)
+        for (int i = 0; i < NUM_TARGETS; i++)
             modelViewMatrix[i] = new Matrix44F();
     }
 
@@ -205,7 +205,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
         mSampleAppRenderer.onSurfaceCreated();
 
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
 
             if (mVideoPlayerHelper[i] != null) {
                 // The VideoPlayerHelper needs to setup a surface texture given
@@ -231,11 +231,64 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                             mCanRequestType[i], mShouldPlayImmediately[i],
                             mSeekPosition[i]);
                     mLoadRequested[i] = false;
+                    //playVideo();
                 }
             }
         }
     }
 
+
+    void playVideo() {
+        // Do not react if the StartupScreen is being displayed
+        for (int i = 0; i < NUM_TARGETS; i++) {
+
+            // Check if it is playable on texture
+            if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+                // We can play only if the movie was paused, ready
+                // or stopped
+                if ((mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.PAUSED)
+                        || (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.READY)
+                        || (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.STOPPED)
+                        || (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.REACHED_END)) {
+
+                    // Pause all other media
+                    pauseThemAll(i);
+
+                    // If it has reached the end then rewind
+                    if ((mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.REACHED_END))
+                        mSeekPosition[i] = 0;
+
+                    mVideoPlayerHelper[i].play(false,
+                            mSeekPosition[i]);
+                    mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
+                } else if (mVideoPlayerHelper[i].getStatus() == VideoPlayerHelper.MEDIA_STATE.PLAYING) {
+
+                    // If it is playing then we pause it
+                    mVideoPlayerHelper[i].pause();
+                }
+            } else if (mVideoPlayerHelper[i].isPlayableFullscreen()) {
+                // If it isn't playable on texture
+                // Either because it wasn't requested or because it
+                // isn't supported then request playback fullscreen.
+                mVideoPlayerHelper[i].play(true,
+                        VideoPlayerHelper.CURRENT_POSITION);
+            }
+        }
+    }
+
+
+
+        void pauseThemAll (int except) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
+            // We can make one exception to the pause all calls:
+            if (i != -1) {
+                // Check if the video is playable on texture
+                if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+                    // If it is playing then we pause it
+                    mVideoPlayerHelper[i].pause();
+                }
+            }}
+    }
 
     // Called when the surface changed size.
     public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -250,7 +303,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         // reloaded
         // See:
         // http://developer.android.com/reference/android/media/MediaPlayer.html#release()
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
             if (mLoadRequested[i] && mVideoPlayerHelper[i] != null) {
                 mVideoPlayerHelper[i].load(mMovieName[i], mCanRequestType[i],
                         mShouldPlayImmediately[i], mSeekPosition[i]);
@@ -265,7 +318,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         if (!mIsActive)
             return;
 
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
             if (mVideoPlayerHelper[i] != null) {
                 if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
                     // First we need to update the video data. This is a built
@@ -295,7 +348,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         // Call our function to render content from SampleAppRenderer class
         mSampleAppRenderer.render();
 
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
             // Ask whether the target is currently being tracked and if so react
             // to it
             if (isTracking(i)) {
@@ -370,7 +423,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         // Notice that the textures are not typical GL_TEXTURE_2D textures
         // but instead are GL_TEXTURE_EXTERNAL_OES extension textures
         // This is required by the Android SurfaceTexture
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
             GLES20.glGenTextures(1, videoPlaybackTextureID, i);
             GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
                     videoPlaybackTextureID[i]);
@@ -504,13 +557,14 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         }
 
         float temp[] = {0.0f, 0.0f, 0.0f};
-        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+        for (int i = 0; i < NUM_TARGETS; i++) {
             isTracking[i] = false;
             targetPositiveDimensions[i].setData(temp);
         }
 
         // Did we find any trackables this frame?
         for (int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++) {
+
             // Get the trackable:
             TrackableResult trackableResult = state.getTrackableResult(tIdx);
 
@@ -555,9 +609,11 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    mActivity.playCurrentVideo();
                     mActivity.updateTextFields(mTitle, mDescription);
                 }
-            });//
+            });
+
 
 
             modelViewMatrix[currentTarget] = Tool
@@ -795,6 +851,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     case READY:
                         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
                                 mTextures.get(2).mTextureID[0]);
+
                         break;
                     case REACHED_END:
                         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
@@ -833,9 +890,11 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 // Finally we return the depth func to its original state
                 GLES20.glDepthFunc(GLES20.GL_LESS);
                 GLES20.glDisable(GLES20.GL_BLEND);
+
             }
 
             SampleUtils.checkGLError("VideoPlayback renderFrame");
+
         }
 
         GLES20.glDisable(GLES20.GL_DEPTH_TEST);

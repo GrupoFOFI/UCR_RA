@@ -37,7 +37,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        ShakeHandler.OnShakeListener {
+        ShakeHandler.OnShakeListener, CommandHandler.OnCommandInteraction {
 
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -95,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        commandHandler.setOnCommandInteraction(this);
 
     }
 
@@ -103,18 +104,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (prefs.getBoolean("accessibility", false) == true) {
 
             vibe.vibrate(100);
-//        new AlertDialog.Builder(this)
-//                .setPositiveButton(android.R.string.ok, null)
-//                .setMessage("Shooken!")
-//                .show();
             if (showingPopUp == false) {
                 promptSpeechInput();
             }
-
         }
-
     }
 
+
+    @Override
+    public void onApproval() {
+        prefs.edit().putBoolean("accessibility", true).commit();
+    }
+
+    @Override
+    public void onDenial() {
+        prefs.edit().putBoolean("accessibility", false).commit();
+    }
+
+    @Override
+    public void onDialogMessage() {
+     promptSpeechInput();
+    }
 
     private void promptSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -257,7 +267,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             dialog.cancel();
                         }
                     });
-
+            commandHandler.talkUserHelp(false);
         } else {
             alertDialogBuilder.setTitle("Aviso");
             alertDialogBuilder
@@ -273,11 +283,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             dialog.cancel();
                         }
                     });
+            commandHandler.talkUserHelp(true);
         }
 
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+
 
     }
 
