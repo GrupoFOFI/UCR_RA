@@ -20,21 +20,24 @@ for line in p:
     i = i +1
 f = open('adyacencias.txt', 'r')
 m = open('distancias.txt', 'w')
+punto = 1
 for line in f:
-    l = []
-    l = line.replace(')', '').replace('\n','').replace('\t','').split('(',-1)
-    punto = int(l[0])
     ady = []
-    ady = l[1].split(',',-1)
+    ady = line.split(',',-1)
+
     for x in range(0,len(ady)):
         ady[x] = int(ady[x])
+
     lat1 = Lat[punto-1]
     lng1 = Lng[punto-1]
     dist = ''
     for idx,a in enumerate(ady):
+        #print str(punto) + 'ad: ' +str(a)+ '\n'
         lat2 = Lat[a-1]
         lng2 = Lng[a-1]
         d = distancia(lat1,lat2,lng1,lng2,0,0)
+        #print str(d) + '\n'
         dist += str(d)
         dist += ','
     m.write(dist + '\n')
+    punto += 1

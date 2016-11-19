@@ -1,8 +1,13 @@
 package ra.inge.ucr.location;
 
+import android.graphics.Color;
 import android.location.Location;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 import ra.inge.ucr.da.Datos;
 import ra.inge.ucr.da.Edificio;
@@ -166,6 +171,34 @@ public class LocationHelper {
             a = -1;
         }
         return a;
+    }
+
+    private void drawPrimaryLinePath(ArrayList<Location> listLocsToDraw, GoogleMap map)
+    {
+        if ( map == null )
+        {
+            return;
+        }
+
+        if ( listLocsToDraw.size() < 2 )
+        {
+            return;
+        }
+
+        PolylineOptions options = new PolylineOptions();
+
+        options.color( Color.parseColor( "#CC0000FF" ) );
+        options.width( 5 );
+        options.visible( true );
+
+        for ( Location locRecorded : listLocsToDraw )
+        {
+            options.add( new LatLng( locRecorded.getLatitude(),
+                    locRecorded.getLongitude() ) );
+        }
+
+        map.addPolyline( options );
+
     }
 
 }

@@ -3,7 +3,6 @@ package ra.inge.ucr.ucraumentedreality.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
-import android.hardware.Sensor;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
