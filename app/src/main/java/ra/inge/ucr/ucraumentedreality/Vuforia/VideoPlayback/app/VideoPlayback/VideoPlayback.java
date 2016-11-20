@@ -53,7 +53,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl {
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, VideoPlaybackRenderer.OnTrackListener {
 
     private static final String LOGTAG = "VideoPlayback";
 
@@ -66,7 +66,6 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     // Movie for the Targets:
     public static final int NUM_TARGETS = 13;
-
 
     public static final int ANTART = 0;
     public static final int OSOS = 1;
@@ -99,7 +98,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     // The textures we will use for rendering:
     private Vector<Texture> mTextures;
 
-    DataSet dataSetStonesAndChips = null;
+    DataSet ucrTargetDataset = null;
 
     private RelativeLayout mUILayout;
 
@@ -119,8 +118,40 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private TextView titleTextView;
     private TextView descriptionTextView;
 
-    // Shake Handler
-    ShakeHandler shakeHandler;
+    @Override
+    public void playVideo() {
+
+        // Do not react if the StartupScreen is being displayed
+        for (int i = 0; i < NUM_TARGETS; i++) {
+
+            // Check if it is playable on texture
+            if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+
+                // We can play only if the movie was paused, ready
+                // or stopped
+                if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
+                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
+                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
+                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
+
+                    // Pause all other media
+                    pauseAll(i);
+
+                    // If it has reached the end then rewind
+                    if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
+                        mSeekPosition[i] = 0;
+
+                    mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
+                            mSeekPosition[i]);
+                    mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
+                } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
+
+                    // If it is playing then we pause it
+                    mVideoPlayerHelper[i].pause();
+                }
+            }
+        }
+    }
 
     // Called when the activity first starts or the user navigates back
     // to an activity.
@@ -129,14 +160,11 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.vuforia_ui);
-
-//        mUILayout = (RelativeLayout) findViewById(R.id.rel_layout);
-//        Log.i("YUPI", mUILayout.toString());
-
         vuforiaAppSession = new SampleApplicationSession(this);
 
         mActivity = this;
 
+        this.setTitle("Vuforia");
         startLoadingAnimation();
 
         vuforiaAppSession
@@ -180,15 +208,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mMovieName[12] = "VideoPlayback/centro-info.mp4";
 
 
-        shakeHandler = new ShakeHandler(this.getApplicationContext());
-
         // Set the double tap listener:
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
             public boolean onDoubleTap(MotionEvent e) {
                 // We do not react to this event
                 return false;
             }
-
 
             public boolean onDoubleTapEvent(MotionEvent e) {
                 // We do not react to this event
@@ -198,53 +223,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
             // Handle the single tap
             public boolean onSingleTapConfirmed(MotionEvent e) {
-                boolean isSingleTapHandled = false;
-                // Do not react if the StartupScreen is being displayed
-                for (int i = 0; i < NUM_TARGETS; i++) {
-                    // Verify that the tap happened inside the target
-                    if (mRenderer != null && mRenderer.isTapOnScreenInsideTarget(i, e.getX(),
-                            e.getY())) {
-                        // Check if it is playable on texture
-                        if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
-                            // We can play only if the movie was paused, ready
-                            // or stopped
-                            if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
-                                    || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
-                                    || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
-                                    || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
-                                // Pause all other media
-                                pauseAll(i);
-
-                                // If it has reached the end then rewind
-                                if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
-                                    mSeekPosition[i] = 0;
-
-                                mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
-                                        mSeekPosition[i]);
-                                mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
-                            } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
-                                // If it is playing then we pause it
-                                mVideoPlayerHelper[i].pause();
-                            }
-                        } else if (mVideoPlayerHelper[i].isPlayableFullscreen()) {
-                            // If it isn't playable on texture
-                            // Either because it wasn't requested or because it
-                            // isn't supported then request playback fullscreen.
-                            mVideoPlayerHelper[i].play(true,
-                                    VideoPlayerHelper.CURRENT_POSITION);
-                        }
-
-                        isSingleTapHandled = true;
-
-                        // Even though multiple videos can be loaded only one
-                        // can be playing at any point in time. This break
-                        // prevents that, say, overlapping videos trigger
-                        // simultaneously playback.
-                        break;
-                    }
-                }
-
-                return isSingleTapHandled;
+               return  isReallyTapped(e);
             }
         });
     }
@@ -253,18 +232,71 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     // We want to load specific textures from the APK, which we will later
     // use for rendering.
     private void loadTextures() {
-        mTextures.add(Texture.loadTextureFromApk(
-                "VideoPlayback/VuforiaSizzleReel_1.png", getAssets()));
-        mTextures.add(Texture.loadTextureFromApk(
-                "VideoPlayback/VuforiaSizzleReel_2.png", getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/play.png",
-                getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/busy.png",
-                getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png",
-                getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/VuforiaSizzleReel_1.png", getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/VuforiaSizzleReel_2.png", getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/play.png", getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/busy.png", getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png",  getAssets()));
     }
 
+
+    public boolean isReallyTapped (MotionEvent e) {
+
+        boolean isSingleTapHandled = false;
+
+        // Do not react if the StartupScreen is being displayed
+        for (int i = 0; i < NUM_TARGETS; i++) {
+
+            // Verify that the tap happened inside the target
+            if (mRenderer != null && mRenderer.isTapOnScreenInsideTarget(i, e.getX(),
+                    e.getY())) {
+
+                // Check if it is playable on texture
+                if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+
+                    // We can play only if the movie was paused, ready
+                    // or stopped
+                    if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
+                            || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
+                            || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
+                            || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
+
+                        // Pause all other media
+                        pauseAll(i);
+
+                        // If it has reached the end then rewind
+                        if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
+                            mSeekPosition[i] = 0;
+
+                        mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
+                                mSeekPosition[i]);
+                        mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
+                    } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
+
+                        // If it is playing then we pause it
+                        mVideoPlayerHelper[i].pause();
+                    }
+                } else if (mVideoPlayerHelper[i].isPlayableFullscreen()) {
+
+                    // If it isn't playable on texture
+                    // Either because it wasn't requested or because it
+                    // isn't supported then request playback fullscreen.
+                    mVideoPlayerHelper[i].play(true,
+                            VideoPlayerHelper.CURRENT_POSITION);
+                }
+
+                isSingleTapHandled = true;
+
+                // Even though multiple videos can be loaded only one
+                // can be playing at any point in time. This break
+                // prevents that, say, overlapping videos trigger
+                // simultaneously playback.
+                break;
+            }
+        }
+        return isSingleTapHandled;
+
+    }
 
     // Called when the activity will start interacting with the user.
     public void onResume() {
@@ -329,7 +361,6 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public void onConfigurationChanged(Configuration config) {
         Log.d(LOGTAG, "onConfigurationChanged");
         super.onConfigurationChanged(config);
-
         vuforiaAppSession.onConfigurationChanged();
     }
 
@@ -447,6 +478,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
         mRenderer = new VideoPlaybackRenderer(this, vuforiaAppSession);
         mRenderer.setTextures(mTextures);
+        mRenderer.setOnTrackListener(this);
 
         // The renderer comes has the OpenGL context, thus, loading to texture
         // must happen when the surface has been created. This means that we
@@ -512,21 +544,21 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         }
 
         // Create the data sets:
-        dataSetStonesAndChips = objectTracker.createDataSet();
-        if (dataSetStonesAndChips == null) {
+        ucrTargetDataset = objectTracker.createDataSet();
+        if (ucrTargetDataset == null) {
             Log.d(LOGTAG, "Failed to create a new tracking data.");
             return false;
         }
 
         // Load the data sets:
-        if (!dataSetStonesAndChips.load("Edificios_Monumentos.xml",
+        if (!ucrTargetDataset.load("Edificios_Monumentos.xml",
                 STORAGE_TYPE.STORAGE_APPRESOURCE)) {
             Log.d(LOGTAG, "Failed to load data set.");
             return false;
         }
 
         // Activate the data set:
-        if (!objectTracker.activateDataSet(dataSetStonesAndChips)) {
+        if (!objectTracker.activateDataSet(ucrTargetDataset)) {
             Log.d(LOGTAG, "Failed to activate data set.");
             return false;
         }
@@ -585,20 +617,20 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             return false;
         }
 
-        if (dataSetStonesAndChips != null) {
-            if (objectTracker.getActiveDataSet() == dataSetStonesAndChips
-                    && !objectTracker.deactivateDataSet(dataSetStonesAndChips)) {
+        if (ucrTargetDataset != null) {
+            if (objectTracker.getActiveDataSet() == ucrTargetDataset
+                    && !objectTracker.deactivateDataSet(ucrTargetDataset)) {
                 Log.d(
                         LOGTAG,
                         "Failed to destroy the tracking data set StonesAndChips because the data set could not be deactivated.");
                 result = false;
-            } else if (!objectTracker.destroyDataSet(dataSetStonesAndChips)) {
+            } else if (!objectTracker.destroyDataSet(ucrTargetDataset)) {
                 Log.d(LOGTAG,
                         "Failed to destroy the tracking data set StonesAndChips.");
                 result = false;
             }
 
-            dataSetStonesAndChips = null;
+            ucrTargetDataset = null;
         }
 
         return result;
@@ -608,8 +640,16 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     @Override
     public void onBackPressed() {
         pauseAll(-1);
+
+        try {
+            vuforiaAppSession.stopAR();
+        } catch (SampleApplicationException e) {
+            e.printStackTrace();
+        }
+
+        doStopTrackers();
         super.onBackPressed();
-        this.finish();
+        finish();
     }
 
     @Override
@@ -681,6 +721,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
             // Sets the layout background to transparent
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
+
             // Original
 //            addContentView(testLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
 //                    LayoutParams.WRAP_CONTENT));
@@ -710,7 +751,6 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     // Shows initialization error messages as System dialogs
     public void showInitializationErrorMessage(String message) {
         final String errorMessage = message;
-//        getActivity().
         runOnUiThread(new Runnable() {
             public void run() {
                 if (mErrorDialog != null) {
@@ -719,9 +759,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
                 // Generates an Alert Dialog to show the error message
                 AlertDialog.Builder builder = new AlertDialog.Builder(
-                        VideoPlayback.this
-//                                .getActivity());
-                );
+                        VideoPlayback.this);
                 builder
                         .setMessage(errorMessage)
                         .setTitle(getString(R.string.INIT_ERROR))
@@ -730,7 +768,6 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-//                                        getActivity().
                                         finish();
                                     }
                                 });

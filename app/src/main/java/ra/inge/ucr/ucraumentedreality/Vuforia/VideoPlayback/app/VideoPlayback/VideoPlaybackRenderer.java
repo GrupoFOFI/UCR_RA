@@ -3,7 +3,7 @@ Copyright (c) 2016 PTC Inc. All Rights Reserved.
 
 Copyright (c) 2012-2014 Qualcomm Connected Experiences, Inc. All Rights Reserved.
 
-Vuforia is a trademark of PTC Inc., registered in the United States and other 
+Vuforia is a trademark of PTC Inc., registered in the United States and other
 countries.
 ===============================================================================*/
 
@@ -51,6 +51,23 @@ import static android.opengl.GLES20.GL_CULL_FACE;
 
 // The renderer class for the VideoPlayback sample.
 public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl {
+
+
+    // Testing
+
+    private OnTrackListener onTrackListener;
+
+    public interface OnTrackListener {
+        void playVideo();
+    }
+
+    public void setOnTrackListener(OnTrackListener onTrackListener) {
+        this.onTrackListener = onTrackListener;
+    }
+
+    // eot
+
+
     private static final String LOGTAG = "VideoPlaybackRenderer";
 
     SampleApplicationSession vuforiaAppSession;
@@ -75,14 +92,14 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
     // We cannot use the default texture coordinates of the quad since these
     // will change depending on the video itself
-    private float videoQuadTextureCoords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, };
+    private float videoQuadTextureCoords[] = {0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,};
 //            {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,};
 
 
     // This variable will hold the transformed coordinates (changes every frame)
     private float videoQuadTextureCoordsTransformedStones[] =
             {0.0f, 0.0f,
-            1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,};
+                    1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,};
 
     private float videoQuadTextureCoordsTransformedChips[] = {0.0f, 0.0f,
             1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,};
@@ -133,7 +150,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     float keyframeQuadAspectRatio[] = new float[VideoPlayback.NUM_TARGETS];
 
 
-    String [] titleArray, descriptionArray;
+    String[] titleArray, descriptionArray;
 
     public VideoPlaybackRenderer(VideoPlayback activity,
                                  SampleApplicationSession session) {
@@ -283,8 +300,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     mVideoPlayerHelper[i]
                             .getSurfaceTextureTransformMatrix(mTexCoordTransformationMatrix[i]);
                     setVideoDimensions(i,
-                            100,//mVideoPlayerHelper[i].getVideoWidth(),
-                            100,//mVideoPlayerHelper[i].getVideoHeight(),
+                            80,//mVideoPlayerHelper[i].getVideoWidth(),
+                            80,//mVideoPlayerHelper[i].getVideoHeight(),
                             mTexCoordTransformationMatrix[i]);
                 }
 
@@ -408,17 +425,17 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 "modelViewProjectionMatrix");
         keyframeTexSampler2DHandle = GLES20.glGetUniformLocation(
                 keyframeShaderID, "texSampler2D");
-        
+
         /*keyframeQuadAspectRatio[VideoPlayback.STONES] = (float) mTextures
             .get(0).mHeight / (float) mTextures.get(0).mWidth;
         keyframeQuadAspectRatio[VideoPlayback.CHIPS] = (float) mTextures.get(1).mHeight
             / (float) mTextures.get(1).mWidth;*/
-        for (int i = 0; i <13; i=i+2) {
+        for (int i = 0; i < 13; i = i + 2) {
             keyframeQuadAspectRatio[i] = (float) mTextures.get(0).mHeight
                     / (float) mTextures.get(0).mWidth;
-            if(i<12)
-            keyframeQuadAspectRatio[i + 1] = (float) mTextures.get(1).mHeight
-                    / (float) mTextures.get(1).mWidth;
+            if (i < 12)
+                keyframeQuadAspectRatio[i + 1] = (float) mTextures.get(1).mHeight
+                        / (float) mTextures.get(1).mWidth;
         }
 
 
@@ -472,9 +489,6 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
     }
 
-
-
-
     @SuppressLint("InlinedApi")
     // The render function called from SampleAppRendering by using RenderingPrimitives views.
     // The state is owned by SampleAppRenderer which is controlling it's lifecycle.
@@ -517,37 +531,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             ImageTarget imageTarget = (ImageTarget) trackableResult
                     .getTrackable();
 
-            int currentTarget = 0;
-
-            // We store the modelview matrix to be used later by the tap
-            // calculation
-            if (imageTarget.getName().toLowerCase().contains("antarticos")) {
-                currentTarget = VideoPlayback.ANTART;
-            } else if (imageTarget.getName().toLowerCase().contains("osos_amorosos")) {
-                currentTarget = VideoPlayback.OSOS;
-            } else if (imageTarget.getName().toLowerCase().contains("mate")) {
-                currentTarget = VideoPlayback.MATE;
-            } else if (imageTarget.getName().toLowerCase().contains("leda")) {
-                currentTarget = VideoPlayback.LEDA;
-            } else if (imageTarget.getName().toLowerCase().contains("plaza24")) {
-                currentTarget = VideoPlayback.PLAZA;
-            } else if (imageTarget.getName().toLowerCase().contains("carlos_monge")) {
-                currentTarget = VideoPlayback.MONGE;
-            } else if (imageTarget.getName().toLowerCase().contains("comedor")) {
-                currentTarget = VideoPlayback.COMEDOR;
-            } else if (imageTarget.getName().toLowerCase().contains("derecho")) {
-                currentTarget = VideoPlayback.DERECHO;
-            } else if (imageTarget.getName().toLowerCase().contains("busto")) {
-                currentTarget = VideoPlayback.BUSTO;
-            } else if (imageTarget.getName().toLowerCase().contains("ecci")) {
-                currentTarget = VideoPlayback.ECCI;
-            } else if (imageTarget.getName().toLowerCase().contains("generales")) {
-                currentTarget = VideoPlayback.GIRASOL;
-            } else if (imageTarget.getName().toLowerCase().contains("fernando")) {
-                currentTarget = VideoPlayback.FERNANDO;
-            } else if (imageTarget.getName().toLowerCase().contains("centro_info")) {
-
-            }
+            int currentTarget = retrieveTarget(imageTarget.getName());
+//            onTrackListener.playVideo();
 
             final String mTitle = titleArray[currentTarget];
             final String mDescription = descriptionArray[currentTarget];
@@ -558,7 +543,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 public void run() {
                     mActivity.updateTextFields(mTitle, mDescription);
                 }
-            });//
+            });
 
 
             modelViewMatrix[currentTarget] = Tool
@@ -581,6 +566,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.REACHED_END)
                     || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.NOT_READY)
                     || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.ERROR)) {
+
+
                 float[] modelViewMatrixKeyframe = Tool.convertPose2GLMatrix(
                         trackableResult.getPose()).getData();
 
@@ -790,8 +777,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 // regular
                 // GL_TEXTURE_2D textures
 
-                Log.i("STATUS", ""+currentTarget);
-                Log.i("STATUS", "" +currentStatus[currentTarget]);
+                Log.i("STATUS", "" + currentTarget);
+                Log.i("STATUS", "" + currentStatus[currentTarget]);
                 switch (currentStatus[currentTarget]) {
                     case READY:
                         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,
@@ -834,6 +821,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 // Finally we return the depth func to its original state
                 GLES20.glDepthFunc(GLES20.GL_LESS);
                 GLES20.glDisable(GLES20.GL_BLEND);
+
+//                onTrackListener.playVideo();
             }
 
             SampleUtils.checkGLError("VideoPlayback renderFrame");
@@ -844,7 +833,6 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         Renderer.getInstance().end();
 
     }
-
 
 
     boolean isTapOnScreenInsideTarget(int target, float x, float y) {
@@ -891,7 +879,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         float mtx[] = textureCoordMatrix;
         float tempUVMultRes[] = new float[2];
 
-        if (target%2 == 1) {
+        if (target % 2 == 1) {
             tempUVMultRes = uvMultMat4f(
                     videoQuadTextureCoordsTransformedStones[0],
                     videoQuadTextureCoordsTransformedStones[1],
@@ -916,7 +904,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     videoQuadTextureCoords[6], videoQuadTextureCoords[7], mtx);
             videoQuadTextureCoordsTransformedStones[6] = tempUVMultRes[0];
             videoQuadTextureCoordsTransformedStones[7] = tempUVMultRes[1];
-        } else if (target%2 == 0) {
+        } else if (target % 2 == 0) {
             tempUVMultRes = uvMultMat4f(
                     videoQuadTextureCoordsTransformedChips[0],
                     videoQuadTextureCoordsTransformedChips[1],
@@ -997,6 +985,37 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         }
     }
 
+
+    int retrieveTarget(String targetName) {
+        if (targetName.toLowerCase().contains("antarticos")) {
+            return VideoPlayback.ANTART;
+        } else if (targetName.toLowerCase().contains("osos_amorosos")) {
+            return VideoPlayback.OSOS;
+        } else if (targetName.toLowerCase().contains("mate")) {
+            return VideoPlayback.MATE;
+        } else if (targetName.toLowerCase().contains("leda")) {
+            return VideoPlayback.LEDA;
+        } else if (targetName.toLowerCase().contains("plaza24")) {
+            return VideoPlayback.PLAZA;
+        } else if (targetName.toLowerCase().contains("carlos_monge")) {
+            return VideoPlayback.MONGE;
+        } else if (targetName.toLowerCase().contains("comedor")) {
+            return VideoPlayback.COMEDOR;
+        } else if (targetName.toLowerCase().contains("derecho")) {
+            return VideoPlayback.DERECHO;
+        } else if (targetName.toLowerCase().contains("busto")) {
+            return VideoPlayback.BUSTO;
+        } else if (targetName.toLowerCase().contains("ecci")) {
+            return VideoPlayback.ECCI;
+        } else if (targetName.toLowerCase().contains("generales")) {
+            return VideoPlayback.GIRASOL;
+        } else if (targetName.toLowerCase().contains("fernando")) {
+            return VideoPlayback.FERNANDO;
+        } else if (targetName.toLowerCase().contains("centro_info")) {
+            return VideoPlayback.INFO;
+        }
+        return 0;
+    }
 
     boolean isTracking(int target) {
         return isTracking[target];

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseMonumentsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.LatestRecognitionFragment;
@@ -36,6 +37,15 @@ public class HomeFragment extends Fragment {
     private ShakeHandler shakeHandler;
     private Vibrator vibe;
     private View root;
+    private HomeActivity homeActivity;
+
+    /**
+     * Setter for the home activity
+     * @param homeActivity
+     */
+    public void setHomeActivity(HomeActivity homeActivity) {
+        this.homeActivity = homeActivity;
+    }
 
     @Nullable
     @Override
@@ -69,5 +79,8 @@ public class HomeFragment extends Fragment {
         viewPager.setAdapter(adapter);
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

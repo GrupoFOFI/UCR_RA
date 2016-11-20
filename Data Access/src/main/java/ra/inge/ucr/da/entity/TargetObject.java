@@ -17,7 +17,6 @@ public class TargetObject {
     private int id;
     /**
      * The object type
-     *
      */
     private TargetType type;
     /**
@@ -40,6 +39,14 @@ public class TargetObject {
      * The object's description
      */
     private String description;
+    /**
+     * The object's website
+     */
+    private String website;
+    /**
+     * The object's video
+     */
+    private String video;
 
     /**
      * Empty constructor for the class
@@ -68,10 +75,36 @@ public class TargetObject {
         this.description = description;
     }
 
+    /**
+     *
+     * @param id
+     * @param type
+     * @param latitude
+     * @param longitude
+     * @param altitude
+     * @param name
+     * @param description
+     * @param website
+     * @param video
+     */
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String description, String website, String video) {
+        this.id = id;
+        this.type = type;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.altitude = altitude;
+        this.name = name;
+        this.description = description;
+        this.website = website;
+        this.video = video;
+    }
+
+
     /*  Getters and Setters */
 
     /**
      * Getter for the target's id
+     *
      * @return
      */
     public int getId() {
@@ -80,6 +113,7 @@ public class TargetObject {
 
     /**
      * Setter for the Target's id
+     *
      * @param id
      */
     public void setId(int id) {
@@ -87,7 +121,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @return
      */
     public TargetType getType() {
@@ -95,7 +128,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @param type
      */
     public void setType(TargetType type) {
@@ -103,7 +135,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @return
      */
     public double getLatitude() {
@@ -111,7 +142,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @param latitude
      */
     public void setLatitude(double latitude) {
@@ -119,7 +149,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @return
      */
     public double getLongitude() {
@@ -127,7 +156,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @param longitude
      */
     public void setLongitude(double longitude) {
@@ -135,7 +163,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @return
      */
     public double getAltitude() {
@@ -143,7 +170,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @param altitude
      */
     public void setAltitude(double altitude) {
@@ -151,7 +177,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @return
      */
     public String getName() {
@@ -159,7 +184,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @param name
      */
     public void setName(String name) {
@@ -167,7 +191,6 @@ public class TargetObject {
     }
 
     /**
-     *
      * @return
      */
     public String getDescription() {
@@ -175,10 +198,41 @@ public class TargetObject {
     }
 
     /**
-     *
      * @param description
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getWebsite() {
+        return website;
+    }
+
+    /**
+     *
+     * @param website
+     */
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getVideo() {
+        return video;
+    }
+
+    /**
+     *
+     * @param video
+     */
+    public void setVideo(String video) {
+        this.video = video;
     }
 }
