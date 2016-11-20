@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseMonumentsFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.LatestRecognitionFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
@@ -39,9 +40,9 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        root  = inflater.inflate(R.layout.fragment_home, container, false);
+        root = inflater.inflate(R.layout.fragment_home, container, false);
         setupViewPager();
-        return  root;
+        return root;
     }
 
     /**
@@ -57,7 +58,6 @@ public class HomeFragment extends Fragment {
 
 
     /**
-     *
      * @param viewPager
      */
     private void setupViewPager(ViewPager viewPager) {
@@ -65,11 +65,9 @@ public class HomeFragment extends Fragment {
         MapsFragment mapsFragment = new MapsFragment();
         adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
         adapter.addFrag(new CloseMonumentsFragment(mapsFragment), "Monumentos Más Cercanos");
-        adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
+        adapter.addFrag(new LatestRecognitionFragment(), "Ultimos reconocimientos");
         viewPager.setAdapter(adapter);
     }
-
-
 
 
 }

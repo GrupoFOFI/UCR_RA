@@ -8,17 +8,17 @@
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_camera"
-            android:icon="@drawable/floating_camera"
+            android:icon="@drawable/ic_photo_camera_white_24dp"
             android:title="@string/menu_ra" />
 
         <item
             android:id="@+id/nav_maps"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_location_on_black_24dp"
             android:title="@string/menu_maps" />
 
         <item
             android:id="@+id/nav_takeme"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_drive_eta_black_24dp"
             android:title="Llévame" />
 
     </group>
@@ -31,8 +31,8 @@
                 android:title="@string/menu_share" />
             <item
                 android:id="@+id/nav_accessibility"
-                android:icon="@drawable/ic_settings_black_24dp"
-                android:title="Modalidad 2" />
+                android:icon="@drawable/ic_live_help_black_24dp"
+                android:title="Modo Accesibilidad" />
 
             <item
                 android:id="@+id/nav_settings"

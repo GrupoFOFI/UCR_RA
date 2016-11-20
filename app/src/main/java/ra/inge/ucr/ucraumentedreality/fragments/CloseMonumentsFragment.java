@@ -46,7 +46,7 @@ public class CloseMonumentsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_close_buildings, container, false);
+        View view = inflater.inflate(R.layout.fragment_close_monuments, container, false);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(
                 R.id.fragment_list_rv);

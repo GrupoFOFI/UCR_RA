@@ -18,6 +18,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -52,7 +53,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends Activity implements SampleApplicationControl {
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl {
 
     private static final String LOGTAG = "VideoPlayback";
 
@@ -65,6 +66,8 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
 
     // Movie for the Targets:
     public static final int NUM_TARGETS = 13;
+
+
     public static final int ANTART = 0;
     public static final int OSOS = 1;
     public static final int MATE = 2;
@@ -247,7 +250,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
     }
 
 
-
     // We want to load specific textures from the APK, which we will later
     // use for rendering.
     private void loadTextures() {
@@ -262,7 +264,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png",
                 getAssets()));
     }
-
 
 
     // Called when the activity will start interacting with the user.
@@ -413,13 +414,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
     }
 
 
-    // Do not exit immediately and instead show the startup screen
-    /*public void onBackPressed() {
-        pauseAll(-1);
-        super.onBackPressed();
-    }*/
-
-
     private void startLoadingAnimation() {
         mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
                 null);
@@ -439,7 +433,6 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT));
     }
-
 
 
     // Initializes AR application components.
@@ -611,8 +604,10 @@ public class VideoPlayback extends Activity implements SampleApplicationControl 
         return result;
     }
 
+    // Do not exit immediately and instead show the startup screen
     @Override
     public void onBackPressed() {
+        pauseAll(-1);
         super.onBackPressed();
         this.finish();
     }
