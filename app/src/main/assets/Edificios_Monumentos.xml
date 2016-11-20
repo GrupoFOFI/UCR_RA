@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="osos_amorosos4" size="350.000000 327.432587" />
+    <ImageTarget name="centro_info_p5" size="500.000000 666.666687" />
+    <ImageTarget name="centro_info_p4" size="500.000000 375.000000" />
+    <ImageTarget name="centro_info_p3" size="500.000000 666.666687" />
+    <ImageTarget name="centro_info_p2" size="500.000000 666.666687" />
+    <ImageTarget name="bustos3" size="500.000000 666.666687" />
+    <ImageTarget name="bustos2" size="300.000000 400.000000" />
+    <ImageTarget name="bustos1" size="300.000000 400.000000" />
+    <ImageTarget name="bustos0" size="300.000000 400.000000" />
+    <ImageTarget name="centro_info_p1" size="300.000000 300.000000" />
     <ImageTarget name="antarticos_p1" size="200.000000 143.396225" />
     <ImageTarget name="facio_p2" size="250.000000 250.000000" />
     <ImageTarget name="facio_p1" size="250.000000 234.608978" />
@@ -11,7 +21,6 @@
     <ImageTarget name="comedor_p2" size="300.000000 300.000000" />
     <ImageTarget name="comedor_p1" size="300.000000 300.000000" />
     <ImageTarget name="osos_amorosos5" size="300.000000 400.000000" />
-    <ImageTarget name="osos_amorosos4" size="300.000000 225.000000" />
     <ImageTarget name="osos_amorosos3" size="300.000000 400.000000" />
     <ImageTarget name="antarticos5" size="300.000000 225.000000" />
     <ImageTarget name="antarticos4" size="300.000000 399.799988" />
