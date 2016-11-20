@@ -1,6 +1,7 @@
 package ra.inge.ucr.location;
 
 import android.content.Context;
+import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -33,20 +34,62 @@ public class NavigationHelper {
     }
 
     /**
-     * Returns the three closest paths to the specified point
+     * Returns the closest paths to the specified point
+     * The maximum number of paths is 3
      *
-     * @param point the point to calculate the closest paths to.
+     * @param userLocation the user's position in the map.
+     * @param point the point index to calculate the closest paths.
      * @return
      */
-    public Path[] getPathsToPoint(LatLng point) {
-        Path[] paths = new Path[3]; // not always 3
-        LatLng userLastLocation = locationHelper.getLastLocation();
+    public List<Path> getPathsToPoint(LatLng userLocation, int point) {
+        List<Path> paths = new ArrayList<Path>();
+        LatLng userLastLocation = userLocation;//locationHelper.getLastLocation();
         if (userLastLocation == null) return null; // We need the user's location
 
+        // find the nearest point to the user
         LatLng[] nodes = nodeParser.getNodes();
-        //float[] distances = nodeParser.getClosestDistances();
+        int closestNodeIndex = -1;
+        LatLng closest = nodes[0];
+        float lastDist = Float.POSITIVE_INFINITY;
+        float[] results = new float[1];
+        for (int i = 0; i < nodes.length; i++) {
+            // calculate vector distance
+            Location.distanceBetween(closest.latitude, closest.longitude, nodes[i].latitude, nodes[i].longitude, results);
+            if (results[0] < lastDist) {
+                closestNodeIndex = i;
+                closest = nodes[0];
+                lastDist = results[0];
+            }
+        }
 
-        return null;
+        // we have the closest node, calculate closest path
+        float[] distances = nodeParser.getClosestDistances(closestNodeIndex);
+        int[][] pathsMatrix = nodeParser.getPathsMatrix();
+        List<Float> pIndex = new ArrayList<Float>();
+        for (int i = 0; i < 3; i++) {
+            int minorIndex = 0;
+            for (int j = 0; j < distances.length; j++) {
+                if (distances[j] < distances[minorIndex]) {
+                    minorIndex = j;
+                }
+            }
+            if (distances[minorIndex] == Float.POSITIVE_INFINITY) break; // no more paths
+            //pIndex.add(distances[minorIndex]);
+
+            Path path = new Path();
+            List<Integer> indexPath = findPath(pathsMatrix, minorIndex, point);
+            List<LatLng> actualPath = new ArrayList<LatLng>();
+            for (int k = 0; k < indexPath.size(); k++) {
+                actualPath.add(nodes[indexPath.get(k)]);
+            }
+            path.setPoints(actualPath);
+            paths.add(path);
+
+            // Remove the closest path from the array
+            distances[minorIndex] = Float.POSITIVE_INFINITY;
+        }
+
+        return paths;
     }
 
     /**

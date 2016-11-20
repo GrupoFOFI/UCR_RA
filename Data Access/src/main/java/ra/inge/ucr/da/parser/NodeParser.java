@@ -178,4 +178,8 @@ public class NodeParser {
         }
         return null;
     }
+
+    public int[][] getPathsMatrix() {
+        return m_Paths;
+    }
 }
