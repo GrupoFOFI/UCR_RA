@@ -537,7 +537,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 currentTarget = VideoPlayback.COMEDOR;
             } else if (imageTarget.getName().toLowerCase().contains("derecho")) {
                 currentTarget = VideoPlayback.DERECHO;
-            } else if (imageTarget.getName().toLowerCase().contains("busto2")) {
+            } else if (imageTarget.getName().toLowerCase().contains("busto")) {
                 currentTarget = VideoPlayback.BUSTO;
             } else if (imageTarget.getName().toLowerCase().contains("ecci")) {
                 currentTarget = VideoPlayback.ECCI;
@@ -545,7 +545,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 currentTarget = VideoPlayback.GIRASOL;
             } else if (imageTarget.getName().toLowerCase().contains("fernando")) {
                 currentTarget = VideoPlayback.FERNANDO;
-            } else if (imageTarget.getName().toLowerCase().contains("centro_inform")) {
+            } else if (imageTarget.getName().toLowerCase().contains("centro_info")) {
+
             }
 
             final String mTitle = titleArray[currentTarget];
