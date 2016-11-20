@@ -49,7 +49,7 @@ public class NavigationHelper {
         // find the nearest point to the user
         LatLng[] nodes = nodeParser.getNodes();
         int closestNodeIndex = -1;
-        LatLng closest = nodes[0];
+        LatLng closest = userLocation;
         float lastDist = Float.POSITIVE_INFINITY;
         float[] results = new float[1];
         for (int i = 0; i < nodes.length; i++) {
@@ -106,7 +106,7 @@ public class NavigationHelper {
         if (matrix[from][to] == -1) return path;
         path.add(from);
         while (from != to) {
-            from = matrix[from-1][to-1];
+            from = matrix[from][to];
             path.add(from);
         }
         return path;

@@ -2,11 +2,10 @@ package ra.inge.ucr.da.parser;
 
 import android.content.Context;
 
-import com.enrico.dataaccess.R;
+import ra.inge.ucr.da.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -59,20 +58,25 @@ public class NodeParser {
                 }
                 m_Nodes = nodes;
                 reader.close();
-            } catch (Exception ex) { }
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
         }
         return m_Nodes;
     }
 
     private int getLineAmount(int resourceId) {
         try {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(m_Context.getResources().openRawResourceFd(resourceId).getFileDescriptor()));
+            InputStream inputStream = m_Context.getResources().openRawResource(resourceId);
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            //LineNumberReader lnr = new LineNumberReader(new FileReader(assetFileDescriptor.getFileDescriptor()));
+            LineNumberReader lnr = new LineNumberReader(reader);
             lnr.skip(Long.MAX_VALUE);
             int N = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
             lnr.close();
             return N;
         } catch (Exception ex) {
-
+            System.out.println(ex.getMessage());
         }
         return 0;
     }
@@ -128,19 +132,19 @@ public class NodeParser {
                 while ((line = reader.readLine()) != null) {
                     String[] split = line.split(",");
                     for (int i = 0; i < split.length; i++) {
-                        int num = Integer.parseInt(split[i]);
+                        float num = Float.parseFloat(split[i]);
                         distances[count][i] = num;
                     }
                     count++;
                 }
                 reader.close();
                 m_Distances = distances;
-                return m_Distances[nodeIndex-1];
+                return m_Distances[nodeIndex];
             } catch (Exception ex) {
 
             }
         } else {
-            return m_Distances[nodeIndex-1];
+            return m_Distances[nodeIndex];
         }
         return null;
     }
@@ -169,17 +173,41 @@ public class NodeParser {
                 }
                 reader.close();
                 m_Paths = paths;
-                return m_Paths[nodeIndex-1];
+                return m_Paths[nodeIndex];
             } catch (Exception ex) {
 
             }
         } else {
-            return m_Paths[nodeIndex-1];
+            return m_Paths[nodeIndex];
         }
         return null;
     }
 
     public int[][] getPathsMatrix() {
-        return m_Paths;
+        if (m_Paths == null) {
+            try {
+                int N = getLineAmount(FLOYD_PATH_FILE);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(m_Context.getResources().openRawResource(FLOYD_PATH_FILE)));
+                String line = "";
+                int[][] paths = new int[N][N];
+                int count = 0;
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+                    for (int i = 0; i < split.length; i++) {
+                        int num = Integer.parseInt(split[i]);
+                        paths[count][i] = num;
+                    }
+                    count++;
+                }
+                reader.close();
+                m_Paths = paths;
+                return m_Paths;
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+        } else {
+            return m_Paths;
+        }
+        return null;
     }
 }
