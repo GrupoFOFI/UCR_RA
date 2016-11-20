@@ -6,8 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import ra.inge.ucr.da.Edificio;
-import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
+import ra.inge.ucr.da.entity.TargetObject;
+import ra.inge.ucr.location.listener.OnLookAtTargetListener;
 
 /**
  * <h1> Sensor Helper </h1>
@@ -26,8 +26,8 @@ public class SensorHelper implements SensorEventListener {
     LocationHelper locationHelper = new LocationHelper();
     private SensorManager snsrmngr;
     private Sensor accl, mgnt;
-    private OnLookAtBuildingListener mListener;
-    Edificio mBuilding = null;
+    private OnLookAtTargetListener mListener;
+    TargetObject mBuilding = null;
 
     float[] acclReading = new float[3], mgntReading = new float[3];
     float[] orientationAngles = new float[3];
@@ -45,7 +45,7 @@ public class SensorHelper implements SensorEventListener {
      *
      * @param listener the class implenenting OnDeviceRotationListener interface
      */
-    public void setOnLookAtBuildingListener(OnLookAtBuildingListener listener) {
+    public void setOnLookAtBuildingListener(OnLookAtTargetListener listener) {
         mListener = listener;
     }
 
@@ -99,8 +99,9 @@ public class SensorHelper implements SensorEventListener {
         orientationAngles = SensorManager.getOrientation(rotationMatrix, orientationAngles);
         rotationVector[0] = (float)Math.sin(orientationAngles[0]);// x
         rotationVector[1] = (float)Math.cos(orientationAngles[1]);// y
+
         // z doesn't matter
-        Edificio ed =null;
+        TargetObject ed =null;
         if(LocationHelper.getLastLocation()!= null) {
             ed = locationHelper.pointingCamera((double) rotationVector[0], (double) rotationVector[1], LocationHelper.getLastLocation());
         }

@@ -4,12 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import java.util.List;
-
-import ra.inge.ucr.da.Edificio;
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 
 /**
@@ -24,13 +21,13 @@ import ra.inge.ucr.ucraumentedreality.R;
  */
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
-    private Edificio[] cercanos;
+    private TargetObject[] cercanos;
 
     /**
      * Constructor for the class that receives the current closes buildings as parameter
      * @param cercanos
      */
-    public CustomAdapter(Edificio[] cercanos) {
+    public CustomAdapter(TargetObject[] cercanos) {
         this.cercanos = cercanos;
     }
 
@@ -53,7 +50,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
      */
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int i) {
-        myViewHolder.title.setText(cercanos[i].getNmbr());
+        myViewHolder.title.setText(cercanos[i].getName());
     }
 
     /**

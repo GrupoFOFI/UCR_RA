@@ -32,7 +32,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-import ra.inge.ucr.da.Edificio;
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
@@ -57,7 +57,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private View rootView;
     private Utils utils;
-    private Edificio[] cercanos;
+    private TargetObject[] cercanos;
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
@@ -264,8 +264,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
         //Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
         for (int i = 0; i < CLOSEST_AMOUNT; i++) {
-            markers[i].setPosition(new LatLng(cercanos[i].getLat(), cercanos[i].getLng()));
-            markers[i].setTitle(cercanos[i].getNmbr());
+            markers[i].setPosition(new LatLng(cercanos[i].getLatitude(), cercanos[i].getLongitude()));
+            markers[i].setTitle(cercanos[i].getName());
             if (!markers[i].isVisible())
                 markers[i].setVisible(true);
         }
@@ -348,7 +348,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
      *
      * @return
      */
-    public Edificio[] getCercanos() {
+    public TargetObject[] getCercanos() {
         return cercanos;
     }
 

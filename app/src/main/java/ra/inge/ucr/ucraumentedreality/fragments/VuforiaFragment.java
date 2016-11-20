@@ -19,17 +19,16 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import ra.inge.ucr.da.Edificio;
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.SensorHelper;
-import ra.inge.ucr.location.listener.OnLookAtBuildingListener;
+import ra.inge.ucr.location.listener.OnLookAtTargetListener;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
-import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 
-public class VuforiaFragment extends Fragment implements OnLookAtBuildingListener {
+public class VuforiaFragment extends Fragment implements OnLookAtTargetListener {
 
     private static final int PERMISSION_REQUEST_CAMERA = 999;
     private SensorHelper snsrhlpr;
@@ -76,7 +75,7 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-                Edificio[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
+                TargetObject[] cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMMOUNT);
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -167,24 +166,24 @@ public class VuforiaFragment extends Fragment implements OnLookAtBuildingListene
     /**
      * Method used to create UX when the user is looking at a building
      *
-     * @param edificio
+     * @param targetObject
      */
     @Override
-    public void onStartLookingAtBuilding(Edificio edificio) {
-        utils.snack_log(getActivity().getWindow().getDecorView(), "Estoy viendo el edificio " + edificio.getNmbr());
-        Log.i("VUFORIA_FRAGMENT", "Estoy viendo el edificio " + edificio.getNmbr());
+    public void onStartLookingAtBuilding(TargetObject targetObject) {
+        utils.snack_log(getActivity().getWindow().getDecorView(), "Estoy viendo el edificio " + targetObject.getName());
+        Log.i("VUFORIA_FRAGMENT", "Estoy viendo el edificio " + targetObject.getName());
 
     }
 
     /**
      * Method used to create de UX when the user stops looking at a building
      *
-     * @param edificio
+     * @param targetObject
      */
     @Override
-    public void onStopLookingAtBuilding(Edificio edificio) {
-        utils.snack_log(getActivity().getWindow().getDecorView(), "Ya no estoy viendo el edificio " + edificio.getNmbr());
-        Log.i("VUFORIA_FRAGMENT", "Ya no estoy viendo el edificio " + edificio.getNmbr());
+    public void onStopLookingAtBuilding(TargetObject targetObject) {
+        utils.snack_log(getActivity().getWindow().getDecorView(), "Ya no estoy viendo el edificio " + targetObject.getName());
+        Log.i("VUFORIA_FRAGMENT", "Ya no estoy viendo el edificio " + targetObject.getName());
     }
 
 

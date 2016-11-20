@@ -5,6 +5,9 @@ import android.hardware.SensorListener;
 import android.hardware.SensorManager;
 
 
+/**
+ * <h1>Shake Handler</h1>
+ */
 public class ShakeHandler implements SensorListener {
 
     private static final int FORCE_THRESHOLD = 350;

@@ -2,10 +2,11 @@ package ra.inge.ucr.location;
 
 import android.location.Location;
 
+
 import com.google.android.gms.maps.model.LatLng;
 
-import ra.inge.ucr.da.Datos;
-import ra.inge.ucr.da.Edificio;
+import ra.inge.ucr.da.Data;
+import ra.inge.ucr.da.entity.TargetObject;
 
 /**
  * <h1> Location Helper </h1>
@@ -48,17 +49,17 @@ public class LocationHelper {
      * @param ammount
      * @return
      */
-    public Edificio[] getClosestBuildings(LatLng lastLoc, int ammount) {
+    public TargetObject[] getClosestBuildings(LatLng lastLoc, int ammount) {
         mLastLocation = lastLoc;
-        Edificio[] closest = new Edificio[ammount];
+        TargetObject[] closest = new TargetObject[ammount];
         topidx = new int[ammount];
         mindist = new double[ammount];
         for (int i = 0; i < ammount; i++) {
             mindist[i] = Double.MAX_VALUE;
         }
-        for (Edificio ed : Datos.edificios) {
-            double temp = distance(lastLoc.latitude, ed.getLat(), lastLoc.longitude, ed.getLng(), 0, 0);
-            Datos.distances[ed.getId() - 1] = temp;
+        for (TargetObject ed : Data.targetObjects) {
+            double temp = distance(lastLoc.latitude, ed.getLatitude(), lastLoc.longitude, ed.getLongitude(), 0, 0);
+            Data.distances[ed.getId() - 1] = temp;
             for (int i = 0; i < ammount; i++) {
                 if (temp <= mindist[i]) {
                     for (int j = ammount - 1; j > i; j--) {
@@ -72,7 +73,7 @@ public class LocationHelper {
             }
         }
         for (int i = 0; i < ammount; i++) {
-            closest[i] = Datos.edificios.get(topidx[i]);
+            closest[i] = Data.targetObjects.get(topidx[i]);
         }
         return closest;
     }
@@ -114,7 +115,7 @@ public class LocationHelper {
      * @param loc
      * @return
      */
-    public Edificio pointingCamera(double xCam, double yCam, LatLng loc) {
+    public TargetObject pointingCamera(double xCam, double yCam, LatLng loc) {
         //calculate distance
         float errorAngle = 0;
         double v1 = 0;
@@ -123,12 +124,12 @@ public class LocationHelper {
         double mod1 = 0;
         double mod2 = 0;
         double angulo = 0;
-        Edificio c[] = getClosestBuildings(loc, 3);
+        TargetObject c[] = getClosestBuildings(loc, 3);
         for (int i = 0; i < 3; i++) {
-            errorAngle = getErrorAngle(loc, c[i].getLat(), c[i].getLng());
+            errorAngle = getErrorAngle(loc, c[i].getLatitude(), c[i].getLongitude());
             if (errorAngle != -1) {
-                v1 = loc.latitude - c[i].getLat();
-                v2 = loc.longitude - c[i].getLng();
+                v1 = loc.latitude - c[i].getLatitude();
+                v2 = loc.longitude - c[i].getLongitude();
                 productoPunto = v1 * xCam + v2 * yCam;
                 mod1 = Math.sqrt(Math.pow(v1, 2) + Math.pow(v2, 2));
                 mod2 = Math.sqrt(Math.pow(xCam, 2) + Math.pow(yCam, 2));

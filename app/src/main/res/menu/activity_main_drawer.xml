@@ -31,12 +31,12 @@
                 android:title="@string/menu_share" />
             <item
                 android:id="@+id/nav_accessibility"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_settings_black_24dp"
                 android:title="Modalidad 2" />
 
             <item
                 android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_settings_black_24dp"
                 android:title="@string/menu_settings" />
         </menu>
     </item>

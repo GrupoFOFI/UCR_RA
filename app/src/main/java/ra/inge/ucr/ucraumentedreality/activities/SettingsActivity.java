@@ -72,7 +72,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-
         AppBarLayout bar;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

@@ -1,21 +1,17 @@
 package ra.inge.ucr.ucraumentedreality.adapters;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import ra.inge.ucr.ucraumentedreality.R;
-import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseMonumentsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
@@ -69,7 +65,7 @@ public class HomeFragment extends Fragment {
         MapsFragment mapsFragment = new MapsFragment();
         adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
         adapter.addFrag(new CloseMonumentsFragment(mapsFragment), "Monumentos Más Cercanos");
-
+        adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
         viewPager.setAdapter(adapter);
     }
 

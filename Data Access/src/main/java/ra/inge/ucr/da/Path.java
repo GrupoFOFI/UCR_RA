@@ -5,9 +5,13 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 
 /**
- * Created by enrico on 11/14/16.
+ * <h1>Path</h1>
+ * Class used to...
+ *
+ * @author
  */
 public class Path {
+
     private List<LatLng> points;
 
     /**
