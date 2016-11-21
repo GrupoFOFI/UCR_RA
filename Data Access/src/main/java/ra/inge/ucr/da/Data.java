@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.da.entity.TargetType;
 
+import static android.os.Build.VERSION_CODES.N;
+
 /**
  * <h1> Data </h1>
  * Class used to load all the target data to the app
@@ -32,7 +34,7 @@ public class Data {
         add(new TargetObject(11, TargetType.BUILDING, 9.938376, -84.052643, 0, "Facultad de Letras", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(13, TargetType.BUILDING, 9.93809, -84.052524, 0, "Escuela Centroamericana de Geología", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(14, TargetType.BUILDING, 9.936922, -84.05195, 0, "Facultad de Ciencias Económicas", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(15, TargetType.BUILDING, 9.937967, -84.052035, 0, "Escuela de Computación e Informática", "Fofidescripcion de la ECCI", "centro-info.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(15, TargetType.BUILDING, 9.937967, -84.052035, 0, "Escuela de Computación e Informática", "La Escuela de Ciencias de la Computación e Infomática de la Universidad de Costa Rica se fundó en 1981, como resultado de la fusión de dos programas distintos pero relacionados, el de Bachillerato en Informática y el de Bachillerato y Licenciatura en Computación.", "Videoplayback/ecci.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(16, TargetType.BUILDING, 9.938461, -84.051817, 0, "Facultad de Odontología", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(17, TargetType.BUILDING, 9.938783, -84.050774, 0, "Facultad de Medicina", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(18, TargetType.BUILDING, 9.938934, -84.049986, 0, "Facultad de Farmacia", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
@@ -47,13 +49,15 @@ public class Data {
         add(new TargetObject(29, TargetType.BUILDING, 9.936614, -84.050735, 0, "Edificio de Aulas", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(2, TargetType.BUILDING, 9.935435, -84.053959, 0, "Oficina de Becas y Atención Socioeconómica", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
 
-        add(new TargetObject(29, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Escultura 'Antárticos'", "Escultura hecha en acero doblado y pintado.", "VideoPlayback/antarticos.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(29, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Escultura 'Osos Amorosos'", "Escultura  hecha en mármol blanco, en 1992, por el escultor José Sancho.", "Videoplayback/osos.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(29, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Leda y el Cisne", "Monumento formado por granito de escazú, esculpido por el reconocido José Sancho en 1980", "Videoplayback/leda.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(29, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Busto de José Joaquín Gutiérrez", "Decano de la Facultad de Cirugía Dental de la UCR y primer odontólogo de América Latina.", "Videoplayback/joaquin.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(29, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Licenciado Fernando Bauza", "Decano de la Facultad de Derecho en 1939 y rector de la Universidad de Costa Rica por primera vez en 1946.", "Videoplayback/fernando.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(27, TargetType.MONUMENT, 9.936244, -84.050692, 0, "Plaza 24 de abril", "En 1971, la FEUCR decidió bautizar y colocar una placa conmemorativa de  la gesta de ALCOA en   la UCR y en ella, escrita en mármol se grabó. “A la juventud de Costa Rica, Plaza 24 de Abril, violar la ley del imperio es defender los derechos del pueblo”, frase que después de 44 años han podido leer e inspirar varias generaciones de estudiantes y profesores", "Videoplayback/24-abril.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(28, TargetType.MONUMENT, 9.935895, -84.050638, 0, "El Pretil", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(30, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Escultura 'Antárticos'", "Escultura hecha en acero doblado y pintado.", "VideoPlayback/antarticos.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(31, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Escultura 'Osos Amorosos'", "Escultura  hecha en mármol blanco, en 1992, por el escultor José Sancho.", "Videoplayback/osos.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(32, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Leda y el Cisne", "Monumento formado por granito de escazú, esculpido por el reconocido José Sancho en 1980", "Videoplayback/leda.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(33, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Busto de José Joaquín Gutiérrez", "Decano de la Facultad de Cirugía Dental de la UCR y primer odontólogo de América Latina.", "Videoplayback/joaquin.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(34, TargetType.MONUMENT, 9.936614, -84.050735, 0, "Licenciado Fernando Bauza", "Decano de la Facultad de Derecho en 1939 y rector de la Universidad de Costa Rica por primera vez en 1946.", "Videoplayback/fernando.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(35, TargetType.MONUMENT, 9.936244, -84.050692, 0, "Plaza 24 de abril", "En 1971, la FEUCR decidió bautizar y colocar una placa conmemorativa de  la gesta de ALCOA en   la UCR y en ella, escrita en mármol se grabó. “A la juventud de Costa Rica, Plaza 24 de Abril, violar la ley del imperio es defender los derechos del pueblo”, frase que después de 44 años han podido leer e inspirar varias generaciones de estudiantes y profesores", "Videoplayback/24-abril.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(36, TargetType.MONUMENT, 9.935895, -84.050638, 0, "El Pretil", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(37, TargetType.MONUMENT, 9.936390, -84.050679, 0, "Juan y María", "Escultura hecha en hormigón policromado por Leda Astorga. Conmemora el 50 aniversario de la Esculea de Trabajo Social", "Videoplayback/juan_maria.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(38, TargetType.MONUMENT, 9.936652, -84.049869, 0, "Quebrada Los Negritos", "La Quebrada de los Negritos, nace en el patio de cinco viviendas, en Calle del Chorro, Sabanilla, enfrente del Colegio Metodista.", "Videoplayback/quebrada_negritos.mp4", "www.museodeinsectoscr.com"));
 
     }};
 

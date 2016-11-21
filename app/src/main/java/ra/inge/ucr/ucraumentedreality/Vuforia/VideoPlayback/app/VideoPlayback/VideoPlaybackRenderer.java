@@ -563,6 +563,10 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 currentTarget = VideoPlayback.FERNANDO;
             } else if (imageTarget.getName().toLowerCase().contains("centro_info")) {
                 currentTarget = VideoPlayback.INFO;
+            } else if (imageTarget.getName().toLowerCase().contains("negritos")) {
+                currentTarget = VideoPlayback.NEGRITOS;
+            } else if (imageTarget.getName().toLowerCase().contains("juan")) {
+                currentTarget = VideoPlayback.JUAN;
             }
 
 

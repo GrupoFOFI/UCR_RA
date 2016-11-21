@@ -86,6 +86,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public static final int GIRASOL = 10;
     public static final int FERNANDO = 11;
     public static final int INFO = 12;
+    public static final int NEGRITOS = 13;
+    public static final int JUAN = 14;
 
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
@@ -183,11 +185,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mMovieName[6] = "VideoPlayback/comedor.mp4";
         mMovieName[7] = "VideoPlayback/joaquin.mp4";
         mMovieName[8] = "VideoPlayback/derecho.mp4";
-        mMovieName[9] = "VideoPlayback/centro-info.mp4";  //TODO ecci
+        mMovieName[9] = "VideoPlayback/ecci.mp4";
         mMovieName[10] = "VideoPlayback/generales.mp4";
         mMovieName[11] = "VideoPlayback/fernando.mp4";
         mMovieName[12] = "VideoPlayback/centro-info.mp4";
-
+        mMovieName[13] = "VideoPlayback/quebrada_negritos.mp4";
+        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
 
         // Set the double tap listener:
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
