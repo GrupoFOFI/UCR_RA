@@ -1,8 +1,16 @@
 package ra.inge.ucr.location;
 
+import android.content.Context;
 import android.location.Location;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import ra.inge.ucr.da.Data;
@@ -19,11 +27,24 @@ import ra.inge.ucr.da.entity.TargetType;
  * @version 1.0
  * @since 1.0
  */
-public class LocationHelper {
+public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedListener {
 
     public int topidx[];
     public double mindist[];
     private static LatLng mLastLocation;
+
+
+    private Context mContext;
+
+    /**
+     * Provides the entry point to Google Play services.
+     */
+    protected GoogleApiClient mGoogleApiClient;
+
+    /**
+     * Represents a geographical location.
+     */
+    protected Location lastLocation;
 
     /**
      * Method that updates the last location
@@ -42,6 +63,11 @@ public class LocationHelper {
     public static LatLng getLastLocation() {
         return mLastLocation;
     }
+
+
+//    public LocationHelper() {
+//        buildGoogleApiClient();
+//    }
 
     /**
      * Method that retrieves the closest buildings
@@ -80,6 +106,7 @@ public class LocationHelper {
         }
         return closest;
     }
+
 
 
     /**
@@ -211,6 +238,34 @@ public class LocationHelper {
         return a;
     }
 
+//
+//    /**
+//     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+//     */
+//    protected synchronized void buildGoogleApiClient() {
+//        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(LocationServices.API)
+//                .build();
+//
+//        mGoogleApiClient.connect();
+//    }
 
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }
 

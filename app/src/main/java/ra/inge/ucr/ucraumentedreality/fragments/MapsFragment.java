@@ -87,6 +87,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         utils = new Utils(mActivity, mActivity.getApplicationContext());
         buildGoogleApiClient();
         locationHelper = new LocationHelper();
+        mGoogleApiClient.connect();
     }
 
     /**
@@ -231,7 +232,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onConnected(Bundle connectionHint) {
         utils.requestLocationPermission();
-        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionCheck = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
@@ -242,8 +243,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         } else {
 
             locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
-            googleMap.animateCamera(cameraUpdate);
+//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
+//            googleMap.animateCamera(cameraUpdate);
         }
 
 
@@ -287,28 +288,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
         Log.d("konri", "Los edificios son => " + closeBuildings[0].getName() + " " + closeBuildings[1].getName() + " " + closeBuildings[2].getName());
         Log.d("konri", "Los monumentos son => " + closeMonuments[0].getName() + " " + closeMonuments[1].getName() + " " + closeMonuments[2].getName());
-
-        addMarkers();
-
-        PolylineOptions lineOptions = new PolylineOptions();
-        ArrayList points = new ArrayList<>();
-
-        double lat = 9.998020;
-        double lng = -84.112338;
-        LatLng position = new LatLng(lat, lng);
-        points.add(position);
-
-        double lat2 = 9.979326;
-        double lng2 = -84.090859;
-        LatLng position2 = new LatLng(lat2, lng2);
-        points.add(position2);
-
-        lineOptions.addAll(points);
-        if (lineOptions != null) {
-            googleMap.addPolyline(lineOptions);
-        } else {
-            Log.d("onPostExecute", "without Polylines drawn");
-        }
+//
+//        addMarkers();
+//
+//        PolylineOptions lineOptions = new PolylineOptions();
+//        ArrayList points = new ArrayList<>();
+//
+//        double lat = 9.998020;
+//        double lng = -84.112338;
+//        LatLng position = new LatLng(lat, lng);
+//        points.add(position);
+//
+//        double lat2 = 9.979326;
+//        double lng2 = -84.090859;
+//        LatLng position2 = new LatLng(lat2, lng2);
+//        points.add(position2);
+//
+//        lineOptions.addAll(points);
+//        if (lineOptions != null) {
+//            googleMap.addPolyline(lineOptions);
+//        } else {
+//            Log.d("onPostExecute", "without Polylines drawn");
+//        }
     }
 
     /**

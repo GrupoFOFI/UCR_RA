@@ -28,6 +28,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.fragments.HomeFragment;
@@ -59,6 +60,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private HomeFragment homeFragment;
     private MapsFragment mapsFragment;
+    private LocationHelper locationHelper;
 
     /**
      * @param savedInstanceState
@@ -98,6 +100,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        locationHelper = new LocationHelper();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
