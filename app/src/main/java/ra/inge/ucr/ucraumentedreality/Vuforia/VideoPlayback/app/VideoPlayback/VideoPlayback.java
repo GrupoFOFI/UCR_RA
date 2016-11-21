@@ -71,7 +71,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private SimpleOnGestureListener mSimpleListener = null;
 
     // Movie for the Targets:
-    public static final int NUM_TARGETS = 14;
+    public static final int NUM_TARGETS = 13;
 
     public static final int ANTART = 0;
     public static final int OSOS = 1;
@@ -85,7 +85,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public static final int ECCI = 9;
     public static final int GIRASOL = 10;
     public static final int FERNANDO = 11;
-    public static final int INFO = 13;
+    public static final int INFO = 12;
 
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
@@ -186,7 +186,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mMovieName[9] = "VideoPlayback/centro-info.mp4";  //TODO ecci
         mMovieName[10] = "VideoPlayback/generales.mp4";
         mMovieName[11] = "VideoPlayback/fernando.mp4";
-        mMovieName[13] = "VideoPlayback/centro-info.mp4";
+        mMovieName[12] = "VideoPlayback/centro-info.mp4";
 
 
         // Set the double tap listener:
