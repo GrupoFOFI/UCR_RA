@@ -1,18 +1,20 @@
 package ra.inge.ucr.location;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.graphics.Target;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.enrico.businesslogic.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -20,9 +22,6 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.ArrayList;
 
 import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
@@ -80,6 +79,10 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
     private TargetObject[] closeBuildings;
 
 
+    // Define a listener that responds to location updates
+    LocationListener locationListener;
+    LocationManager locationManager;
+
     /**
      * Method that updates the last location
      *
@@ -102,6 +105,26 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
     public LocationHelper(Context context) {
         this.mContext = context;
         buildGoogleApiClient();
+
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
+                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        new AlertDialog.Builder(context).setTitle("Permiso de ubicación").setMessage("Necesitamos tu ubicación para que el app funcione").show();
+
+                    } else {
+
+                        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    }
+                }
+            }
+        }
+
+
     }
 
 
@@ -316,7 +339,7 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
         }
     }
 
-
+    
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
@@ -341,7 +364,18 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
      */
     @Override
     public void onLocationChanged(Location location) {
-
+        Log.d("konri", "Mae si entra" + location);
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        latestLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {
             latestLocation = location;
 

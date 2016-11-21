@@ -1,12 +1,16 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.maps.LocationSource;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
@@ -25,7 +29,7 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
  * @version 1.0
  * @since 1.0
  */
-public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetListener {
+public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetListener, LocationSource.OnLocationChangedListener {
 
     /**
      * Custom adapter for the fragment
@@ -63,6 +67,7 @@ public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetLi
         this.locationHelper = locationHelper;
         locationHelper.setOnBuildingsSetListener(this);
     }
+
 
 
     /**
@@ -110,5 +115,10 @@ public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetLi
                 }
             });
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("konri", "Me cago en la puta me compliqué mucho");
     }
 }

@@ -1,15 +1,19 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
 
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.gms.maps.LocationSource;
 
 import java.util.Map;
 
@@ -56,7 +60,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_home, container, false);
-        locationHelper = new LocationHelper(getContext());
+
         setupViewPager();
         return root;
     }
@@ -65,6 +69,9 @@ public class HomeFragment extends Fragment {
      * Method that sets up the view pager
      */
     private void setupViewPager() {
+
+        locationHelper = new LocationHelper(getContext());
+
         final ViewPager viewPager = (ViewPager) root.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -96,4 +103,6 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
+
 }
