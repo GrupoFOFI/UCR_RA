@@ -54,26 +54,11 @@ import static ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlay
 public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl {
 
 
-    // Testing
-
-    private OnTrackListener onTrackListener;
-
-    public interface OnTrackListener {
-        void playVideo(int targetId);
-    }
-
-    public void setOnTrackListener(OnTrackListener onTrackListener) {
-        this.onTrackListener = onTrackListener;
-    }
-
-    // eot
-
-    int currentTarget = -1;
-
     private static final String LOGTAG = "VideoPlaybackRenderer";
 
     SampleApplicationSession vuforiaAppSession;
     SampleAppRenderer mSampleAppRenderer;
+    SampleUtils sampleUtils;
 
     // Video Playback Rendering Specific
     private int videoPlaybackShaderID = 0;
@@ -94,7 +79,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
     // We cannot use the default texture coordinates of the quad since these
     // will change depending on the video itself
-    private float videoQuadTextureCoords[] = {0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,};
+    private float videoQuadTextureCoords[] =
+            {0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f,};
 //            {0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,};
 
 
@@ -154,6 +140,13 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
 
     String[] titleArray, descriptionArray;
+    private OnTrackListener onTrackListener;
+
+    public void setOnTrackListener(OnTrackListener onTrackListener) {
+        this.onTrackListener = onTrackListener;
+    }
+
+    int currentTarget = -1;
 
     public VideoPlaybackRenderer(VideoPlayback activity,
                                  SampleApplicationSession session) {
@@ -441,12 +434,13 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             .get(0).mHeight / (float) mTextures.get(0).mWidth;
         keyframeQuadAspectRatio[VideoPlayback.CHIPS] = (float) mTextures.get(1).mHeight
             / (float) mTextures.get(1).mWidth;*/
-        for (int i = 0; i < 13; i = i + 2) {
+
+        for (int i = 0; i <= VideoPlayback.NUM_TARGETS; i++) {
             keyframeQuadAspectRatio[i] = (float) mTextures.get(0).mHeight
                     / (float) mTextures.get(0).mWidth;
-            if (i < 12)
-                keyframeQuadAspectRatio[i + 1] = (float) mTextures.get(1).mHeight
-                        / (float) mTextures.get(1).mWidth;
+            if (i < VideoPlayback.NUM_TARGETS - 1)
+                keyframeQuadAspectRatio[i + 1] = (float) mTextures.get(0).mHeight
+                        / (float) mTextures.get(0).mWidth;
         }
 
 
@@ -635,12 +629,15 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                             50 * videoQuadAspectRatio[currentTarget],
                             200);
 
+//                    SampleUtils::rotatePoseMatrix(180.0f, 0.0f, 0.0f, 1.0f,targetPositiveDimensions[currentTarget].getData()[0]);
+
                     Matrix.multiplyMM(modelViewProjectionKeyframe, 0,
                             projectionMatrix, 0, modelViewMatrixKeyframe, 0);
 
                     for (int i = 0; i < modelViewProjectionKeyframe.length; i++) {
                         modelViewProjectionKeyframe[i] = (i % 5 == 0) ? 1 : 0;
                     }
+
 
                     GLES20.glUseProgram(keyframeShaderID);
 
@@ -872,9 +869,9 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 if (currentStatus[currentTarget] == READY) {
                     Log.d(VideoPlayback.DEBUG_TAG, "Vamo a pl es" + currentTarget);
 
-//                    if (!VideoPlayback.isPlayingVideo) {
-                        onTrackListener.playVideo(currentTarget);
-//                    }
+                    if (!mVideoPlayerHelper[currentTarget].isVideoPlaying()) {
+                        onTrackListener.onTargetFound(currentTarget);
+                    }
                 }
 
 

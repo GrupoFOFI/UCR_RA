@@ -898,4 +898,13 @@ public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
 
         return false;
     }
+
+
+    public boolean isVideoPlaying () {
+        if (mMediaPlayer != null) {
+            return mMediaPlayer.isPlaying();
+        }
+        return false;
+    }
+
 }

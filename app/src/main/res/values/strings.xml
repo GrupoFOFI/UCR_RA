@@ -131,5 +131,16 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
 
+    <!--Instructions to guide the user when doing the path-->
+
+    <string name="turn_left">Gire a la izquierda</string>
+    <string name="turn_right">Gire a la derecha</string>
+    <string name="at_the_next">A la siguiente</string>
+    <string name="entrance">Entrada</string>
+    <string name="sidewalk">Acera</string>
+    <string name="cross">Cruce</string>
+    <string name="straight_ahead">Hacia adelante</string>
+    <string name="turn_around">De la vuelta</string>
+
 
 </resources>

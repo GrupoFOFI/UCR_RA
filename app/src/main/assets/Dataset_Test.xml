@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="osos_amorosos4" size="350.000000 327.432587" />
+    <ImageTarget name="centro_info_p4" size="500.000000 375.000000" />
+    <ImageTarget name="bustos1" size="300.000000 400.000000" />
+    <ImageTarget name="facio_p1" size="250.000000 234.608978" />
+    <ImageTarget name="comedor_p1" size="300.000000 300.000000" />
+    <ImageTarget name="antarticos1" size="300.000000 400.000000" />
+    <ImageTarget name="leda9" size="300.000000 400.000000" />
+    <ImageTarget name="derecho7" size="300.000000 400.000000" />
+    <ImageTarget name="fernando2" size="300.000000 400.000000" />
+    <ImageTarget name="mate4" size="300.000000 225.000000" />
+    <ImageTarget name="plaza24-1" size="300.000000 225.000000" />
+    <ImageTarget name="generales" size="300.000000 400.000000" />
+    <ImageTarget name="carlos_monge" size="300.000000 225.000000" />
+    <ImageTarget name="ecci" size="200.000000 150.000000" />
+  </Tracking>
+</QCARConfig>

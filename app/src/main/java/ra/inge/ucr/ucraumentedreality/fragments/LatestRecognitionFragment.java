@@ -9,6 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
@@ -22,7 +25,10 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 public class LatestRecognitionFragment extends Fragment {
 
 
-    public LatestRecognitionFragment() {
+    public static ArrayList<TargetObject>  targetObjects ;
+
+        public LatestRecognitionFragment() {
+            targetObjects = new ArrayList<TargetObject>();
     }
 
 

@@ -1,4 +1,4 @@
-package ra.inge.ucr.ucraumentedreality.adapters;
+package ra.inge.ucr.ucraumentedreality.fragments;
 
 
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
+import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseBuildingsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.CloseMonumentsFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.LatestRecognitionFragment;
@@ -41,6 +42,7 @@ public class HomeFragment extends Fragment {
 
     /**
      * Setter for the home activity
+     *
      * @param homeActivity
      */
     public void setHomeActivity(HomeActivity homeActivity) {
@@ -75,7 +77,7 @@ public class HomeFragment extends Fragment {
         MapsFragment mapsFragment = new MapsFragment();
         adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
         adapter.addFrag(new CloseMonumentsFragment(mapsFragment), "Monumentos Más Cercanos");
-        adapter.addFrag(new LatestRecognitionFragment(), "Ultimos reconocimientos");
+        adapter.addFrag(new LatestRecognitionFragment(), "Ultimos Reconocidos");
         viewPager.setAdapter(adapter);
     }
 

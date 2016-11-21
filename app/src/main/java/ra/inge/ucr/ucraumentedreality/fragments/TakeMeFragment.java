@@ -1,4 +1,4 @@
-package ra.inge.ucr.ucraumentedreality.adapters;
+package ra.inge.ucr.ucraumentedreality.fragments;
 
 
 import android.os.Bundle;

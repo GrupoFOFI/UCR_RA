@@ -53,7 +53,11 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, VideoPlaybackRenderer.OnTrackListener {
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener {
+
+    private static final String BIG_DATASET = "Edificios_Monumentos.xml";
+    private static final String LITTLE_DATASET = "Dataset_Test.xml";
+    private static final String LITE_DATASET = "LightDataSet.xml";
 
     private static final String LOGTAG = "VideoPlayback";
     public static final String DEBUG_TAG = "konri";
@@ -119,49 +123,13 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private TextView titleTextView;
     private TextView descriptionTextView;
 
-//    public static boolean isPlayingVideo = false;
-
     @Override
-    public void playVideo(int targetId) {
+    public void onTargetFound(int targetId) {
 
         Log.d(DEBUG_TAG, "Voy a intentar hacer play");
-//        isPlayingVideo = true;
-
-        // Do not react if the StartupScreen is being displayed
-//        for (int i = 0; i < NUM_TARGETS; i++) {
-
-            // Check if it is playable on texture
-//            if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
-//
-//                // We can play only if the movie was paused, ready
-//                // or stopped
-//                if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
-//                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
-//                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
-//                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
-//
-//                    // Pause all other media
-//                    pauseAll(i);
-//
-//                    // If it has reached the end then rewind
-//                    if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
-//                        mSeekPosition[i] = 0;
-//
-//                    Log.d(DEBUG_TAG, "Play video callback");
-//                    mVideoPlayerHelper[i].play(mPlayFullscreenVideo, mSeekPosition[i]);
-//
-//                    mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
-//                } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
-//
-//                    // If it is playing then we pause it
-//                    mVideoPlayerHelper[i].pause();
-//                }
-//            }
-//    }
-
-            if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()){
-                Log.d(DEBUG_TAG, "VAmooooos");
-                mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
+        if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()) {
+            Log.d(DEBUG_TAG, "Vamoooos");
+            mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
         }
     }
 
@@ -565,7 +533,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         }
 
         // Load the data sets:
-        if (!ucrTargetDataset.load("Edificios_Monumentos.xml",
+        if (!ucrTargetDataset.load(LITE_DATASET,//LITTLE_DATASET,
                 STORAGE_TYPE.STORAGE_APPRESOURCE)) {
             Log.d(LOGTAG, "Failed to load data set.");
             return false;

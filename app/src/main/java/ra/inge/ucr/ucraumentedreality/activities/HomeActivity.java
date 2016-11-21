@@ -30,7 +30,7 @@ import java.util.Locale;
 
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
-import ra.inge.ucr.ucraumentedreality.adapters.HomeFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.HomeFragment;
 import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
 import ra.inge.ucr.ucraumentedreality.utils.CommandHandler;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
