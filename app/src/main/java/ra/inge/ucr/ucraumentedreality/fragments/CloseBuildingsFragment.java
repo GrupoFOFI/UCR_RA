@@ -1,6 +1,5 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,11 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import ra.inge.ucr.da.entity.TargetObject;
+import ra.inge.ucr.location.LocationHelper;
+import ra.inge.ucr.location.listener.OnBuildingsSetListener;
+import ra.inge.ucr.location.listener.OnLocationSetListener;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
@@ -27,20 +25,27 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
  * @version 1.0
  * @since 1.0
  */
-public class CloseBuildingsFragment extends Fragment {
+public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetListener {
 
     /**
      * Custom adapter for the fragment
      */
     private CustomAdapter mAdapter;
     /**
-     * Maps fragment reference
+     * Maps fragment listener
      */
-    private MapsFragment mapsFragment;
+    private LocationHelper locationHelper;
+
     /**
      * The closest buildings;
      */
     private TargetObject[] closeBuildings;
+
+    /**
+     * The location listener
+     */
+    private OnBuildingsSetListener onBuildingsSetListener;
+
 
     /**
      * Empty constructor for the fragment
@@ -48,14 +53,17 @@ public class CloseBuildingsFragment extends Fragment {
     public CloseBuildingsFragment() {
     }
 
+
     /**
-     * Setter for the maps fragment
+     * Setter for the location helper
      *
-     * @param mapsFragment
+     * @param locationHelper
      */
-    public void setMapsFragment(MapsFragment mapsFragment) {
-        this.mapsFragment = mapsFragment;
+    public void setLocationHelper(LocationHelper locationHelper) {
+        this.locationHelper = locationHelper;
+        locationHelper.setOnBuildingsSetListener(this);
     }
+
 
     /**
      * Method that prepares all the components for the fragment
@@ -69,7 +77,6 @@ public class CloseBuildingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_close_buildings, container, false);
-
         RecyclerView recyclerView = (RecyclerView) view.findViewById(
                 R.id.fragment_list_rv);
 
@@ -77,15 +84,31 @@ public class CloseBuildingsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        if (mapsFragment == null) {
-            mapsFragment = new MapsFragment();
-        }
-            closeBuildings = mapsFragment.getCloseBuildings();
-            if (closeBuildings != null) {
-                mAdapter = new CustomAdapter(closeBuildings);
-                recyclerView.setAdapter(mAdapter);
-            }
+        mAdapter = new CustomAdapter();
+        recyclerView.setAdapter(mAdapter);
 
+        if (locationHelper != null) {
+            closeBuildings = locationHelper.getClosestBuildings(MapsFragment.CLOSEST_AMOUNT);
+            if (closeBuildings != null) {
+                mAdapter.setCercanos(closeBuildings);
+            }
+        }
         return view;
+    }
+
+    @Override
+    public void onBuildingsCalculated() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (mAdapter != null) {
+                        closeBuildings = locationHelper.getCloseBuildings();
+                        mAdapter.setCercanos(closeBuildings);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
+        }
     }
 }

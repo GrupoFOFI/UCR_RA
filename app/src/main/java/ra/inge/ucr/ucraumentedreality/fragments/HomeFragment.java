@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import java.util.Map;
 
+import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
@@ -35,21 +36,27 @@ public class HomeFragment extends Fragment {
      * Default constructor
      */
     public HomeFragment() {
+
     }
 
     private ShakeHandler shakeHandler;
     private Vibrator vibe;
     private View root;
     private MapsFragment mapsFragment;
+    private LocationHelper locationHelper;
 
-    public void setMapsFragment(MapsFragment mapsFragment) {
-        this.mapsFragment = mapsFragment;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_home, container, false);
+        locationHelper = new LocationHelper(getContext());
         setupViewPager();
         return root;
     }
@@ -75,8 +82,8 @@ public class HomeFragment extends Fragment {
 
         CloseBuildingsFragment closeBuildingsFragment = new CloseBuildingsFragment();
         CloseMonumentsFragment closeMonumentsFragment = new CloseMonumentsFragment();
-        closeBuildingsFragment.setMapsFragment(mapsFragment);
-        closeMonumentsFragment.setMapsFragment(mapsFragment);
+        closeBuildingsFragment.setLocationHelper(locationHelper);
+        closeMonumentsFragment.setLocationHelper(locationHelper);
 
         adapter.addFrag(closeBuildingsFragment, "Edificios Más Cercanos");
         adapter.addFrag(closeMonumentsFragment, "Monumentos Más Cercanos");

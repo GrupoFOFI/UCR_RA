@@ -41,6 +41,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ShakeHandler.OnShakeListener {
 
     /* UI elements */
+
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private Class currentFragmentType;
@@ -87,10 +88,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
         mapsFragment = new MapsFragment();
-        mapsFragment.setmActivity(this);
+        locationHelper = new LocationHelper(this);
         homeFragment = new HomeFragment();
-        homeFragment.setMapsFragment(mapsFragment);
-
         setFragment(new HomeFragment());
 
         shakeHandler = new ShakeHandler(this);
@@ -100,7 +99,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        locationHelper = new LocationHelper();
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

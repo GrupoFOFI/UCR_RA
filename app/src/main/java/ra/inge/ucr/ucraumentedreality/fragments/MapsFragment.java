@@ -1,7 +1,6 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -48,13 +47,13 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
  * @version 1.0
  * @since 1.0
  */
-public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+public class MapsFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener {
 
     private MapView mMapView;
     private GoogleMap googleMap;
     private Marker[] markers;
-    private static final int CLOSEST_AMOUNT = 3;
+    public static final int CLOSEST_AMOUNT = 3;
 
     private View rootView;
     private Utils utils;
@@ -69,26 +68,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
 
-    private Activity mActivity;
-
     /**
      * Empty constructor for the class
      */
     public MapsFragment() {
     }
 
-    /**
-     * Setter for the activity
-     * @param mActivity
-     */
-    public void setmActivity(Activity mActivity) {
-        this.mActivity = mActivity;
-
-        utils = new Utils(mActivity, mActivity.getApplicationContext());
-        buildGoogleApiClient();
-        locationHelper = new LocationHelper();
-        mGoogleApiClient.connect();
-    }
 
     /**
      * Method that prepares the components that google maps need to work
@@ -103,8 +88,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         utils = new Utils(getActivity(), getContext());
         setupMap(savedInstanceState);
-
-        buildGoogleApiClient();
         return rootView;
     }
 
@@ -137,7 +120,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(mActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             utils.requestLocationPermission();
             return;
         }
@@ -148,31 +131,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             markers[i] = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.building)).visible(false)
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
-        locationHelper = new LocationHelper();
+
+        locationHelper = new LocationHelper(getContext());
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
+//                locationHelper.getLastLocation().longitude), 12);
+//        googleMap.animateCamera(cameraUpdate);
 
     }
-
-
-    /**
-     * On Start Class method
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    /**
-     * On Stop Class method
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
 
     /**
      * On Resume Class method
@@ -212,104 +177,44 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
 
     /**
-     * Method that builds a GoogleApiClient and uses the addApi() method to request the LocationServices API.
-     */
-    protected synchronized void buildGoogleApiClient() {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(POLLING_FREQ);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_FREQ);
-        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    /**
-     * Runs when a GoogleApiClient object successfully connects.
-     */
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        utils.requestLocationPermission();
-        int permissionCheck = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation == null) {
-            String error = getResources().getString(R.string.no_location_detected);
-            Log.e("ERROR", error);
-        } else {
-
-            locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-//            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
-//            googleMap.animateCamera(cameraUpdate);
-        }
-
-
-    }
-
-    /**
-     * Method called when tha connection is suspended
-     *
-     * @param i
-     */
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i("TAG", "Connection suspended");
-        mGoogleApiClient.connect();
-    }
-
-    /**
-     * Method called when tha connection failed
-     *
-     * @param connectionResult
-     */
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        String err = "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode();
-        Log.e("ERROR", err);
-    }
-
-    /**
      * Method that updates the custom markers when the location changes
      *
      * @param location
      */
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
 
+        mLastLocation = location;
         locationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-        closeBuildings = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
-        closeMonuments = locationHelper.getClosestMonuments(loc, CLOSEST_AMOUNT);
+        closeBuildings = locationHelper.getClosestBuildings(CLOSEST_AMOUNT);
+        closeMonuments = locationHelper.getClosestMonuments(CLOSEST_AMOUNT);
 
         Log.d("konri", "Los edificios son => " + closeBuildings[0].getName() + " " + closeBuildings[1].getName() + " " + closeBuildings[2].getName());
         Log.d("konri", "Los monumentos son => " + closeMonuments[0].getName() + " " + closeMonuments[1].getName() + " " + closeMonuments[2].getName());
-//
-//        addMarkers();
-//
-//        PolylineOptions lineOptions = new PolylineOptions();
-//        ArrayList points = new ArrayList<>();
-//
-//        double lat = 9.998020;
-//        double lng = -84.112338;
-//        LatLng position = new LatLng(lat, lng);
-//        points.add(position);
-//
-//        double lat2 = 9.979326;
-//        double lng2 = -84.090859;
-//        LatLng position2 = new LatLng(lat2, lng2);
-//        points.add(position2);
-//
-//        lineOptions.addAll(points);
-//        if (lineOptions != null) {
-//            googleMap.addPolyline(lineOptions);
-//        } else {
-//            Log.d("onPostExecute", "without Polylines drawn");
-//        }
+
+        addMarkers();
+
+        PolylineOptions lineOptions = new PolylineOptions();
+        ArrayList points = new ArrayList<>();
+
+        double lat = 9.998020;
+        double lng = -84.112338;
+        LatLng position = new LatLng(lat, lng);
+        points.add(position);
+
+        double lat2 = 9.979326;
+        double lng2 = -84.090859;
+        LatLng position2 = new LatLng(lat2, lng2);
+        points.add(position2);
+
+        lineOptions.addAll(points);
+        if (lineOptions != null) {
+            googleMap.addPolyline(lineOptions);
+        } else {
+            Log.d("onPostExecute", "without Polylines drawn");
+        }
     }
 
     /**
@@ -323,12 +228,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 markers[i].setVisible(true);
         }
 
-        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
-            markers[i].setPosition(new LatLng(getCloseMonuments()[i].getLatitude(), closeBuildings[i].getLongitude()));
-            markers[i].setTitle(closeBuildings[i].getName());
-            if (!markers[i].isVisible())
-                markers[i].setVisible(true);
-        }
+//        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
+//            markers[i].setPosition(new LatLng(getCloseMonuments()[i].getLatitude(), closeBuildings[i].getLongitude()));
+//            markers[i].setTitle(closeBuildings[i].getName());
+//            if (!markers[i].isVisible())
+//                markers[i].setVisible(true);
+//        }
 
     }
 
@@ -353,18 +258,5 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         return false;
     }
 
-    /**
-     * @return
-     */
-    public TargetObject[] getCloseMonuments() {
-        return closeMonuments;
-    }
-
-    /**
-     * @return
-     */
-    public TargetObject[] getCloseBuildings() {
-        return closeBuildings;
-    }
 }
 

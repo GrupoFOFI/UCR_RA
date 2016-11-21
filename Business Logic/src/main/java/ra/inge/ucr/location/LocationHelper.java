@@ -1,21 +1,35 @@
 package ra.inge.ucr.location;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.graphics.Target;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.enrico.businesslogic.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.da.entity.TargetType;
+import ra.inge.ucr.location.listener.OnBuildingsSetListener;
+import ra.inge.ucr.location.listener.OnLocationSetListener;
+import ra.inge.ucr.location.listener.OnMonumentsSetListener;
 
 /**
  * <h1> Location Helper </h1>
@@ -27,13 +41,19 @@ import ra.inge.ucr.da.entity.TargetType;
  * @version 1.0
  * @since 1.0
  */
-public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedListener {
+public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
 
+    public static final int TARGET_AMMOUNT = 3;
     public int topidx[];
     public double mindist[];
     private static LatLng mLastLocation;
-
-
+    /**
+     * Represents a geographical location.
+     */
+    protected Location latestLocation;
+    /**
+     * The application Context
+     */
     private Context mContext;
 
     /**
@@ -42,9 +62,23 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
     protected GoogleApiClient mGoogleApiClient;
 
     /**
-     * Represents a geographical location.
+     * MapsFragment listener
      */
-    protected Location lastLocation;
+    private OnLocationSetListener onLocationSetListener;
+
+    /**
+     * CloseBuildingsFragment listener
+     */
+    private OnBuildingsSetListener onBuildingsSetListener;
+
+    /**
+     * CloseMonumentsFragment listener
+     */
+    private OnMonumentsSetListener onMonumentsSetListener;
+
+    private TargetObject[] closeMonuments;
+    private TargetObject[] closeBuildings;
+
 
     /**
      * Method that updates the last location
@@ -65,86 +99,90 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
     }
 
 
-//    public LocationHelper() {
-//        buildGoogleApiClient();
-//    }
+    public LocationHelper(Context context) {
+        this.mContext = context;
+        buildGoogleApiClient();
+    }
+
 
     /**
      * Method that retrieves the closest buildings
      *
-     * @param lastLoc
      * @param ammount
      * @return
      */
-    public TargetObject[] getClosestBuildings(LatLng lastLoc, int ammount) {
-        mLastLocation = lastLoc;
-        TargetObject[] closest = new TargetObject[ammount];
-        topidx = new int[ammount];
-        mindist = new double[ammount];
-        for (int i = 0; i < ammount; i++) {
-            mindist[i] = Double.MAX_VALUE;
-        }
-        for (TargetObject ed : Data.targetObjects) {
-            if (ed.getType() == TargetType.BUILDING) {
-                double temp = distance(lastLoc.latitude, ed.getLatitude(), lastLoc.longitude, ed.getLongitude(), 0, 0);
-                Data.distances[ed.getId() - 1] = temp;
-                for (int i = 0; i < ammount; i++) {
-                    if (temp <= mindist[i]) {
-                        for (int j = ammount - 1; j > i; j--) {
-                            mindist[j] = mindist[j - 1];
-                            topidx[j] = topidx[j - 1];
+    public TargetObject[] getClosestBuildings(int ammount) {
+        if (latestLocation != null) {
+            TargetObject[] closest = new TargetObject[ammount];
+            topidx = new int[ammount];
+            mindist = new double[ammount];
+            for (int i = 0; i < ammount; i++) {
+                mindist[i] = Double.MAX_VALUE;
+            }
+            for (TargetObject ed : Data.targetObjects) {
+                if (ed.getType() == TargetType.BUILDING) {
+                    double temp = distance(latestLocation.getLatitude(), ed.getLatitude(), latestLocation.getLongitude(), ed.getLongitude(), 0, 0);
+                    Data.distances[ed.getId() - 1] = temp;
+                    for (int i = 0; i < ammount; i++) {
+                        if (temp <= mindist[i]) {
+                            for (int j = ammount - 1; j > i; j--) {
+                                mindist[j] = mindist[j - 1];
+                                topidx[j] = topidx[j - 1];
+                            }
+                            mindist[i] = temp;
+                            topidx[i] = ed.getId() - 1;
+                            break;
                         }
-                        mindist[i] = temp;
-                        topidx[i] = ed.getId() - 1;
-                        break;
                     }
                 }
             }
+            for (int i = 0; i < ammount; i++) {
+                closest[i] = Data.targetObjects.get(topidx[i]);
+            }
+            return closest;
         }
-        for (int i = 0; i < ammount; i++) {
-            closest[i] = Data.targetObjects.get(topidx[i]);
-        }
-        return closest;
+        return null;
     }
-
 
 
     /**
      * Method that retrieves the closest monuments
      *
-     * @param lastLoc
      * @param ammount
      * @return
      */
-    public TargetObject[] getClosestMonuments(LatLng lastLoc, int ammount) {
-        mLastLocation = lastLoc;
-        TargetObject[] closest = new TargetObject[ammount];
-        topidx = new int[ammount];
-        mindist = new double[ammount];
-        for (int i = 0; i < ammount; i++) {
-            mindist[i] = Double.MAX_VALUE;
-        }
-        for (TargetObject ed : Data.targetObjects) {
-            if (ed.getType() == TargetType.MONUMENT) {
-                double temp = distance(lastLoc.latitude, ed.getLatitude(), lastLoc.longitude, ed.getLongitude(), 0, 0);
-                Data.distances[ed.getId() - 1] = temp;
-                for (int i = 0; i < ammount; i++) {
-                    if (temp <= mindist[i]) {
-                        for (int j = ammount - 1; j > i; j--) {
-                            mindist[j] = mindist[j - 1];
-                            topidx[j] = topidx[j - 1];
+    public TargetObject[] getClosestMonuments(int ammount) {
+        if (latestLocation != null) {
+            TargetObject[] closest = new TargetObject[ammount];
+            topidx = new int[ammount];
+            mindist = new double[ammount];
+            for (int i = 0; i < ammount; i++) {
+                mindist[i] = Double.MAX_VALUE;
+            }
+
+            for (TargetObject ed : Data.targetObjects) {
+                if (ed.getType() == TargetType.MONUMENT) {
+                    double temp = distance(latestLocation.getLatitude(), ed.getLatitude(), latestLocation.getLongitude(), ed.getLongitude(), 0, 0);
+                    Data.distances[ed.getId() - 1] = temp;
+                    for (int i = 0; i < ammount; i++) {
+                        if (temp <= mindist[i]) {
+                            for (int j = ammount - 1; j > i; j--) {
+                                mindist[j] = mindist[j - 1];
+                                topidx[j] = topidx[j - 1];
+                            }
+                            mindist[i] = temp;
+                            topidx[i] = ed.getId() - 1;
+                            break;
                         }
-                        mindist[i] = temp;
-                        topidx[i] = ed.getId() - 1;
-                        break;
                     }
                 }
             }
+            for (int i = 0; i < ammount; i++) {
+                closest[i] = Data.targetObjects.get(topidx[i]);
+            }
+            return closest;
         }
-        for (int i = 0; i < ammount; i++) {
-            closest[i] = Data.targetObjects.get(topidx[i]);
-        }
-        return closest;
+        return null;
     }
 
     /**
@@ -193,7 +231,7 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
         double mod1 = 0;
         double mod2 = 0;
         double angulo = 0;
-        TargetObject c[] = getClosestBuildings(loc, 3);
+        TargetObject c[] = getClosestBuildings(3);
         for (int i = 0; i < 3; i++) {
             errorAngle = getErrorAngle(loc, c[i].getLatitude(), c[i].getLongitude());
             if (errorAngle != -1) {
@@ -238,34 +276,131 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
         return a;
     }
 
-//
-//    /**
-//     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
-//     */
-//    protected synchronized void buildGoogleApiClient() {
-//        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API)
-//                .build();
-//
-//        mGoogleApiClient.connect();
-//    }
+
+    /**
+     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mGoogleApiClient.connect();
+    }
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
 
+        latestLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (latestLocation != null) {
+//
+            Log.d("konri2", "" + latestLocation.getLatitude());
+            Log.d("konri2", "" + latestLocation.getLongitude());
+            calculateClosest();
+
+        } else {
+            Toast.makeText(mContext, "error", Toast.LENGTH_LONG).show();
+        }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
 
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+        // onConnectionFailed.
+        Log.i("konri", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    @Override
+    public void onConnectionSuspended(int cause) {
+        // The connection to Google Play services was lost for some reason. We call connect() to
+        // attempt to re-establish the connection.
+        Log.i("konri", "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+
+    /**
+     * Method that updates the custom markers when the location changes
+     *
+     * @param location
+     */
+    @Override
+    public void onLocationChanged(Location location) {
+
+        if (location != null) {
+            latestLocation = location;
+
+            calculateClosest();
+            Log.d("konri", "" + latestLocation.getLatitude());
+            Log.d("konri", "" + latestLocation.getLongitude());
+        }
+
+        Log.d("konri", "No estoy entrado acá");
+    }
+
+    void calculateClosest() {
+        closeBuildings = getClosestBuildings(TARGET_AMMOUNT);
+        if (closeBuildings != null) {
+            if (onBuildingsSetListener != null) {
+                onBuildingsSetListener.onBuildingsCalculated();
+            }
+        }
+        closeMonuments = getClosestMonuments(TARGET_AMMOUNT);
+        if (closeMonuments != null) {
+            if (onMonumentsSetListener != null) {
+                onMonumentsSetListener.onMonumentsCalculated();
+            }
+        }
+    }
+
+    /**
+     * Setter for the MapsFragment listener
+     *
+     * @param onLocationSetListener
+     */
+    public void setOnLocationSetListener(OnLocationSetListener onLocationSetListener) {
+        this.onLocationSetListener = onLocationSetListener;
+    }
+
+    /**
+     * Setter for the ClosestBuildingsFragment listener
+     *
+     * @param onBuildingsSetListener
+     */
+    public void setOnBuildingsSetListener(OnBuildingsSetListener onBuildingsSetListener) {
+        this.onBuildingsSetListener = onBuildingsSetListener;
+    }
+
+    /**
+     * Setter for the ClosestMonumentFragment listener
+     *
+     * @param onMonumentsSetListener
+     */
+    public void setOnMonumentsSetListener(OnMonumentsSetListener onMonumentsSetListener) {
+        this.onMonumentsSetListener = onMonumentsSetListener;
+    }
+
+    public TargetObject[] getCloseMonuments() {
+        return closeMonuments;
+    }
+
+    public TargetObject[] getCloseBuildings() {
+        return closeBuildings;
     }
 }
 

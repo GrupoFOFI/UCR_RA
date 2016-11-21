@@ -25,10 +25,10 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 public class LatestRecognitionFragment extends Fragment {
 
 
-    public static ArrayList<TargetObject>  targetObjects ;
+    public static ArrayList<TargetObject> targetObjects;
 
-        public LatestRecognitionFragment() {
-            targetObjects = new ArrayList<TargetObject>();
+    public LatestRecognitionFragment() {
+        targetObjects = new ArrayList<TargetObject>();
     }
 
 

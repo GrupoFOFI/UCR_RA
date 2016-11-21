@@ -21,6 +21,9 @@ import ra.inge.ucr.ucraumentedreality.R;
  */
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
+    /**
+     * The closest target objects
+     */
     private TargetObject[] cercanos;
 
     /**
@@ -28,6 +31,16 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
      * @param cercanos
      */
     public CustomAdapter(TargetObject[] cercanos) {
+        this.cercanos = cercanos;
+    }
+
+    /**
+     * Empty Constructor
+     */
+    public CustomAdapter() {
+    }
+
+    public void setCercanos(TargetObject[] cercanos) {
         this.cercanos = cercanos;
     }
 

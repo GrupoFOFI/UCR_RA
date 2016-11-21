@@ -17,8 +17,9 @@ import ra.inge.ucr.da.parser.NodeParser;
  * Created by enrico on 11/14/16.
  */
 public class NavigationHelper {
-    private LocationHelper locationHelper = new LocationHelper();
     private Context m_Context;
+    private LocationHelper locationHelper = new LocationHelper(m_Context);
+
     private NodeParser nodeParser;
 
     public NavigationHelper(Context context) {

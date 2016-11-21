@@ -23,7 +23,6 @@ import ra.inge.ucr.location.listener.OnLookAtTargetListener;
  */
 public class SensorHelper implements SensorEventListener {
 
-    LocationHelper locationHelper = new LocationHelper();
     private SensorManager snsrmngr;
     private Sensor accl, mgnt;
     private OnLookAtTargetListener mListener;
@@ -32,6 +31,8 @@ public class SensorHelper implements SensorEventListener {
     float[] acclReading = new float[3], mgntReading = new float[3];
     float[] orientationAngles = new float[3];
     float[] rotationVector = new float[3];
+
+//    LocationHelper locationHelper = new LocationHelper();
 
     public SensorHelper(Context context) {
         // start sensor
@@ -103,7 +104,8 @@ public class SensorHelper implements SensorEventListener {
         // z doesn't matter
         TargetObject ed =null;
         if(LocationHelper.getLastLocation()!= null) {
-            ed = locationHelper.pointingCamera((double) rotationVector[0], (double) rotationVector[1], LocationHelper.getLastLocation());
+//            ed = locationHelper.pointingCamera((double) rotationVector[0], (double) rotationVector[1], LocationHelper.getLastLocation());
+            ed = null;
         }
         if (mListener != null) {
             if (mBuilding != ed) {
