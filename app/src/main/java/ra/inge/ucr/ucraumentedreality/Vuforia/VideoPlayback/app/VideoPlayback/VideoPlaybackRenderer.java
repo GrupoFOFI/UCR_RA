@@ -435,12 +435,9 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         keyframeQuadAspectRatio[VideoPlayback.CHIPS] = (float) mTextures.get(1).mHeight
             / (float) mTextures.get(1).mWidth;*/
 
-        for (int i = 0; i <= VideoPlayback.NUM_TARGETS; i++) {
-            keyframeQuadAspectRatio[i] = (float) mTextures.get(0).mHeight
-                    / (float) mTextures.get(0).mWidth;
-            if (i < VideoPlayback.NUM_TARGETS - 1)
-                keyframeQuadAspectRatio[i + 1] = (float) mTextures.get(0).mHeight
-                        / (float) mTextures.get(0).mWidth;
+        for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
+            Log.d("Mae", "I es " + i);
+            keyframeQuadAspectRatio[i] = (float) mTextures.get(0).mHeight / (float) mTextures.get(0).mWidth;
         }
 
 
@@ -613,12 +610,12 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     // Here we use the aspect ratio of the keyframe since it
                     // is likely that it is not a perfect square
 
-                    float ratio = 1.0f;
-                    if (mTextures.get(currentTarget % 2).mSuccess)
-                        ratio = keyframeQuadAspectRatio[currentTarget];
-                    else
-                        ratio = targetPositiveDimensions[currentTarget].getData()[1]
-                                / targetPositiveDimensions[currentTarget].getData()[0];
+//                    float ratio = 1.0f;
+//                    if (mTextures.get(currentTarget % 2).mSuccess)
+//                        ratio = keyframeQuadAspectRatio[currentTarget];
+//                    else
+//                        ratio = targetPositiveDimensions[currentTarget].getData()[1]
+//                                / targetPositiveDimensions[currentTarget].getData()[0];
 
                     Matrix.scaleM(modelViewMatrixKeyframe, 0,
 //                        targetPositiveDimensions[currentTarget].getData()[0],
@@ -928,34 +925,35 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
         float mtx[] = textureCoordMatrix;
         float tempUVMultRes[] = new float[2];
-
-        if (target % 2 == 1) {
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedStones[0],
-                    videoQuadTextureCoordsTransformedStones[1],
-                    videoQuadTextureCoords[0], videoQuadTextureCoords[1], mtx);
-            videoQuadTextureCoordsTransformedStones[0] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedStones[1] = tempUVMultRes[1];
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedStones[2],
-                    videoQuadTextureCoordsTransformedStones[3],
-                    videoQuadTextureCoords[2], videoQuadTextureCoords[3], mtx);
-            videoQuadTextureCoordsTransformedStones[2] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedStones[3] = tempUVMultRes[1];
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedStones[4],
-                    videoQuadTextureCoordsTransformedStones[5],
-                    videoQuadTextureCoords[4], videoQuadTextureCoords[5], mtx);
-            videoQuadTextureCoordsTransformedStones[4] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedStones[5] = tempUVMultRes[1];
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedStones[6],
-                    videoQuadTextureCoordsTransformedStones[7],
-                    videoQuadTextureCoords[6], videoQuadTextureCoords[7], mtx);
-            videoQuadTextureCoordsTransformedStones[6] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedStones[7] = tempUVMultRes[1];
-        } else if (target % 2 == 0) {
-            tempUVMultRes = uvMultMat4f(
+//
+//        if (target % 2 == 1) {
+//            tempUVMultRes = uvMultMat4f(
+//                    videoQuadTextureCoordsTransformedStones[0],
+//                    videoQuadTextureCoordsTransformedStones[1],
+//                    videoQuadTextureCoords[0], videoQuadTextureCoords[1], mtx);
+//            videoQuadTextureCoordsTransformedStones[0] = tempUVMultRes[0];
+//            videoQuadTextureCoordsTransformedStones[1] = tempUVMultRes[1];
+//            tempUVMultRes = uvMultMat4f(
+//                    videoQuadTextureCoordsTransformedStones[2],
+//                    videoQuadTextureCoordsTransformedStones[3],
+//                    videoQuadTextureCoords[2], videoQuadTextureCoords[3], mtx);
+//            videoQuadTextureCoordsTransformedStones[2] = tempUVMultRes[0];
+//            videoQuadTextureCoordsTransformedStones[3] = tempUVMultRes[1];
+//            tempUVMultRes = uvMultMat4f(
+//                    videoQuadTextureCoordsTransformedStones[4],
+//                    videoQuadTextureCoordsTransformedStones[5],
+//                    videoQuadTextureCoords[4], videoQuadTextureCoords[5], mtx);
+//            videoQuadTextureCoordsTransformedStones[4] = tempUVMultRes[0];
+//            videoQuadTextureCoordsTransformedStones[5] = tempUVMultRes[1];
+//            tempUVMultRes = uvMultMat4f(
+//                    videoQuadTextureCoordsTransformedStones[6],
+//                    videoQuadTextureCoordsTransformedStones[7],
+//                    videoQuadTextureCoords[6], videoQuadTextureCoords[7], mtx);
+//            videoQuadTextureCoordsTransformedStones[6] = tempUVMultRes[0];
+//            videoQuadTextureCoordsTransformedStones[7] = tempUVMultRes[1];
+//        } else if (target % 2 == 0) {
+//
+ tempUVMultRes = uvMultMat4f(
                     videoQuadTextureCoordsTransformedChips[0],
                     videoQuadTextureCoordsTransformedChips[1],
                     videoQuadTextureCoords[0], videoQuadTextureCoords[1], mtx);
@@ -979,7 +977,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     videoQuadTextureCoords[6], videoQuadTextureCoords[7], mtx);
             videoQuadTextureCoordsTransformedChips[6] = tempUVMultRes[0];
             videoQuadTextureCoordsTransformedChips[7] = tempUVMultRes[1];
-        }
+//        }
 
         // textureCoordMatrix = mtx;
     }

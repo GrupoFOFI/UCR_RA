@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="centro_info_p2" size="500.000000 666.666687" />
+    <ImageTarget name="comedor2" size="500.000000 500.000000" />
+    <ImageTarget name="plaza24-5" size="350.000000 466.666656" />
+    <ImageTarget name="osos_amorosos2" size="300.000000 280.656494" />
+    <ImageTarget name="mate5" size="500.000000 666.666687" />
+    <ImageTarget name="leda6" size="350.000000 466.666656" />
+    <ImageTarget name="generales2" size="500.000000 375.000000" />
+    <ImageTarget name="fernando1" size="300.000000 285.069977" />
+    <ImageTarget name="derecho5" size="500.000000 666.666687" />
+    <ImageTarget name="carlos_monge1" size="500.000000 375.000000" />
+    <ImageTarget name="bustos1" size="300.000000 400.000000" />
+    <ImageTarget name="antarticos1" size="300.000000 216.250000" />
+    <ImageTarget name="ecci" size="500.000000 375.000000" />
+    <ImageTarget name="antarticos0" size="300.000000 400.000000" />
+    <ImageTarget name="comedor" size="500.000000 500.000000" />
+    <ImageTarget name="leda9" size="300.000000 400.000000" />
+    <ImageTarget name="generales" size="500.000000 666.666687" />
+    <ImageTarget name="fernando2" size="350.000000 466.666656" />
+    <ImageTarget name="derecho7" size="500.000000 666.666687" />
+    <ImageTarget name="centro_info_p4" size="500.000000 375.000000" />
+    <ImageTarget name="carlos_monge" size="500.000000 375.000000" />
+    <ImageTarget name="bustos2" size="300.000000 400.000000" />
+    <ImageTarget name="mate" size="500.000000 666.666687" />
+    <ImageTarget name="osos_amorosos1" size="350.000000 466.666656" />
+    <ImageTarget name="plaza24-1" size="350.000000 262.500000" />
+  </Tracking>
+</QCARConfig>

@@ -58,6 +58,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private static final String BIG_DATASET = "Edificios_Monumentos.xml";
     private static final String LITTLE_DATASET = "Dataset_Test.xml";
     private static final String LITE_DATASET = "LightDataSet.xml";
+    private static final String MEDIUM_DATASET = "MediumDataSet.xml";
 
     private static final String LOGTAG = "VideoPlayback";
     public static final String DEBUG_TAG = "konri";
@@ -70,7 +71,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private SimpleOnGestureListener mSimpleListener = null;
 
     // Movie for the Targets:
-    public static final int NUM_TARGETS = 13;
+    public static final int NUM_TARGETS = 14;
 
     public static final int ANTART = 0;
     public static final int OSOS = 1;
@@ -84,7 +85,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public static final int ECCI = 9;
     public static final int GIRASOL = 10;
     public static final int FERNANDO = 11;
-    public static final int INFO = 12;
+    public static final int INFO = 13;
 
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
@@ -144,7 +145,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
         mActivity = this;
 
-        this.setTitle("Vuforia");
+        this.setTitle("Vufofia");
         startLoadingAnimation();
 
         vuforiaAppSession
@@ -185,7 +186,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mMovieName[9] = "VideoPlayback/centro-info.mp4";  //TODO ecci
         mMovieName[10] = "VideoPlayback/generales.mp4";
         mMovieName[11] = "VideoPlayback/fernando.mp4";
-        mMovieName[12] = "VideoPlayback/centro-info.mp4";
+        mMovieName[13] = "VideoPlayback/centro-info.mp4";
 
 
         // Set the double tap listener:
@@ -533,7 +534,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         }
 
         // Load the data sets:
-        if (!ucrTargetDataset.load(LITE_DATASET,//LITTLE_DATASET,
+        if (!ucrTargetDataset.load(MEDIUM_DATASET,
                 STORAGE_TYPE.STORAGE_APPRESOURCE)) {
             Log.d(LOGTAG, "Failed to load data set.");
             return false;

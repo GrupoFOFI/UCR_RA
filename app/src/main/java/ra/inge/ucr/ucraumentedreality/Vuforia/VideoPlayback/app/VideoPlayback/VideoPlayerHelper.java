@@ -367,8 +367,7 @@ public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
     {
         if (!isPlayableOnTexture())
         {
-            // Log.d( LOGTAG,
-            // "Cannot get the video height if it is not playable on texture");
+            // Log.d( LOGTAG, "Cannot get the video height if it is not playable on texture");
             return -1;
         }
 
