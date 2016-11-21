@@ -56,7 +56,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener {
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener, View.OnClickListener{
 
     private static final String BIG_DATASET = "Edificios_Monumentos.xml";
     private static final String LITTLE_DATASET = "Dataset_Test.xml";
@@ -718,9 +718,6 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             ImageView arrowUp = (ImageView) findViewById(R.id.arrow_up);
             arrowUp.bringToFront();
 
-            ImageView arrowDown = (ImageView) findViewById(R.id.arrow_down);
-            arrowDown.bringToFront();
-
             ImageView arrowLeft = (ImageView) findViewById(R.id.arrow_left);
             arrowLeft.bringToFront();
 
@@ -800,4 +797,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         descriptionTextView.setText(description);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+
+
+        }
+    }
 }
