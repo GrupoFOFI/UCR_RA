@@ -55,8 +55,8 @@ import android.view.Surface;
 
 // Helper class for video playback functionality
 public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
-        MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
-{
+        MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
+
     private static final String LOGTAG = "VideoPlayerHelper";
 
     public static final int CURRENT_POSITION = -1;
@@ -208,7 +208,7 @@ public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
                                 .setAudioStreamType(AudioManager.STREAM_MUSIC);
                         mMediaPlayer.setSurface(new Surface(mSurfaceTexture));
                         canBeOnTexture = true;
-                        mShouldPlayImmediately = playOnTextureImmediately;
+                        mShouldPlayImmediately = false;//playOnTextureImmediately;
                         mMediaPlayer.prepareAsync();
                     } catch (Exception e)
                     {
@@ -494,7 +494,9 @@ public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
                 mParentActivity.startActivityForResult(mPlayerHelperActivityIntent, 1);
             return true;
         } else
+
         {
+            Log.d(VideoPlayback.DEBUG_TAG, "Entering playback helper");
             // If the client requested playback on texture
             // we must first verify that it is possible
             if (!isPlayableOnTexture())
@@ -538,11 +540,13 @@ public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
                         Log.e(LOGTAG, "Could not seek to position");
                     }
                 }
+
             }
 
             // Then simply start playing
             try
             {
+                Log.d(VideoPlayback.DEBUG_TAG, "Estoy corriendo el video");
                 mMediaPlayer.start();
             } catch (Exception e)
             {
@@ -842,12 +846,22 @@ public class VideoPlayerHelper implements MediaPlayer.OnPreparedListener,
         mCurrentState = MEDIA_STATE.READY;
 
         // If requested an immediate play
-        if (mShouldPlayImmediately)
+        if (mShouldPlayImmediately) {
+            Log.d(VideoPlayback.DEBUG_TAG, "on Prepared");
             play(false, mSeekPosition);
+        }
 
         mSeekPosition = 0;
     }
 
+
+    public MediaPlayer getmMediaPlayer() {
+        return mMediaPlayer;
+    }
+
+    public void setmMediaPlayer(MediaPlayer mMediaPlayer) {
+        this.mMediaPlayer = mMediaPlayer;
+    }
 
     public boolean onError(MediaPlayer mp, int what, int extra)
     {

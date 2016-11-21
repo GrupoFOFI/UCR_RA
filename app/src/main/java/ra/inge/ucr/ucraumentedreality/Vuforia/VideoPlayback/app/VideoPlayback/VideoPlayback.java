@@ -56,6 +56,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, VideoPlaybackRenderer.OnTrackListener {
 
     private static final String LOGTAG = "VideoPlayback";
+    public static final String DEBUG_TAG = "konri";
 
     SampleApplicationSession vuforiaAppSession;
     Activity mActivity;
@@ -118,38 +119,49 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private TextView titleTextView;
     private TextView descriptionTextView;
 
+//    public static boolean isPlayingVideo = false;
+
     @Override
-    public void playVideo() {
+    public void playVideo(int targetId) {
+
+        Log.d(DEBUG_TAG, "Voy a intentar hacer play");
+//        isPlayingVideo = true;
 
         // Do not react if the StartupScreen is being displayed
-        for (int i = 0; i < NUM_TARGETS; i++) {
+//        for (int i = 0; i < NUM_TARGETS; i++) {
 
             // Check if it is playable on texture
-            if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+//            if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
+//
+//                // We can play only if the movie was paused, ready
+//                // or stopped
+//                if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
+//                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
+//                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
+//                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
+//
+//                    // Pause all other media
+//                    pauseAll(i);
+//
+//                    // If it has reached the end then rewind
+//                    if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
+//                        mSeekPosition[i] = 0;
+//
+//                    Log.d(DEBUG_TAG, "Play video callback");
+//                    mVideoPlayerHelper[i].play(mPlayFullscreenVideo, mSeekPosition[i]);
+//
+//                    mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
+//                } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
+//
+//                    // If it is playing then we pause it
+//                    mVideoPlayerHelper[i].pause();
+//                }
+//            }
+//    }
 
-                // We can play only if the movie was paused, ready
-                // or stopped
-                if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PAUSED)
-                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.READY)
-                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.STOPPED)
-                        || (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END)) {
-
-                    // Pause all other media
-                    pauseAll(i);
-
-                    // If it has reached the end then rewind
-                    if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
-                        mSeekPosition[i] = 0;
-
-                    mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
-                            mSeekPosition[i]);
-                    mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
-                } else if (mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING) {
-
-                    // If it is playing then we pause it
-                    mVideoPlayerHelper[i].pause();
-                }
-            }
+            if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()){
+                Log.d(DEBUG_TAG, "VAmooooos");
+                mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
         }
     }
 
@@ -223,7 +235,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
             // Handle the single tap
             public boolean onSingleTapConfirmed(MotionEvent e) {
-               return  isReallyTapped(e);
+                return isReallyTapped(e);
             }
         });
     }
@@ -236,11 +248,11 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/VuforiaSizzleReel_2.png", getAssets()));
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/play.png", getAssets()));
         mTextures.add(Texture.loadTextureFromApk("VideoPlayback/busy.png", getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png",  getAssets()));
+        mTextures.add(Texture.loadTextureFromApk("VideoPlayback/error.png", getAssets()));
     }
 
 
-    public boolean isReallyTapped (MotionEvent e) {
+    public boolean isReallyTapped(MotionEvent e) {
 
         boolean isSingleTapHandled = false;
 
@@ -268,6 +280,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
                         if ((mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.REACHED_END))
                             mSeekPosition[i] = 0;
 
+                        Log.d(DEBUG_TAG, "isReallyTapped?");
                         mVideoPlayerHelper[i].play(mPlayFullscreenVideo,
                                 mSeekPosition[i]);
                         mSeekPosition[i] = VideoPlayerHelper.CURRENT_POSITION;
@@ -281,6 +294,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
                     // If it isn't playable on texture
                     // Either because it wasn't requested or because it
                     // isn't supported then request playback fullscreen.
+                    Log.d(DEBUG_TAG, "isReallyTapped2 ");
                     mVideoPlayerHelper[i].play(true,
                             VideoPlayerHelper.CURRENT_POSITION);
                 }
@@ -381,7 +395,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             // this was currently playing:
             if (mVideoPlayerHelper[i].isPlayableOnTexture()) {
                 mSeekPosition[i] = mVideoPlayerHelper[i].getCurrentPosition();
-                mWasPlaying[i] = true;
+                mWasPlaying[i] = false;
 //                         mVideoPlayerHelper[i].getStatus() == MEDIA_STATE.PLAYING ? true: false;
             }
 

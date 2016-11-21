@@ -206,8 +206,9 @@ public class SampleAppRenderer {
             // Call renderFrame from the app renderer class which implements SampleAppRendererControl
             // This will be called for MONO, LEFT and RIGHT views, POSTPROCESS will not render the
             // frame
-            if(currentView != VIEW.VIEW_POSTPROCESS)
+            if(currentView != VIEW.VIEW_POSTPROCESS) {
                 mRenderingInterface.renderFrame(state, projectionMatrix);
+            }
         }
 
         mRenderer.end();
