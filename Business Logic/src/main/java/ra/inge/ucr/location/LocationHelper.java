@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
+import ra.inge.ucr.da.entity.TargetType;
 
 /**
  * <h1> Location Helper </h1>
@@ -58,17 +59,58 @@ public class LocationHelper {
             mindist[i] = Double.MAX_VALUE;
         }
         for (TargetObject ed : Data.targetObjects) {
-            double temp = distance(lastLoc.latitude, ed.getLatitude(), lastLoc.longitude, ed.getLongitude(), 0, 0);
-            Data.distances[ed.getId() - 1] = temp;
-            for (int i = 0; i < ammount; i++) {
-                if (temp <= mindist[i]) {
-                    for (int j = ammount - 1; j > i; j--) {
-                        mindist[j] = mindist[j - 1];
-                        topidx[j] = topidx[j - 1];
+            if (ed.getType() == TargetType.BUILDING) {
+                double temp = distance(lastLoc.latitude, ed.getLatitude(), lastLoc.longitude, ed.getLongitude(), 0, 0);
+                Data.distances[ed.getId() - 1] = temp;
+                for (int i = 0; i < ammount; i++) {
+                    if (temp <= mindist[i]) {
+                        for (int j = ammount - 1; j > i; j--) {
+                            mindist[j] = mindist[j - 1];
+                            topidx[j] = topidx[j - 1];
+                        }
+                        mindist[i] = temp;
+                        topidx[i] = ed.getId() - 1;
+                        break;
                     }
-                    mindist[i] = temp;
-                    topidx[i] = ed.getId() - 1;
-                    break;
+                }
+            }
+        }
+        for (int i = 0; i < ammount; i++) {
+            closest[i] = Data.targetObjects.get(topidx[i]);
+        }
+        return closest;
+    }
+
+
+    /**
+     * Method that retrieves the closest monuments
+     *
+     * @param lastLoc
+     * @param ammount
+     * @return
+     */
+    public TargetObject[] getClosestMonuments(LatLng lastLoc, int ammount) {
+        mLastLocation = lastLoc;
+        TargetObject[] closest = new TargetObject[ammount];
+        topidx = new int[ammount];
+        mindist = new double[ammount];
+        for (int i = 0; i < ammount; i++) {
+            mindist[i] = Double.MAX_VALUE;
+        }
+        for (TargetObject ed : Data.targetObjects) {
+            if (ed.getType() == TargetType.MONUMENT) {
+                double temp = distance(lastLoc.latitude, ed.getLatitude(), lastLoc.longitude, ed.getLongitude(), 0, 0);
+                Data.distances[ed.getId() - 1] = temp;
+                for (int i = 0; i < ammount; i++) {
+                    if (temp <= mindist[i]) {
+                        for (int j = ammount - 1; j > i; j--) {
+                            mindist[j] = mindist[j - 1];
+                            topidx[j] = topidx[j - 1];
+                        }
+                        mindist[i] = temp;
+                        topidx[i] = ed.getId() - 1;
+                        break;
+                    }
                 }
             }
         }
@@ -168,6 +210,7 @@ public class LocationHelper {
         }
         return a;
     }
+
 
 }
 

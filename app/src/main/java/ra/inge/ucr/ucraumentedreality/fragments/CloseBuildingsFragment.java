@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
@@ -28,8 +29,18 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
  */
 public class CloseBuildingsFragment extends Fragment {
 
+    /**
+     * Custom adapter for the fragment
+     */
     private CustomAdapter mAdapter;
+    /**
+     * Maps fragment reference
+     */
     private MapsFragment mapsFragment;
+    /**
+     * The closest buildings;
+     */
+    private TargetObject[] closeBuildings;
 
     /**
      * Empty constructor for the fragment
@@ -38,15 +49,13 @@ public class CloseBuildingsFragment extends Fragment {
     }
 
     /**
-     * Constructor that receives the mapsFragmentReference that handles the closest buildings
+     * Setter for the maps fragment
      *
      * @param mapsFragment
      */
-    @SuppressLint("ValidFragment")
-    public CloseBuildingsFragment(MapsFragment mapsFragment) {
+    public void setMapsFragment(MapsFragment mapsFragment) {
         this.mapsFragment = mapsFragment;
     }
-
 
     /**
      * Method that prepares all the components for the fragment
@@ -68,10 +77,15 @@ public class CloseBuildingsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        if (mapsFragment.getCercanos() != null) {
-            mAdapter = new CustomAdapter(mapsFragment.getCercanos());
-            recyclerView.setAdapter(mAdapter);
+        if (mapsFragment == null) {
+            mapsFragment = new MapsFragment();
         }
+            closeBuildings = mapsFragment.getCloseBuildings();
+            if (closeBuildings != null) {
+                mAdapter = new CustomAdapter(closeBuildings);
+                recyclerView.setAdapter(mAdapter);
+            }
+
         return view;
     }
 }

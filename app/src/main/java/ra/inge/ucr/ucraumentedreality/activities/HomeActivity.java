@@ -39,6 +39,7 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         ShakeHandler.OnShakeListener {
 
+    /* UI elements */
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private Class currentFragmentType;
@@ -51,11 +52,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private boolean showingPopUp = false;
     private String text2Speech = "";
-    private CommandHandler commandHandler;
 
+    private CommandHandler commandHandler;
     private FloatingActionButton fab;
     private SharedPreferences prefs;
 
+    private HomeFragment homeFragment;
+    private MapsFragment mapsFragment;
+
+    /**
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +84,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
-        setFragment(getResources().getString(R.string.app_name), new HomeFragment());
+        mapsFragment = new MapsFragment();
+        mapsFragment.setmActivity(this);
+        homeFragment = new HomeFragment();
+        homeFragment.setMapsFragment(mapsFragment);
+
+        setFragment(new HomeFragment());
 
         shakeHandler = new ShakeHandler(this);
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -96,24 +108,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    /**
+     *
+     */
     @Override
     public void onShake() {
         if (prefs.getBoolean("accessibility", false) == true) {
 
             vibe.vibrate(100);
-//        new AlertDialog.Builder(this)
-//                .setPositiveButton(android.R.string.ok, null)
-//                .setMessage("Shooken!")
-//                .show();
             if (showingPopUp == false) {
                 promptSpeechInput();
             }
-
         }
-
     }
 
-
+    /**
+     *
+     */
     private void promptSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -132,6 +143,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * Method that
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -151,7 +169,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         showingPopUp = false;
     }
 
-
+    /**
+     * On back pressed method
+     */
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -176,22 +196,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        Fragment fragment = null;
-        boolean isFragment = true;
         switch (item.getItemId()) {
 
             case R.id.nav_home:
-                fragment = new HomeFragment();
-
+                setFragment(homeFragment);
                 break;
 
             case R.id.nav_camera:
-                isFragment = false;
                 openVuforia();
                 break;
 
             case R.id.nav_maps:
-                fragment = new MapsFragment();
+                setFragment(mapsFragment);
                 break;
 
 //            case R.id.nav_takeme:
@@ -199,29 +215,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                break;
 
             case R.id.nav_accessibility:
-                isFragment = false;
                 accessibilityDialog();
                 break;
 
             case R.id.nav_share:
-                isFragment = false;
                 shareApp();
                 break;
 
             case R.id.nav_settings:
-                isFragment = false;
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 break;
 
             default:
-                isFragment = false;
                 break;
         }
 
-        if (isFragment) {
-            Log.i("Tag", "is fragment");
-            setFragment("Reste", fragment);
-        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -283,17 +291,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     /**
      * Method used to setup the fragment memory
      *
-     * @param title
      * @param fragment
      */
-    private void setFragment(String title, Fragment fragment) {
+    private void setFragment(Fragment fragment) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
         fragmentTransaction.replace(R.id.home_fragment_container, fragment);
-        if (currentFragmentType == HomeFragment.class)
+        if (currentFragmentType == HomeFragment.class) {
             fragmentTransaction.addToBackStack("HomeFragment");
+
+        }
         currentFragmentType = fragment.getClass();
         fragmentTransaction.commit();
     }

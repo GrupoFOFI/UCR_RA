@@ -9,14 +9,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
 
+/**
+ * <h1> CloseMonumentsFragment </h1>
+ * <p>
+ * Fragment to manage the nearest buildings to show the user
+ *
+ * @author Fofis
+ * @version 1.0
+ * @since 1.0
+ */
 public class CloseMonumentsFragment extends Fragment {
 
+    /**
+     * Custom adapter made for the fragment
+     */
     private CustomAdapter mAdapter;
+    /**
+     * Maps fragment reference
+     */
     private MapsFragment mapsFragment;
+    /**
+     * Close monuments
+     */
+    private TargetObject[] closeMonuments;
 
     /**
      * Empty constructor for the fragment
@@ -25,15 +45,13 @@ public class CloseMonumentsFragment extends Fragment {
     }
 
     /**
-     * Constructor that receives the mapsFragmentReference that handles the closest buildings
+     * Setter for the maps fragment
      *
      * @param mapsFragment
      */
-    @SuppressLint("ValidFragment")
-    public CloseMonumentsFragment(MapsFragment mapsFragment) {
+    public void setMapsFragment(MapsFragment mapsFragment) {
         this.mapsFragment = mapsFragment;
     }
-
 
     /**
      * Method that prepares all the components for the fragment
@@ -55,10 +73,16 @@ public class CloseMonumentsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        if (mapsFragment.getCercanos() != null) {
-            mAdapter = new CustomAdapter(mapsFragment.getCercanos());
+        if (mapsFragment == null) {
+            mapsFragment = new MapsFragment();
+        }
+        closeMonuments = mapsFragment.getCloseMonuments();
+        if (closeMonuments != null) {
+            mAdapter = new CustomAdapter(closeMonuments);
             recyclerView.setAdapter(mAdapter);
         }
+
+
         return view;
     }
 }

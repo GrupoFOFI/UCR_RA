@@ -1,6 +1,7 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
  * @since 1.0
  */
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener, LocationListener {
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener {
 
     private MapView mMapView;
     private GoogleMap googleMap;
@@ -57,7 +58,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     private View rootView;
     private Utils utils;
-    private TargetObject[] cercanos;
+
+    private TargetObject[] closeMonuments;
+    private TargetObject[] closeBuildings;
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
@@ -66,12 +69,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
 
+    private Activity mActivity;
+
     /**
      * Empty constructor for the class
      */
     public MapsFragment() {
     }
 
+    /**
+     * Setter for the activity
+     * @param mActivity
+     */
+    public void setmActivity(Activity mActivity) {
+        this.mActivity = mActivity;
+
+        utils = new Utils(mActivity, mActivity.getApplicationContext());
+        buildGoogleApiClient();
+        locationHelper = new LocationHelper();
+    }
 
     /**
      * Method that prepares the components that google maps need to work
@@ -86,7 +102,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         utils = new Utils(getActivity(), getContext());
         setupMap(savedInstanceState);
-
 
         buildGoogleApiClient();
         return rootView;
@@ -121,17 +136,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             utils.requestLocationPermission();
             return;
         }
         this.googleMap.setMyLocationEnabled(true);
+
         markers = new Marker[CLOSEST_AMOUNT];
         for (int i = 0; i < CLOSEST_AMOUNT; i++) {
             markers[i] = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.building)).visible(false)
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
         locationHelper = new LocationHelper();
+
     }
 
 
@@ -201,7 +218,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(POLLING_FREQ);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_FREQ);
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+        mGoogleApiClient = new GoogleApiClient.Builder(mActivity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -223,10 +240,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             String error = getResources().getString(R.string.no_location_detected);
             Log.e("ERROR", error);
         } else {
+
             locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
         }
+
+
     }
 
     /**
@@ -237,7 +257,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onConnectionSuspended(int i) {
         Log.i("TAG", "Connection suspended");
-//        mGoogleApiClient.connect();
+        mGoogleApiClient.connect();
     }
 
     /**
@@ -259,16 +279,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+
         locationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-        cercanos = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
-        //Log.i("", cercanos[0].getNmbr() + " " + cercanos[1].getNmbr() + " " + cercanos[2].getNmbr());
-        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
-            markers[i].setPosition(new LatLng(cercanos[i].getLatitude(), cercanos[i].getLongitude()));
-            markers[i].setTitle(cercanos[i].getName());
-            if (!markers[i].isVisible())
-                markers[i].setVisible(true);
-        }
+        closeBuildings = locationHelper.getClosestBuildings(loc, CLOSEST_AMOUNT);
+        closeMonuments = locationHelper.getClosestMonuments(loc, CLOSEST_AMOUNT);
+
+        Log.d("konri", "Los edificios son => " + closeBuildings[0].getName() + " " + closeBuildings[1].getName() + " " + closeBuildings[2].getName());
+        Log.d("konri", "Los monumentos son => " + closeMonuments[0].getName() + " " + closeMonuments[1].getName() + " " + closeMonuments[2].getName());
+
+        addMarkers();
+
         PolylineOptions lineOptions = new PolylineOptions();
         ArrayList points = new ArrayList<>();
 
@@ -288,6 +309,26 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         } else {
             Log.d("onPostExecute", "without Polylines drawn");
         }
+    }
+
+    /**
+     * Method that adds diferent markers to the map
+     */
+    void addMarkers() {
+        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
+            markers[i].setPosition(new LatLng(closeBuildings[i].getLatitude(), closeBuildings[i].getLongitude()));
+            markers[i].setTitle(closeBuildings[i].getName());
+            if (!markers[i].isVisible())
+                markers[i].setVisible(true);
+        }
+
+        for (int i = 0; i < CLOSEST_AMOUNT; i++) {
+            markers[i].setPosition(new LatLng(getCloseMonuments()[i].getLatitude(), closeBuildings[i].getLongitude()));
+            markers[i].setTitle(closeBuildings[i].getName());
+            if (!markers[i].isVisible())
+                markers[i].setVisible(true);
+        }
+
     }
 
     /**
@@ -312,46 +353,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     /**
-     * Method that handles when a user drags a marker
-     *
-     * @param marker
-     */
-    @Override
-    public void onMarkerDragStart(Marker marker) {
-
-    }
-
-    /**
-     * Method that handles when a user drags a marker
-     *
-     * @param marker
-     */
-    @Override
-    public void onMarkerDrag(Marker marker) {
-
-    }
-
-    /**
-     * Method that handles when a user ends dragging a marker
-     *
-     * @param marker
-     */
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-
-    }
-
-    /**
-     * Method that retrieves the closest buildings so the ClosesBuildingFragment can use them
-     * {@link CloseBuildingsFragment};
-     * .}
-     *
      * @return
      */
-    public TargetObject[] getCercanos() {
-        return cercanos;
+    public TargetObject[] getCloseMonuments() {
+        return closeMonuments;
     }
 
-
+    /**
+     * @return
+     */
+    public TargetObject[] getCloseBuildings() {
+        return closeBuildings;
+    }
 }
 

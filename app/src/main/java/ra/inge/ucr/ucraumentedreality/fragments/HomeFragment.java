@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Map;
+
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
@@ -38,15 +40,10 @@ public class HomeFragment extends Fragment {
     private ShakeHandler shakeHandler;
     private Vibrator vibe;
     private View root;
-    private HomeActivity homeActivity;
+    private MapsFragment mapsFragment;
 
-    /**
-     * Setter for the home activity
-     *
-     * @param homeActivity
-     */
-    public void setHomeActivity(HomeActivity homeActivity) {
-        this.homeActivity = homeActivity;
+    public void setMapsFragment(MapsFragment mapsFragment) {
+        this.mapsFragment = mapsFragment;
     }
 
     @Nullable
@@ -73,11 +70,18 @@ public class HomeFragment extends Fragment {
      * @param viewPager
      */
     private void setupViewPager(ViewPager viewPager) {
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-        MapsFragment mapsFragment = new MapsFragment();
-        adapter.addFrag(new CloseBuildingsFragment(mapsFragment), "Edificios Más Cercanos");
-        adapter.addFrag(new CloseMonumentsFragment(mapsFragment), "Monumentos Más Cercanos");
+
+        CloseBuildingsFragment closeBuildingsFragment = new CloseBuildingsFragment();
+        CloseMonumentsFragment closeMonumentsFragment = new CloseMonumentsFragment();
+        closeBuildingsFragment.setMapsFragment(mapsFragment);
+        closeMonumentsFragment.setMapsFragment(mapsFragment);
+
+        adapter.addFrag(closeBuildingsFragment, "Edificios Más Cercanos");
+        adapter.addFrag(closeMonumentsFragment, "Monumentos Más Cercanos");
         adapter.addFrag(new LatestRecognitionFragment(), "Ultimos Reconocidos");
+
         viewPager.setAdapter(adapter);
     }
 
