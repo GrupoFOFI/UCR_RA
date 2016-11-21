@@ -106,7 +106,7 @@ public class NavigationHelper {
         if (matrix[from][to] == -1) return path;
         path.add(from);
         while (from != to) {
-            from = matrix[from][to];
+            from = matrix[from][to] - 1; // convert 1-based index to 0-based
             path.add(from);
         }
         return path;
