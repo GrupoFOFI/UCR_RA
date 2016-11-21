@@ -74,7 +74,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private SimpleOnGestureListener mSimpleListener = null;
 
     // Movie for the Targets:
-    public static final int NUM_TARGETS = 13;
+    public static final int NUM_TARGETS = 16;
 
     public static final int ANTART = 0;
     public static final int OSOS = 1;
@@ -91,6 +91,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public static final int INFO = 12;
     public static final int NEGRITOS = 13;
     public static final int JUAN = 14;
+    public static final int NULO = 15;
 
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
@@ -193,6 +194,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mMovieName[11] = "VideoPlayback/fernando.mp4";
         mMovieName[12] = "VideoPlayback/centro-info.mp4";
         mMovieName[13] = "VideoPlayback/quebrada_negritos.mp4";
+        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
         mMovieName[14] = "VideoPlayback/juan_maria.mp4";
 
         // Set the double tap listener:
@@ -541,7 +543,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         }
 
         // Load the data sets:
-        if (!ucrTargetDataset.load(MEDIUM_DATASET,
+        if (!ucrTargetDataset.load(LITE_DATASET,
                 STORAGE_TYPE.STORAGE_APPRESOURCE)) {
             Log.d(LOGTAG, "Failed to load data set.");
             return false;

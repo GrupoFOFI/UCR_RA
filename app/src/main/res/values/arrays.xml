@@ -15,6 +15,9 @@
         <item>Escuela de Estudios Generales</item>
         <item>Licenciado Fernando Bauza</item>
         <item>Centro de Informática</item>
+        <item>Quebrada Los Negritos</item>
+        <item>Juan y María</item>
+        <item> Nulo </item>
     </string-array>
 
     <string-array name="descriptions">
@@ -31,6 +34,9 @@
         <item>Cátedra universitaria que reúne gran cantidad de estudiantes con el objetivo de difundir valores y principios.</item>
         <item>Decano de la Facultad de Derecho en 1939 y rector de la Universidad de Costa Rica por primera vez en 1946.</item>
         <item>Uno de los edificios más relevantes, pues toda la universidad depende del mismo tanto para gestiones de conexión con la Red como asuntos de TI.</item>
+        <item>Nace en el patio de cinco viviendas, en Calle del Chorro, Sabanilla, enfrente del Colegio Metodista.</item>
+        <item>Escultura hecha en hormigón policromado por Leda Astorga. Conmemora el 50 aniversario de la Esculea de Trabajo Social.</item>
+        <item> Nulo </item>
     </string-array>
 
     <string-array name="drawer_titles">
