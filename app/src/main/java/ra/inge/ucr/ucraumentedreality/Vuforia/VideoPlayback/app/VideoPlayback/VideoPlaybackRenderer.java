@@ -436,7 +436,6 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             / (float) mTextures.get(1).mWidth;*/
 
         for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
-            Log.d("Mae", "I es " + i);
             keyframeQuadAspectRatio[i] = (float) mTextures.get(0).mHeight / (float) mTextures.get(0).mWidth;
         }
 

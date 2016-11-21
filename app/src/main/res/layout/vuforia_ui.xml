@@ -11,7 +11,57 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:orientation="horizontal"></LinearLayout>
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:id="@+id/arrow_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp"
+            android:paddingBottom="30dp"
+            android:layout_marginBottom="30dp">
+
+            <ImageView
+                android:id="@+id/arrow_up"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:clickable="true"
+                android:src="@drawable/circlearrow" />
+
+            <ImageView
+                android:id="@+id/arrow_right"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:src="@drawable/circlearrow2" />
+
+            <ImageView
+                android:id="@+id/arrow_left"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:src="@drawable/circlearrow3" />
+
+            <View
+                android:id="@+id/arrow_down"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:layout_centerHorizontal="true" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
 
 
     <LinearLayout

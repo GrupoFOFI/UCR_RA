@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,6 +26,8 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -53,7 +56,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener {
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener, View.OnClickListener{
 
     private static final String BIG_DATASET = "Edificios_Monumentos.xml";
     private static final String LITTLE_DATASET = "Dataset_Test.xml";
@@ -432,8 +435,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
 
     private void startLoadingAnimation() {
-        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
-                null);
+
+        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay, null);
 
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
@@ -500,6 +503,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     @Override
     public boolean doInitTrackers() {
+
         // Indicate if the trackers were initialized correctly
         boolean result = true;
 
@@ -653,8 +657,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     private void addMainView() {
 
-        linearLayout = (LinearLayout) View.inflate(this, R.layout.vuforia_ui,
-                null);
+        linearLayout = (LinearLayout) View.inflate(this, R.layout.vuforia_ui, null);
 
         linearLayout.setVisibility(View.VISIBLE);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -681,8 +684,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             northLayout = (LinearLayout) findViewById(R.id.test_lay);
             Log.i("yupi", northLayout.toString());
 
-            northLayout.addView(mGlView, new LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
+            northLayout.addView(mGlView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
             northLayout.setBackgroundColor(Color.TRANSPARENT);
 
@@ -707,6 +709,25 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
             // Sets the layout background to transparent
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
+
+//            FrameLayout frameLayout =  (FrameLayout) findViewById(R.id.test_frame);
+//            frameLayout.setBackgroundColor(Color.TRANSPARENT);
+//            frameLayout.bringToFront();
+
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.arrow_view);
+            relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+            relativeLayout.bringToFront();
+
+            ImageView arrowUp = (ImageView) findViewById(R.id.arrow_up);
+            arrowUp.bringToFront();
+
+            ImageView arrowLeft = (ImageView) findViewById(R.id.arrow_left);
+            arrowLeft.bringToFront();
+
+            ImageView arrowRight = (ImageView) findViewById(R.id.arrow_right);
+            arrowRight.bringToFront();
+
+
 
             // Original
 //            addContentView(testLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -767,6 +788,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     @Override
     public void onVuforiaUpdate(State state) {
+        Log.d(VideoPlayback.DEBUG_TAG, "Esto se updeitea mae ");
+
     }
 
     final private static int CMD_BACK = -1;
@@ -777,4 +800,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         descriptionTextView.setText(description);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+
+
+        }
+    }
 }

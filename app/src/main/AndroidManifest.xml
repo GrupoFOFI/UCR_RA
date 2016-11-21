@@ -2,52 +2,63 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ra.inge.ucr.ucraumentedreality">
 
+    <!--Permissions for google maps-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--Vuforia permisions-->
+    <!--
+           The application's compatibility with one or more versions of the Android
+           platform.
+
+           android:minSdkVersion = application's required minimum API level to run
+           android:targetSdkVersion = application's targeted API level
+       -->
     <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="22" />
+
+    <uses-feature android:glEsVersion="0x00020000" />
 
     <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         The application requires a camera.
+
+         NOTE: Any application that requests the CAMERA permission but does not
+         declare any camera features with the <uses-feature> element will be
+         assumed to use all camera features (auto-focus and flash). Thus, the
+         application will not be compatible with devices that do not support
+         all camera features. Please use <uses-feature> to declare only the
+         camera features that your application does need. For instance, if you
+         request the CAMERA permission, but you do not need auto-focus or
+         flash, then declare only the android.hardware.camera feature. The
+         other camera features that you do not request will no longer be
+         assumed as required.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <!-- Wikitude permissions -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.location"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.sensor.accelerometer"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.sensor.compass"
-        android:required="true" />
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true" />
+    <!--
+        Add this permission to get access to the camera.
+    -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
-    <supports-screens
-        android:anyDensity="true"
-        android:largeScreens="true"
-        android:normalScreens="true"
-        android:smallScreens="false"
-        android:xlargeScreens="true" />
+    <!--
+        Add this permission to allow opening network sockets.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--
+        Add this permission to check which network access properties (e.g.
+        active type: 3G/WiFi).
+     -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+    <!--Application-->
 
     <application
         android:allowBackup="true"
