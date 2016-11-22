@@ -537,46 +537,26 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             TrackableResult trackableResult = state.getTrackableResult(tIdx);
             ImageTarget imageTarget = (ImageTarget) trackableResult.getTrackable();
 
-            Log.d("konri","Name is" + imageTarget.getName());
+            Log.d("konri", "Name is" + imageTarget.getName());
 
             // We store the modelview matrix to be used later by the tap
             // calculation
-            if (imageTarget.getName().toLowerCase().contains("antarticos")) {
-                currentTarget = VideoPlayback.ANTART;
-            } else if (imageTarget.getName().toLowerCase().contains("osos_amorosos")) {
-                currentTarget = VideoPlayback.OSOS;
-            } else if (imageTarget.getName().toLowerCase().contains("mate")) {
-                currentTarget = VideoPlayback.MATE;
-            } else if (imageTarget.getName().toLowerCase().contains("leda")) {
-                currentTarget = VideoPlayback.LEDA;
-            } else if (imageTarget.getName().toLowerCase().contains("plaza24")) {
-                currentTarget = VideoPlayback.PLAZA;
-            } else if (imageTarget.getName().toLowerCase().contains("carlos_monge")) {
-                currentTarget = VideoPlayback.MONGE;
-            } else if (imageTarget.getName().toLowerCase().contains("comedor")) {
-                currentTarget = VideoPlayback.COMEDOR;
-            } else if (imageTarget.getName().toLowerCase().contains("derecho")) {
-                currentTarget = VideoPlayback.DERECHO;
-            } else if (imageTarget.getName().toLowerCase().contains("busto")) {
-                currentTarget = VideoPlayback.BUSTO;
-            } else if (imageTarget.getName().toLowerCase().contains("ecci")) {
-                currentTarget = VideoPlayback.ECCI;
-            } else if (imageTarget.getName().toLowerCase().contains("generales")) {
-                currentTarget = VideoPlayback.GIRASOL;
-            } else if (imageTarget.getName().toLowerCase().contains("fernando")) {
-                currentTarget = VideoPlayback.FERNANDO;
-            } else if (imageTarget.getName().toLowerCase().contains("centro_info")) {
-                currentTarget = VideoPlayback.INFO;
-            } else if (imageTarget.getName().toLowerCase().contains("negritos")) {
-                currentTarget = VideoPlayback.NEGRITOS;
-            } else if (imageTarget.getName().toLowerCase().contains("juan")) {
-                currentTarget = VideoPlayback.JUAN;
-            }
+            currentTarget = retrieveTarget2(imageTarget.getName().toLowerCase());
 
+            // Testing purpose
+
+            final ImageTarget tempTarget = imageTarget;
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mActivity.toastLog("Encontré el target" + tempTarget.getName().toLowerCase());
+                }
+            });
 
             if (currentTarget != -1) {
                 final String mTitle = Data.targetObjects.get(currentTarget).getName();
                 final String mDescription = Data.targetObjects.get(currentTarget).getDescription(); //descriptionArray[currentTarget];
+
 
                 // Método para updeitear los textfields
                 mActivity.runOnUiThread(new Runnable() {
@@ -584,8 +564,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     public void run() {
                         mActivity.updateTextFields(mTitle, mDescription);
                     }
-                });//
-
+                });
 
                 modelViewMatrix[currentTarget] = Tool
                         .convertPose2GLMatrix(trackableResult.getPose());
@@ -889,7 +868,6 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         }
     }
 
-
     boolean isTapOnScreenInsideTarget(int target, float x, float y) {
         // Here we calculate that the touch event is inside the target
         Vec3F intersection;
@@ -961,30 +939,30 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 //            videoQuadTextureCoordsTransformedStones[7] = tempUVMultRes[1];
 //        } else if (target % 2 == 0) {
 //
- tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedChips[0],
-                    videoQuadTextureCoordsTransformedChips[1],
-                    videoQuadTextureCoords[0], videoQuadTextureCoords[1], mtx);
-            videoQuadTextureCoordsTransformedChips[0] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedChips[1] = tempUVMultRes[1];
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedChips[2],
-                    videoQuadTextureCoordsTransformedChips[3],
-                    videoQuadTextureCoords[2], videoQuadTextureCoords[3], mtx);
-            videoQuadTextureCoordsTransformedChips[2] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedChips[3] = tempUVMultRes[1];
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedChips[4],
-                    videoQuadTextureCoordsTransformedChips[5],
-                    videoQuadTextureCoords[4], videoQuadTextureCoords[5], mtx);
-            videoQuadTextureCoordsTransformedChips[4] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedChips[5] = tempUVMultRes[1];
-            tempUVMultRes = uvMultMat4f(
-                    videoQuadTextureCoordsTransformedChips[6],
-                    videoQuadTextureCoordsTransformedChips[7],
-                    videoQuadTextureCoords[6], videoQuadTextureCoords[7], mtx);
-            videoQuadTextureCoordsTransformedChips[6] = tempUVMultRes[0];
-            videoQuadTextureCoordsTransformedChips[7] = tempUVMultRes[1];
+        tempUVMultRes = uvMultMat4f(
+                videoQuadTextureCoordsTransformedChips[0],
+                videoQuadTextureCoordsTransformedChips[1],
+                videoQuadTextureCoords[0], videoQuadTextureCoords[1], mtx);
+        videoQuadTextureCoordsTransformedChips[0] = tempUVMultRes[0];
+        videoQuadTextureCoordsTransformedChips[1] = tempUVMultRes[1];
+        tempUVMultRes = uvMultMat4f(
+                videoQuadTextureCoordsTransformedChips[2],
+                videoQuadTextureCoordsTransformedChips[3],
+                videoQuadTextureCoords[2], videoQuadTextureCoords[3], mtx);
+        videoQuadTextureCoordsTransformedChips[2] = tempUVMultRes[0];
+        videoQuadTextureCoordsTransformedChips[3] = tempUVMultRes[1];
+        tempUVMultRes = uvMultMat4f(
+                videoQuadTextureCoordsTransformedChips[4],
+                videoQuadTextureCoordsTransformedChips[5],
+                videoQuadTextureCoords[4], videoQuadTextureCoords[5], mtx);
+        videoQuadTextureCoordsTransformedChips[4] = tempUVMultRes[0];
+        videoQuadTextureCoordsTransformedChips[5] = tempUVMultRes[1];
+        tempUVMultRes = uvMultMat4f(
+                videoQuadTextureCoordsTransformedChips[6],
+                videoQuadTextureCoordsTransformedChips[7],
+                videoQuadTextureCoords[6], videoQuadTextureCoords[7], mtx);
+        videoQuadTextureCoordsTransformedChips[6] = tempUVMultRes[0];
+        videoQuadTextureCoordsTransformedChips[7] = tempUVMultRes[1];
 //        }
 
         // textureCoordMatrix = mtx;
@@ -1041,36 +1019,45 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
         }
     }
 
+    int retrieveTarget2(String targetName) {
+        for (int i = 0; i < Data.targetObjects.size(); i++) {
+            if (Data.targetObjects.get(i).getName().contains(targetName)) {
+                return Data.targetObjects.get(i).getId() % 13;
+            }
+        }
+        return -1;
+
+    }
 
     int retrieveTarget(String targetName) {
         if (targetName.toLowerCase().contains("antarticos")) {
-            return VideoPlayback.ANTART;
+            return 0;
         } else if (targetName.toLowerCase().contains("osos_amorosos")) {
-            return VideoPlayback.OSOS;
+            return 1;
         } else if (targetName.toLowerCase().contains("mate")) {
-            return VideoPlayback.MATE;
+            return 2;
         } else if (targetName.toLowerCase().contains("leda")) {
-            return VideoPlayback.LEDA;
+            return 3;
         } else if (targetName.toLowerCase().contains("plaza24")) {
-            return VideoPlayback.PLAZA;
+            return 4;
         } else if (targetName.toLowerCase().contains("carlos_monge")) {
-            return VideoPlayback.MONGE;
+            return 5;
         } else if (targetName.toLowerCase().contains("comedor")) {
-            return VideoPlayback.COMEDOR;
+            return 6;
         } else if (targetName.toLowerCase().contains("derecho")) {
-            return VideoPlayback.DERECHO;
+            return 7;
         } else if (targetName.toLowerCase().contains("busto")) {
-            return VideoPlayback.BUSTO;
+            return 8;
         } else if (targetName.toLowerCase().contains("ecci")) {
-            return VideoPlayback.ECCI;
+            return 9;
         } else if (targetName.toLowerCase().contains("generales")) {
-            return VideoPlayback.GIRASOL;
+            return 10;
         } else if (targetName.toLowerCase().contains("fernando")) {
-            return VideoPlayback.FERNANDO;
+            return 11;
         } else if (targetName.toLowerCase().contains("centro_info")) {
-            return VideoPlayback.INFO;
+            return 12;
         }
-        return 0;
+        return -1;
     }
 
     boolean isTracking(int target) {

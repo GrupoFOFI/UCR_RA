@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.vuforia.CameraDevice;
 import com.vuforia.DataSet;
@@ -57,7 +58,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener, View.OnClickListener{
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener, View.OnClickListener {
 
     private static final String BIG_DATASET = "Edificios_Monumentos.xml";
     private static final String LITTLE_DATASET = "Dataset_Test.xml";
@@ -76,23 +77,23 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     // Movie for the Targets:
     public static final int NUM_TARGETS = Data.targetObjects.size();
-
-    public static final int ANTART = 0;
-    public static final int OSOS = 1;
-    public static final int MATE = 2;
-    public static final int LEDA = 3;
-    public static final int PLAZA = 4;
-    public static final int MONGE = 5;
-    public static final int COMEDOR = 6;
-    public static final int BUSTO = 7;
-    public static final int DERECHO = 8;
-    public static final int ECCI = 9;
-    public static final int GIRASOL = 10;
-    public static final int FERNANDO = 11;
-    public static final int INFO = 12;
-    public static final int NEGRITOS = 13;
-    public static final int JUAN = 14;
-    public static final int NULO = 15;
+//
+//    public static final int ANTART = 0;
+//    public static final int OSOS = 1;
+//    public static final int MATE = 2;
+//    public static final int LEDA = 3;
+//    public static final int PLAZA = 4;
+//    public static final int MONGE = 5;
+//    public static final int COMEDOR = 6;
+//    public static final int BUSTO = 7;
+//    public static final int DERECHO = 8;
+//    public static final int ECCI = 9;
+//    public static final int GIRASOL = 10;
+//    public static final int FERNANDO = 11;
+//    public static final int INFO = 12;
+//    public static final int NEGRITOS = 13;
+//    public static final int JUAN = 14;
+//    public static final int NULO = 15;
 
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
@@ -131,6 +132,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private TextView titleTextView;
     private TextView descriptionTextView;
 
+    /**
+     * Arrows used to guide the user
+     */
+    private ImageView arrowUp, arrowLeft, arrowRight;
+
+
     @Override
     public void onTargetFound(int targetId) {
 
@@ -138,11 +145,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()) {
             Log.d(DEBUG_TAG, "Vamoooos");
             mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
-
-
         }
     }
-
 
 
     // Called when the activity first starts or the user navigates back
@@ -727,16 +731,17 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             relativeLayout.setBackgroundColor(Color.TRANSPARENT);
             relativeLayout.bringToFront();
 
-            ImageView arrowUp = (ImageView) findViewById(R.id.arrow_up);
+            arrowUp = (ImageView) findViewById(R.id.arrow_up);
             arrowUp.bringToFront();
+            arrowUp.setVisibility(View.INVISIBLE);
 
-            ImageView arrowLeft = (ImageView) findViewById(R.id.arrow_left);
+            arrowLeft = (ImageView) findViewById(R.id.arrow_left);
             arrowLeft.bringToFront();
+            arrowLeft.setVisibility(View.INVISIBLE);
 
-            ImageView arrowRight = (ImageView) findViewById(R.id.arrow_right);
+            arrowRight = (ImageView) findViewById(R.id.arrow_right);
             arrowRight.bringToFront();
-
-
+            arrowRight.setVisibility(View.INVISIBLE);
 
             // Original
 //            addContentView(testLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -812,9 +817,40 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.arrow_up:
+                toastLog( getResources().getString(R.string.straight_ahead));
+                break;
 
+            case R.id.arrow_left:
+                toastLog( getResources().getString(R.string.turn_left));
+                break;
+
+            case R.id.arrow_right:
+                toastLog( getResources().getString(R.string.turn_right));
+                break;
 
 
         }
+    }
+
+    /**
+     * Method that sets the right arrow indicated as parameter as visible
+     */
+    public void showArrow (Arrow arrow) {
+        switch (arrow) {
+            case LEFT:
+                arrowLeft.setVisibility(View.VISIBLE);
+                break;
+            case RIGHT:
+                arrowRight.setVisibility(View.VISIBLE);
+                break;
+            case UP:
+                arrowUp.setVisibility(View.VISIBLE);
+                break;
+        }
+    }
+
+    public void toastLog(String str) {
+        Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
     }
 }
