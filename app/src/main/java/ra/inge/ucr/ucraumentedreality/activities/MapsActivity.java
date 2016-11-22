@@ -39,7 +39,6 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
  * Class to hadle the usage of maps
- *
  */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener {
@@ -71,14 +70,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationHelper locationHelper;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         utils = new Utils(this, getApplicationContext());
         setContentView(R.layout.fragment_maps);
         setupMap(savedInstanceState);
-
+        locationHelper = new LocationHelper();
         buildGoogleApiClient();
 
     }
@@ -257,18 +255,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onLocationChanged(Location location) {
+        if (mLastLocation != null) {
+            mLastLocation = location;
+            LocationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
 
-        mLastLocation = location;
-        locationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
+            LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
+            closeBuildings = locationHelper.getClosestBuildings(mLastLocation, CLOSEST_AMOUNT);
+            closeMonuments = locationHelper.getClosestMonuments(mLastLocation, CLOSEST_AMOUNT);
 
-        LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-        closeBuildings = locationHelper.getClosestBuildings(mLastLocation, CLOSEST_AMOUNT);
-        closeMonuments = locationHelper.getClosestMonuments(mLastLocation, CLOSEST_AMOUNT);
+            Log.d("konri", "Los edificios son => " + closeBuildings[0].getName() + " " + closeBuildings[1].getName() + " " + closeBuildings[2].getName());
+            Log.d("konri", "Los monumentos son => " + closeMonuments[0].getName() + " " + closeMonuments[1].getName() + " " + closeMonuments[2].getName());
 
-        Log.d("konri", "Los edificios son => " + closeBuildings[0].getName() + " " + closeBuildings[1].getName() + " " + closeBuildings[2].getName());
-        Log.d("konri", "Los monumentos son => " + closeMonuments[0].getName() + " " + closeMonuments[1].getName() + " " + closeMonuments[2].getName());
-
-        addMarkers();
+            addMarkers();
+        }
 
     }
 
@@ -316,13 +315,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void newDestination(TargetObject to) {
         NavigationHelper na = new NavigationHelper(getBaseContext());
         List<Path> paths = null;
-        if (to.getEntrances().length > 0) {
-            int entrance = 0;
-            if (to.getEntrances().length > 1)
-                //choose entrance
-                paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), to.getEntrances()[0]);
-            if(paths != null && !paths.isEmpty()){
-                na.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(0).getPoints(), googleMap);
+        LatLng[] nodes;
+        int[] entrances = to.getEntrances();
+        if (entrances.length > 0) {
+            int entrance = entrances[0];
+            if (entrances.length > 1) {
+                nodes = na.getNodeParser().getNodes();
+                double minDist = Integer.MAX_VALUE;
+                for (int e : entrances) {
+                    double temp = LocationHelper.distance(nodes[e].latitude,mLastLocation.getLatitude(),nodes[e].longitude,mLastLocation.getLongitude(),0,0);
+                    if(temp < minDist){
+                        minDist = temp;
+                        entrance = e;
+                    }
+                }
+            }
+            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance);
+            if (paths != null && !paths.isEmpty()) {
+                na.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
             }
         }
     }

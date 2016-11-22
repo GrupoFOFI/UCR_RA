@@ -2,13 +2,14 @@ package ra.inge.ucr.da.parser;
 
 import android.content.Context;
 
-import ra.inge.ucr.da.R;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+
+import ra.inge.ucr.da.R;
 
 /**
  * Extracts the points and matrices from the resource files
@@ -23,7 +24,7 @@ public class NodeParser {
     private static final int FLOYD_PATH_FILE = R.raw.floyd_path;
 
     private Context m_Context;
-    private LatLng[] m_Nodes;
+    public static LatLng[] m_Nodes;
     private int[][] m_Adjacencies = null;
     private int[][] m_Paths = null;
     private float[][] m_Distances = null;
