@@ -55,8 +55,8 @@ public class Data {
         add(new TargetObject(33, TargetType.MONUMENT, 9.936244, -84.050692, 0, "Plaza 24 de abril", "En 1971, la FEUCR decidió bautizar y colocar una placa conmemorativa de  la gesta de ALCOA en   la UCR y en ella, escrita en mármol se grabó. “A la juventud de Costa Rica, Plaza 24 de Abril, violar la ley del imperio es defender los derechos del pueblo”, frase que después de 44 años han podido leer e inspirar varias generaciones de estudiantes y profesores", "Videoplayback/24-abril.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(34, TargetType.MONUMENT, 9.935895, -84.050638, 0, "El Pretil", "Fofidescripcion", "Videoplayback/antarticos.mp4", "www.museodeinsectoscr.com"));
         add(new TargetObject(35, TargetType.MONUMENT, 9.936652, -84.049869, 0, "Quebrada Los Negritos", "La Quebrada de los Negritos, nace en el patio de cinco viviendas, en Calle del Chorro, Sabanilla, enfrente del Colegio Metodista.", "Videoplayback/quebrada_negritos.mp4", "www.museodeinsectoscr.com"));
-        add(new TargetObject(35, TargetType.MONUMENT, 9.936390, -84.050679, 0, "Juan y María", "Escultura hecha en hormigón policromado por Leda Astorga. Conmemora el 50 aniversario de la Esculea de Trabajo Social", "Videoplayback/juan_maria.mp4", "www.museodeinsectoscr.com"));
-
+        add(new TargetObject(36, TargetType.MONUMENT, 9.936390, -84.050679, 0, "Juan y María", "Escultura hecha en hormigón policromado por Leda Astorga. Conmemora el 50 aniversario de la Esculea de Trabajo Social", "Videoplayback/juan_maria.mp4", "www.museodeinsectoscr.com"));
+        add(new TargetObject(36, TargetType.MONUMENT, 9.936390, -84.050679, 0, "Girasol", "El mural, obra creada en cerámica y metal, muestra un girasol, que a la vez evoca el Big Bang, el pensamiento racional, el arte y la búsqueda de la luz. Conmemora el 50 aniversario de la Escuela de Estudios Genreales", "Videoplayback/girasol.mp4", "www.museodeinsectoscr.com"));
     }};
 
     /**
