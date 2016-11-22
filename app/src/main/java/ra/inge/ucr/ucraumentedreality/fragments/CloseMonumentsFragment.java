@@ -1,6 +1,5 @@
 package ra.inge.ucr.ucraumentedreality.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,8 +10,6 @@ import android.view.ViewGroup;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
-import ra.inge.ucr.location.listener.OnLocationSetListener;
-import ra.inge.ucr.location.listener.OnMonumentsSetListener;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
@@ -26,7 +23,7 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
  * @version 1.0
  * @since 1.0
  */
-public class CloseMonumentsFragment extends Fragment  implements OnMonumentsSetListener{
+public class CloseMonumentsFragment extends Fragment {
 
     /**
      * Custom adapter made for the fragment
@@ -42,15 +39,10 @@ public class CloseMonumentsFragment extends Fragment  implements OnMonumentsSetL
     private TargetObject[] closeMonuments;
 
     /**
-     * The location listener
-     */
-    private OnMonumentsSetListener onMonumentsSetListener;
-
-
-    /**
      * Empty constructor for the fragment
      */
     public CloseMonumentsFragment() {
+        mAdapter = new CustomAdapter();
     }
 
     /**
@@ -60,7 +52,6 @@ public class CloseMonumentsFragment extends Fragment  implements OnMonumentsSetL
      */
     public void setLocationHelper(LocationHelper locationHelper) {
         this.locationHelper = locationHelper;
-        locationHelper.setOnMonumentsSetListener(this);
     }
 
     /**
@@ -83,34 +74,20 @@ public class CloseMonumentsFragment extends Fragment  implements OnMonumentsSetL
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        mAdapter = new CustomAdapter();
+
         recyclerView.setAdapter(mAdapter);
 
         if (locationHelper != null) {
-            closeMonuments = locationHelper.getClosestMonuments(MapsFragment.CLOSEST_AMOUNT);
+            closeMonuments = locationHelper.getClosestMonuments(locationHelper.getLatestLocation(),MapsFragment.CLOSEST_AMOUNT);
             if (closeMonuments != null) {
-                mAdapter.setCercanos(closeMonuments);
+                mAdapter.setCloseTargets(closeMonuments);
             }
         }
         return view;
     }
 
 
-
-    @Override
-    public void onMonumentsCalculated() {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mAdapter != null) {
-                        closeMonuments = locationHelper.getClosestMonuments(LocationHelper.TARGET_AMMOUNT);
-                        mAdapter.setCercanos(closeMonuments);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+        public CustomAdapter getmAdapter() {
+            return mAdapter;
         }
-    }
-
 }

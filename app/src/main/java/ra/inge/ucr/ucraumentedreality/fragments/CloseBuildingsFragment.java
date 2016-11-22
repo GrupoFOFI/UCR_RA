@@ -14,8 +14,6 @@ import com.google.android.gms.maps.LocationSource;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
-import ra.inge.ucr.location.listener.OnBuildingsSetListener;
-import ra.inge.ucr.location.listener.OnLocationSetListener;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
@@ -29,7 +27,7 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
  * @version 1.0
  * @since 1.0
  */
-public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetListener, LocationSource.OnLocationChangedListener {
+public class CloseBuildingsFragment extends Fragment {
 
     /**
      * Custom adapter for the fragment
@@ -45,17 +43,14 @@ public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetLi
      */
     private TargetObject[] closeBuildings;
 
-    /**
-     * The location listener
-     */
-    private OnBuildingsSetListener onBuildingsSetListener;
-
 
     /**
      * Empty constructor for the fragment
      */
     public CloseBuildingsFragment() {
+        mAdapter = new CustomAdapter();
     }
+
 
 
     /**
@@ -65,7 +60,6 @@ public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetLi
      */
     public void setLocationHelper(LocationHelper locationHelper) {
         this.locationHelper = locationHelper;
-        locationHelper.setOnBuildingsSetListener(this);
     }
 
 
@@ -89,36 +83,18 @@ public class CloseBuildingsFragment extends Fragment implements OnBuildingsSetLi
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        mAdapter = new CustomAdapter();
         recyclerView.setAdapter(mAdapter);
 
         if (locationHelper != null) {
-            closeBuildings = locationHelper.getClosestBuildings(MapsFragment.CLOSEST_AMOUNT);
+            closeBuildings = locationHelper.getClosestBuildings(locationHelper.getLatestLocation(), 3);
             if (closeBuildings != null) {
-                mAdapter.setCercanos(closeBuildings);
+                mAdapter.setCloseTargets(closeBuildings);
             }
         }
         return view;
     }
 
-    @Override
-    public void onBuildingsCalculated() {
-        if (getActivity() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (mAdapter != null) {
-                        closeBuildings = locationHelper.getCloseBuildings();
-                        mAdapter.setCercanos(closeBuildings);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("konri", "Me cago en la puta me compliqué mucho");
+    public CustomAdapter getmAdapter() {
+        return mAdapter;
     }
 }

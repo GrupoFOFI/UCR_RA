@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,6 +26,8 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,6 +44,7 @@ import com.vuforia.Vuforia;
 
 import java.util.Vector;
 
+import ra.inge.ucr.da.Data;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationControl;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationException;
@@ -53,7 +57,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
-public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener {
+public class VideoPlayback extends AppCompatActivity implements SampleApplicationControl, OnTrackListener, View.OnClickListener{
 
     private static final String BIG_DATASET = "Edificios_Monumentos.xml";
     private static final String LITTLE_DATASET = "Dataset_Test.xml";
@@ -71,7 +75,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private SimpleOnGestureListener mSimpleListener = null;
 
     // Movie for the Targets:
-    public static final int NUM_TARGETS = 13;
+    public static final int NUM_TARGETS = Data.targetObjects.size();
 
     public static final int ANTART = 0;
     public static final int OSOS = 1;
@@ -86,11 +90,14 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public static final int GIRASOL = 10;
     public static final int FERNANDO = 11;
     public static final int INFO = 12;
+    public static final int NEGRITOS = 13;
+    public static final int JUAN = 14;
+    public static final int NULO = 15;
 
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
     private boolean mWasPlaying[] = null;
-    private String mMovieName[] = null;
+//    private String mMovieName[] = null;
 
     // A boolean to indicate whether we come from full screen:
     private boolean mReturningFromFullScreen = false;
@@ -131,8 +138,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()) {
             Log.d(DEBUG_TAG, "Vamoooos");
             mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
+
+
         }
     }
+
+
 
     // Called when the activity first starts or the user navigates back
     // to an activity.
@@ -164,7 +175,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mVideoPlayerHelper = new VideoPlayerHelper[NUM_TARGETS];
         mSeekPosition = new int[NUM_TARGETS];
         mWasPlaying = new boolean[NUM_TARGETS];
-        mMovieName = new String[NUM_TARGETS];
+//        mMovieName = new String[NUM_TARGETS];
 
         // Create the video player helper that handles the playback of the movie
         // for the targets:
@@ -174,20 +185,22 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             mVideoPlayerHelper[i].setActivity(this);
         }
 
-        mMovieName[0] = "VideoPlayback/antarticos.mp4";
-        mMovieName[1] = "VideoPlayback/osos.mp4";
-        mMovieName[2] = "VideoPlayback/mate.mp4";
-        mMovieName[3] = "VideoPlayback/leda.mp4";
-        mMovieName[4] = "VideoPlayback/24-abril.mp4";
-        mMovieName[5] = "VideoPlayback/carlos-monge.mp4";
-        mMovieName[6] = "VideoPlayback/comedor.mp4";
-        mMovieName[7] = "VideoPlayback/joaquin.mp4";
-        mMovieName[8] = "VideoPlayback/derecho.mp4";
-        mMovieName[9] = "VideoPlayback/centro-info.mp4";  //TODO ecci
-        mMovieName[10] = "VideoPlayback/generales.mp4";
-        mMovieName[11] = "VideoPlayback/fernando.mp4";
-        mMovieName[12] = "VideoPlayback/centro-info.mp4";
-
+//        mMovieName[0] = "VideoPlayback/antarticos.mp4";
+//        mMovieName[1] = "VideoPlayback/osos.mp4";
+//        mMovieName[2] = "VideoPlayback/mate.mp4";
+//        mMovieName[3] = "VideoPlayback/leda.mp4";
+//        mMovieName[4] = "VideoPlayback/24-abril.mp4";
+//        mMovieName[5] = "VideoPlayback/carlos-monge.mp4";
+//        mMovieName[6] = "VideoPlayback/comedor.mp4";
+//        mMovieName[7] = "VideoPlayback/joaquin.mp4";
+//        mMovieName[8] = "VideoPlayback/derecho.mp4";
+//        mMovieName[9] = "VideoPlayback/ecci.mp4";
+//        mMovieName[10] = "VideoPlayback/generales.mp4";
+//        mMovieName[11] = "VideoPlayback/fernando.mp4";
+//        mMovieName[12] = "VideoPlayback/centro-info.mp4";
+//        mMovieName[13] = "VideoPlayback/quebrada_negritos.mp4";
+//        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
+//        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
 
         // Set the double tap listener:
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
@@ -302,10 +315,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         if (mRenderer != null) {
             for (int i = 0; i < NUM_TARGETS; i++) {
                 if (!mReturningFromFullScreen) {
-                    mRenderer.requestLoad(i, mMovieName[i], mSeekPosition[i],
+                    mRenderer.requestLoad(i, Data.targetObjects.get(i).getVideo(), // mMovieName[i],
+                            mSeekPosition[i],
                             false);
                 } else {
-                    mRenderer.requestLoad(i, mMovieName[i], mSeekPosition[i],
+                    mRenderer.requestLoad(i, Data.targetObjects.get(i).getVideo(),// mMovieName[i],
+                            mSeekPosition[i],
                             mWasPlaying[i]);
                 }
             }
@@ -330,7 +345,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
                 // Find the movie that was being played full screen
                 for (int i = 0; i < NUM_TARGETS; i++) {
-                    if (movieBeingPlayed.compareTo(mMovieName[i]) == 0) {
+                    if (movieBeingPlayed.compareTo(Data.targetObjects.get(i).getVideo()) == 0) {
                         mSeekPosition[i] = data.getIntExtra(
                                 "currentSeekPosition", 0);
                         mWasPlaying[i] = false;
@@ -429,8 +444,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
 
     private void startLoadingAnimation() {
-        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay,
-                null);
+
+        mUILayout = (RelativeLayout) View.inflate(this, R.layout.camera_overlay, null);
 
         mUILayout.setVisibility(View.VISIBLE);
         mUILayout.setBackgroundColor(Color.BLACK);
@@ -469,7 +484,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         // tell the GL thread to load it once the surface has been created.
         for (int i = 0; i < NUM_TARGETS; i++) {
             mRenderer.setVideoPlayerHelper(i, mVideoPlayerHelper[i]);
-            mRenderer.requestLoad(i, mMovieName[i], 0, false);
+            mRenderer.requestLoad(i, Data.targetObjects.get(i).getVideo(), 0, false);
         }
 
         mGlView.setRenderer(mRenderer);
@@ -497,6 +512,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     @Override
     public boolean doInitTrackers() {
+
         // Indicate if the trackers were initialized correctly
         boolean result = true;
 
@@ -534,7 +550,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         }
 
         // Load the data sets:
-        if (!ucrTargetDataset.load(MEDIUM_DATASET,
+        if (!ucrTargetDataset.load(LITE_DATASET,
                 STORAGE_TYPE.STORAGE_APPRESOURCE)) {
             Log.d(LOGTAG, "Failed to load data set.");
             return false;
@@ -650,8 +666,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     private void addMainView() {
 
-        linearLayout = (LinearLayout) View.inflate(this, R.layout.vuforia_ui,
-                null);
+        linearLayout = (LinearLayout) View.inflate(this, R.layout.vuforia_ui, null);
 
         linearLayout.setVisibility(View.VISIBLE);
         linearLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -678,8 +693,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             northLayout = (LinearLayout) findViewById(R.id.test_lay);
             Log.i("yupi", northLayout.toString());
 
-            northLayout.addView(mGlView, new LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
+            northLayout.addView(mGlView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
             northLayout.setBackgroundColor(Color.TRANSPARENT);
 
@@ -704,6 +718,25 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
             // Sets the layout background to transparent
             mUILayout.setBackgroundColor(Color.TRANSPARENT);
+
+//            FrameLayout frameLayout =  (FrameLayout) findViewById(R.id.test_frame);
+//            frameLayout.setBackgroundColor(Color.TRANSPARENT);
+//            frameLayout.bringToFront();
+
+            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.arrow_view);
+            relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+            relativeLayout.bringToFront();
+
+            ImageView arrowUp = (ImageView) findViewById(R.id.arrow_up);
+            arrowUp.bringToFront();
+
+            ImageView arrowLeft = (ImageView) findViewById(R.id.arrow_left);
+            arrowLeft.bringToFront();
+
+            ImageView arrowRight = (ImageView) findViewById(R.id.arrow_right);
+            arrowRight.bringToFront();
+
+
 
             // Original
 //            addContentView(testLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -764,6 +797,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     @Override
     public void onVuforiaUpdate(State state) {
+        Log.d(VideoPlayback.DEBUG_TAG, "Esto se updeitea mae ");
+
     }
 
     final private static int CMD_BACK = -1;
@@ -774,4 +809,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         descriptionTextView.setText(description);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+
+
+        }
+    }
 }

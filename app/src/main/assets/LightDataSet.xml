@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="comedor-t" size="250.000000 332.425079" />
+    <ImageTarget name="juan_maria-c" size="50.000000 88.888885" />
+    <ImageTarget name="derecho_atras" size="300.000000 533.333313" />
+    <ImageTarget name="fernando_baudrit-c" size="50.000000 28.125000" />
+    <ImageTarget name="quebrada_negritos" size="200.000000 112.500000" />
+    <ImageTarget name="juan_maria" size="200.000000 112.500000" />
+    <ImageTarget name="centro_info_p2" size="500.000000 666.666687" />
     <ImageTarget name="comedor2" size="500.000000 500.000000" />
     <ImageTarget name="plaza24-5" size="350.000000 466.666656" />
     <ImageTarget name="osos_amorosos2" size="300.000000 280.656494" />
     <ImageTarget name="mate5" size="500.000000 666.666687" />
     <ImageTarget name="leda6" size="350.000000 466.666656" />
     <ImageTarget name="generales2" size="500.000000 375.000000" />
-    <ImageTarget name="centro_info_p5" size="500.000000 666.666687" />
     <ImageTarget name="fernando1" size="300.000000 285.069977" />
     <ImageTarget name="derecho5" size="500.000000 666.666687" />
     <ImageTarget name="carlos_monge1" size="500.000000 375.000000" />

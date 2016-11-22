@@ -18,7 +18,7 @@ import ra.inge.ucr.da.parser.NodeParser;
  */
 public class NavigationHelper {
     private Context m_Context;
-    private LocationHelper locationHelper = new LocationHelper(m_Context);
+    private LocationHelper locationHelper = new LocationHelper();
 
     private NodeParser nodeParser;
 

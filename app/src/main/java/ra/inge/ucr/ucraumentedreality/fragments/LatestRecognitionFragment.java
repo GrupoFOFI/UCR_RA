@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import ra.inge.ucr.da.entity.TargetObject;
+import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 
@@ -25,10 +26,23 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
 public class LatestRecognitionFragment extends Fragment {
 
 
-    public static ArrayList<TargetObject> targetObjects;
+    /**
+     * Custom adapter for the fragment
+     */
+    private CustomAdapter mAdapter;
+    /**
+     * Maps fragment listener
+     */
+    private LocationHelper locationHelper;
+
+    /**
+     * The closest buildings;
+     */
+    public static TargetObject[] targetObjects;
 
     public LatestRecognitionFragment() {
-        targetObjects = new ArrayList<TargetObject>();
+//        targetObjects = new ArrayList<TargetObject>();
+        mAdapter = new CustomAdapter();
     }
 
 
@@ -41,6 +55,10 @@ public class LatestRecognitionFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(mAdapter);
+
+        mAdapter.setCloseTargets(targetObjects);
+
         return view;
 
     }

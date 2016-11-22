@@ -38,6 +38,7 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import ra.inge.ucr.da.Data;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleAppRenderer;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleAppRendererControl;
@@ -200,6 +201,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
     public void requestLoad(int target, String movieName, int seekPosition,
                             boolean playImmediately) {
+
+        Log.d("FOFI", "Nombre del movie " + movieName);
         mMovieName[target] = movieName;
         mSeekPosition[target] = seekPosition;
 
@@ -436,7 +439,6 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             / (float) mTextures.get(1).mWidth;*/
 
         for (int i = 0; i < VideoPlayback.NUM_TARGETS; i++) {
-            Log.d("Mae", "I es " + i);
             keyframeQuadAspectRatio[i] = (float) mTextures.get(0).mHeight / (float) mTextures.get(0).mWidth;
         }
 
@@ -535,6 +537,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             TrackableResult trackableResult = state.getTrackableResult(tIdx);
             ImageTarget imageTarget = (ImageTarget) trackableResult.getTrackable();
 
+            Log.d("konri","Name is" + imageTarget.getName());
+
             // We store the modelview matrix to be used later by the tap
             // calculation
             if (imageTarget.getName().toLowerCase().contains("antarticos")) {
@@ -563,12 +567,16 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 currentTarget = VideoPlayback.FERNANDO;
             } else if (imageTarget.getName().toLowerCase().contains("centro_info")) {
                 currentTarget = VideoPlayback.INFO;
+            } else if (imageTarget.getName().toLowerCase().contains("negritos")) {
+                currentTarget = VideoPlayback.NEGRITOS;
+            } else if (imageTarget.getName().toLowerCase().contains("juan")) {
+                currentTarget = VideoPlayback.JUAN;
             }
 
 
             if (currentTarget != -1) {
-                final String mTitle = titleArray[currentTarget];
-                final String mDescription = descriptionArray[currentTarget];
+                final String mTitle = Data.targetObjects.get(currentTarget).getName();
+                final String mDescription = Data.targetObjects.get(currentTarget).getDescription(); //descriptionArray[currentTarget];
 
                 // Método para updeitear los textfields
                 mActivity.runOnUiThread(new Runnable() {

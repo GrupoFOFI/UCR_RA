@@ -132,7 +132,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
 
-        locationHelper = new LocationHelper(getContext());
+        locationHelper = new LocationHelper();
 //        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
 //                locationHelper.getLastLocation().longitude), 12);
 //        googleMap.animateCamera(cameraUpdate);
@@ -188,8 +188,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         locationHelper.updateLastLocation(new LatLng(location.getLatitude(), location.getLongitude()));
 
         LatLng loc = new LatLng(location.getLatitude(), location.getLongitude());
-        closeBuildings = locationHelper.getClosestBuildings(CLOSEST_AMOUNT);
-        closeMonuments = locationHelper.getClosestMonuments(CLOSEST_AMOUNT);
+        closeBuildings = locationHelper.getClosestBuildings(mLastLocation, CLOSEST_AMOUNT);
+        closeMonuments = locationHelper.getClosestMonuments(mLastLocation, CLOSEST_AMOUNT);
 
         Log.d("konri", "Los edificios son => " + closeBuildings[0].getName() + " " + closeBuildings[1].getName() + " " + closeBuildings[2].getName());
         Log.d("konri", "Los monumentos son => " + closeMonuments[0].getName() + " " + closeMonuments[1].getName() + " " + closeMonuments[2].getName());

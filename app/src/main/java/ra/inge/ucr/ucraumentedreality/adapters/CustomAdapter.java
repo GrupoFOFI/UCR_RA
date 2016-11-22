@@ -12,7 +12,7 @@ import ra.inge.ucr.ucraumentedreality.R;
 /**
  * <h1> Custom Adapter </h1>
  * <p>
- * Adapter personalizado para agarrar los edificios más cercanos
+ * Adapter personalizado para agarrar los edificios más closeTargets
  * </p>
  *
  * @author Fofis
@@ -24,14 +24,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     /**
      * The closest target objects
      */
-    private TargetObject[] cercanos;
+    private TargetObject[] closeTargets;
 
     /**
      * Constructor for the class that receives the current closes buildings as parameter
-     * @param cercanos
+     * @param closeTargets
      */
-    public CustomAdapter(TargetObject[] cercanos) {
-        this.cercanos = cercanos;
+    public CustomAdapter(TargetObject[] closeTargets) {
+        this.closeTargets = closeTargets;
     }
 
     /**
@@ -40,8 +40,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     public CustomAdapter() {
     }
 
-    public void setCercanos(TargetObject[] cercanos) {
-        this.cercanos = cercanos;
+    public void setCloseTargets(TargetObject[] closeTargets) {
+        this.closeTargets = closeTargets;
     }
 
     /**
@@ -63,7 +63,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
      */
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int i) {
-        myViewHolder.title.setText(cercanos[i].getName());
+        myViewHolder.title.setText(closeTargets[i].getName());
     }
 
     /**
@@ -72,7 +72,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
      */
     @Override
     public int getItemCount() {
-        return cercanos == null ? 0 : cercanos.length;
+        return closeTargets == null ? 0 : closeTargets.length;
     }
 
 
