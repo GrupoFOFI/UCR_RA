@@ -537,37 +537,15 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             TrackableResult trackableResult = state.getTrackableResult(tIdx);
             ImageTarget imageTarget = (ImageTarget) trackableResult.getTrackable();
 
-            Log.d("konri", "Name is" + imageTarget.getName());
+            String targetName = imageTarget.getName();
+            Log.d("konri", "Name is" + targetName);
 
             // We store the modelview matrix to be used later by the tap
             // calculation
+
             currentTarget = retrieveTarget2(imageTarget.getName().toLowerCase());
-
-            // Testing purpose
-
-            final ImageTarget tempTarget = imageTarget;
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mActivity.toastLog("Encontré el target" + tempTarget.getName().toLowerCase());
-                }
-            });
-
-            if (currentTarget != -1) {
-                final String mTitle = Data.targetObjects.get(currentTarget).getName();
-                final String mDescription = Data.targetObjects.get(currentTarget).getDescription(); //descriptionArray[currentTarget];
-
-
-                // Método para updeitear los textfields
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mActivity.updateTextFields(mTitle, mDescription);
-                    }
-                });
-
-                modelViewMatrix[currentTarget] = Tool
-                        .convertPose2GLMatrix(trackableResult.getPose());
+            if (currentTarget !=  1) {
+                modelViewMatrix[currentTarget] = Tool.convertPose2GLMatrix(trackableResult.getPose());
                 isTracking[currentTarget] = true;
 
                 targetPositiveDimensions[currentTarget] = imageTarget.getSize();
@@ -612,9 +590,6 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                             90,
                             50 * videoQuadAspectRatio[currentTarget],
                             200);
-
-//                    SampleUtils::rotatePoseMatrix(180.0f, 0.0f, 0.0f, 1.0f,targetPositiveDimensions[currentTarget].getData()[0]);
-
                     Matrix.multiplyMM(modelViewProjectionKeyframe, 0,
                             projectionMatrix, 0, modelViewMatrixKeyframe, 0);
 
@@ -653,6 +628,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
                     GLES20.glUseProgram(0);
                 } else
+
                 // In any other case, such as playing or paused, we render
                 // the actual contents
                 {
@@ -662,6 +638,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
                     GLES20.glDepthFunc(GLES20.GL_LESS);
                     GLES20.glClearDepthf(1.0f);
+
                     //GLES20.glDepthMask(false);
                     //GLES20.glDisable(GLES20.GL_BLEND);
                     //GLES20.glDisable(GLES20.GL_DEPTH_TEST);
@@ -850,21 +827,46 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
                 Log.d(VideoPlayback.DEBUG_TAG, "llega acá");
 
-                if (currentStatus[currentTarget] == READY) {
+                VideoPlayerHelper.MEDIA_STATE testState = currentStatus[currentTarget];
+                if (testState == READY) {
                     Log.d(VideoPlayback.DEBUG_TAG, "Vamo a pl es" + currentTarget);
 
-                    if (!mVideoPlayerHelper[currentTarget].isVideoPlaying()) {
-                        onTrackListener.onTargetFound(currentTarget);
+
+                    if (currentTarget != -1) {
+                        final String mTitle = Data.targetObjects.get(currentTarget).getName();
+                        final String mDescription = Data.targetObjects.get(currentTarget).getDescription(); //descriptionArray[currentTarget];
+
+                        // Testing purpose
+//
+//                final ImageTarget tempTarget = imageTarget;
+//                mActivity.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mActivity.toastLog("Encontré el target" + tempTarget.getName().toLowerCase());
+//                    }
+//                });
+
+                        // Método para updeitear los textfields
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mActivity.updateTextFields(mTitle, mDescription);
+                            }
+                        });
+
+                        if (!mVideoPlayerHelper[currentTarget].isVideoPlaying()) {
+                            onTrackListener.onTargetFound(currentTarget);
+                        }
                     }
+
+
+                    SampleUtils.checkGLError("VideoPlayback renderFrame");
                 }
 
+                GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+                Renderer.getInstance().end();
 
-                SampleUtils.checkGLError("VideoPlayback renderFrame");
             }
-
-            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
-            Renderer.getInstance().end();
-
         }
     }
 
@@ -1020,9 +1022,13 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     }
 
     int retrieveTarget2(String targetName) {
-        for (int i = 0; i < Data.targetObjects.size(); i++) {
-            if (Data.targetObjects.get(i).getName().contains(targetName)) {
-                return Data.targetObjects.get(i).getId() % 13;
+        Log.d(VideoPlayback.DEBUG_TAG, "Pidiendo el target " + targetName);
+        for (int i = 0; i < Data.targetObjects.size()-1; i++) {
+            String targetObjectName = Data.targetObjects.get(i).getVideo();
+            if (targetObjectName.contains(targetName)) {
+                int result = (Data.targetObjects.get(i).getId() % 13)-1;
+                Log.d(VideoPlayback.DEBUG_TAG, "Found target with result" + result);
+                return result;
             }
         }
         return -1;

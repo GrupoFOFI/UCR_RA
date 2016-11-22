@@ -802,7 +802,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     @Override
     public void onVuforiaUpdate(State state) {
-        Log.d(VideoPlayback.DEBUG_TAG, "Esto se updeitea mae ");
+//        Log.d(VideoPlayback.DEBUG_TAG, "Esto se updeitea mae ");
 
     }
 

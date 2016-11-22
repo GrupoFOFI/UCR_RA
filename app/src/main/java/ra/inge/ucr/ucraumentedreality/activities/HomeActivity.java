@@ -96,7 +96,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
