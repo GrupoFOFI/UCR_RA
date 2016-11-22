@@ -538,13 +538,13 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             ImageTarget imageTarget = (ImageTarget) trackableResult.getTrackable();
 
             String targetName = imageTarget.getName();
-            Log.d("konri", "Name is" + targetName);
+            Log.d("konri", "Name is " + targetName);
 
             // We store the modelview matrix to be used later by the tap
             // calculation
 
             currentTarget = retrieveTarget2(imageTarget.getName().toLowerCase());
-            if (currentTarget !=  1) {
+            if (currentTarget !=  -1) {
                 modelViewMatrix[currentTarget] = Tool.convertPose2GLMatrix(trackableResult.getPose());
                 isTracking[currentTarget] = true;
 
@@ -865,6 +865,9 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
                 GLES20.glDisable(GLES20.GL_DEPTH_TEST);
                 Renderer.getInstance().end();
+
+            } else {
+                Log.d(VideoPlayback.DEBUG_TAG,"Error encontrando el target!");
 
             }
         }
