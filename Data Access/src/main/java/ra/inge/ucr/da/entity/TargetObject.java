@@ -49,6 +49,11 @@ public class TargetObject {
     private String video;
 
     /**
+     *
+     */
+    int[] entrances;
+
+    /**
      * Empty constructor for the class
      */
     public TargetObject() {
@@ -97,6 +102,31 @@ public class TargetObject {
         this.description = description;
         this.website = website;
         this.video = video;
+    }
+
+    /**
+     *
+     * @param id
+     * @param type
+     * @param latitude
+     * @param longitude
+     * @param altitude
+     * @param name
+     * @param description
+     * @param website
+     * @param video
+     */
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String description, String website, String video) {
+        this.id = id;
+        this.type = type;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.altitude = altitude;
+        this.name = name;
+        this.description = description;
+        this.website = website;
+        this.video = video;
+        this.entrances = entrances;
     }
 
 
