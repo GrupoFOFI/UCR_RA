@@ -36,6 +36,10 @@ public class TargetObject {
      */
     private String name;
     /**
+     * The hint for the object
+     */
+    private String hint;
+    /**
      * The object's description
      */
     private String description;
@@ -70,13 +74,14 @@ public class TargetObject {
      * @param name
      * @param description
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String description) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String hint, String description) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
         this.name = name;
+        this.hint = hint;
         this.description = description;
     }
 
@@ -93,13 +98,14 @@ public class TargetObject {
      * @param website
      * @param video
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String description, String video, String website) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String hint, String description, String video, String website) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
         this.name = name;
+        this.hint = hint;
         this.description = description;
         this.video = video;
         this.website = website;
@@ -118,13 +124,14 @@ public class TargetObject {
      * @param website
      * @param video
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String description, String video, String website) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String hint, String description, String video, String website) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
         this.longitude = longitude;
         this.altitude = altitude;
         this.name = name;
+        this.hint = hint;
         this.description = description;
         this.website = website;
         this.video = video;
@@ -282,5 +289,13 @@ public class TargetObject {
      */
     public void setEntrances(int[] entrances) {
         this.entrances = entrances;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 }
