@@ -32,7 +32,6 @@ import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.fragments.HomeFragment;
-import ra.inge.ucr.ucraumentedreality.fragments.MapsFragment;
 import ra.inge.ucr.ucraumentedreality.utils.CommandHandler;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
@@ -41,7 +40,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ShakeHandler.OnShakeListener {
 
     /* UI elements */
-
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private Class currentFragmentType;
@@ -60,7 +58,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private SharedPreferences prefs;
 
     private HomeFragment homeFragment;
-    private MapsFragment mapsFragment;
     private LocationHelper locationHelper;
 
     /**
@@ -87,8 +84,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
-        mapsFragment = new MapsFragment();
-        locationHelper = new LocationHelper(this);
+        locationHelper = new LocationHelper();
         homeFragment = new HomeFragment();
         setFragment(new HomeFragment());
 
@@ -111,7 +107,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     /**
-     *
+     * Override method to handle the shake listener gestures
      */
     @Override
     public void onShake() {
@@ -124,8 +120,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
     /**
-     *
+     * Method that prompts the user to speak
      */
     private void promptSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -199,9 +196,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
             case R.id.nav_home:
-                setFragment(homeFragment);
+                if (!(currentFragmentType == HomeFragment.class)) {
+                    setFragment(new HomeFragment());
+                }
+
                 break;
 
             case R.id.nav_camera:
@@ -209,7 +208,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_maps:
-                setFragment(mapsFragment);
+                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                 break;
 
 //            case R.id.nav_takeme:
@@ -220,9 +219,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 accessibilityDialog();
                 break;
 
-            case R.id.nav_share:
-                shareApp();
-                break;
 
             case R.id.nav_settings:
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
@@ -237,12 +233,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    /**
-     * Method that creates the android's native share function
-     */
-    void shareApp() {
-
-    }
 
     /**
      * Method that enables the user to change the mode of the app

@@ -17,96 +17,109 @@
         android:orientation="horizontal"
         android:weightSum="1">
 
-        <LinearLayout
+        <!--Idea anterior-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:orientation="vertical"-->
+            <!--android:weightSum="1">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="0.5"-->
+                <!--android:orientation="vertical"-->
+                <!--android:weightSum="1">-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:layout_weight="0.5"-->
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:text="Seleccione un edificio"-->
+                    <!--android:textColor="@color/black"-->
+                    <!--android:textSize="13sp" />-->
+
+                <!--<Spinner-->
+                    <!--android:id="@+id/bank_spinner"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginLeft="20dp"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:layout_marginTop="8dp"-->
+                    <!--android:layout_weight="0.7"-->
+                    <!--android:background="@color/colorPrimary"-->
+                    <!--android:paddingRight="10dp"-->
+                    <!--android:paddingTop="3dp"-->
+                    <!--android:textAlignment="center" />-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="0.5">-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:layout_weight="0.2"-->
+                    <!--android:weightSum="1">-->
+
+                    <!--<Button-->
+                        <!--android:id="@+id/btn_pass7"-->
+                        <!--style="@style/button_text"-->
+                        <!--android:layout_width="80dp"-->
+                        <!--android:layout_height="35dp"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_gravity="center_vertical|center_horizontal"-->
+                        <!--android:background="@drawable/custom_button"-->
+                        <!--android:lines="2"-->
+                        <!--android:text="Ir"-->
+                        <!--android:textAllCaps="false"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="16sp" />-->
+
+                <!--</RelativeLayout>-->
+
+
+            <!--</LinearLayout>-->
+
+        <!--</LinearLayout>-->
+
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="0.5"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:weightSum="1">-->
+
+            <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_margin="20dp"-->
+                <!--android:src="@drawable/pretil" />-->
+
+        <!--</LinearLayout>-->
+
+        <com.synnapps.carouselview.CarouselView
+            android:id="@+id/customCarouselView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:weightSum="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:orientation="vertical"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="0.5"
-                    android:gravity="center_horizontal"
-                    android:text="Seleccione un edificio"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-
-                <Spinner
-                    android:id="@+id/bank_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="0.7"
-                    android:background="@color/colorPrimary"
-                    android:paddingRight="10dp"
-                    android:paddingTop="3dp"
-                    android:textAlignment="center" />
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_weight="0.2"
-                    android:weightSum="1">
-
-                    <Button
-                        android:id="@+id/btn_pass7"
-                        style="@style/button_text"
-                        android:layout_width="80dp"
-                        android:layout_height="35dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:background="@drawable/custom_button"
-                        android:lines="2"
-                        android:text="Ir"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
-
-                </RelativeLayout>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="20dp"
-                android:src="@drawable/pretil" />
-
-        </LinearLayout>
-
+            app:disableAutoPlayOnUserInteraction="true"
+            app:fillColor="#FFFFFFFF"
+            app:pageColor="#00000000"
+            app:radius="6dp"
+            app:indicatorGravity="right"
+            app:strokeColor="#FF777777"
+            app:indicatorOrientation="horizontal"
+            app:strokeWidth="0.7dp" />
 
     </LinearLayout>
 

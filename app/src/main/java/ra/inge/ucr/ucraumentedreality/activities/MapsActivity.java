@@ -1,17 +1,15 @@
-package ra.inge.ucr.ucraumentedreality.fragments;
+package ra.inge.ucr.ucraumentedreality.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,26 +36,28 @@ import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
- * <h1> ViewPager Adapter </h1>
- * <p>
- * Adapter for the fragments on the Application
- * </p>
+ * Class to hadle the usage of maps
  *
- * @author Fofis
- * @version 1.0
- * @since 1.0
  */
-public class MapsFragment extends Fragment implements OnMapReadyCallback,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener {
 
+    /**
+     * The google map components
+     */
     private MapView mMapView;
     private GoogleMap googleMap;
     private Marker[] markers;
+    /**
+     * Amount of buildings we want to have near
+     */
     public static final int CLOSEST_AMOUNT = 3;
 
-    private View rootView;
     private Utils utils;
 
+    /**
+     * The lists of the closest target objects
+     */
     private TargetObject[] closeMonuments;
     private TargetObject[] closeBuildings;
 
@@ -68,27 +68,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
 
-    /**
-     * Empty constructor for the class
-     */
-    public MapsFragment() {
-    }
 
 
-    /**
-     * Method that prepares the components that google maps need to work
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
-     * @return
-     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-        utils = new Utils(getActivity(), getContext());
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        utils = new Utils(this, getApplicationContext());
+        setContentView(R.layout.fragment_maps);
         setupMap(savedInstanceState);
-        return rootView;
+
+        buildGoogleApiClient();
+
     }
 
 
@@ -98,14 +88,13 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
      * @param savedInstanceState
      */
     void setupMap(Bundle savedInstanceState) {
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView = (MapView) findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-
         mMapView.onResume();
         mMapView.getMapAsync(this);
 
         try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
+            MapsInitializer.initialize(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,7 +109,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             utils.requestLocationPermission();
             return;
         }
@@ -133,11 +122,33 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         }
 
         locationHelper = new LocationHelper();
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
-//                locationHelper.getLastLocation().longitude), 12);
-//        googleMap.animateCamera(cameraUpdate);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
+                locationHelper.getLastLocation().longitude), 12);
+        googleMap.animateCamera(cameraUpdate);
 
     }
+
+
+    /**
+     * On Start Class method
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    /**
+     * On Stop Class method
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
 
     /**
      * On Resume Class method
@@ -173,6 +184,65 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+
+    /**
+     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(POLLING_FREQ);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_FREQ);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    /**
+     * Runs when a GoogleApiClient object successfully connects.
+     */
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        utils.requestLocationPermission();
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation == null) {
+            String error = getResources().getString(R.string.no_location_detected);
+            Log.e("ERROR", error);
+        } else {
+            locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
+            googleMap.animateCamera(cameraUpdate);
+        }
+    }
+
+    /**
+     * Method called when tha connection is suspended
+     *
+     * @param i
+     */
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i("TAG", "Connection suspended");
+        mGoogleApiClient.connect();
+    }
+
+    /**
+     * Method called when tha connection failed
+     *
+     * @param connectionResult
+     */
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        String err = "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode();
+        Log.e("ERROR", err);
     }
 
 
@@ -258,5 +328,5 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         return false;
     }
 
-}
 
+}

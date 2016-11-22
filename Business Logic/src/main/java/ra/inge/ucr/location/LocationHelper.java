@@ -1,34 +1,13 @@
 package ra.inge.ucr.location;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.da.entity.TargetType;
-import ra.inge.ucr.location.listener.OnBuildingsSetListener;
-import ra.inge.ucr.location.listener.OnLocationSetListener;
-import ra.inge.ucr.location.listener.OnMonumentsSetListener;
 
 /**
  * <h1> Location Helper </h1>
@@ -40,48 +19,24 @@ import ra.inge.ucr.location.listener.OnMonumentsSetListener;
  * @version 1.0
  * @since 1.0
  */
-public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
+public class LocationHelper {
 
     public static final int TARGET_AMMOUNT = 3;
     public int topidx[];
     public double mindist[];
+    /**
+     *
+     */
     private static LatLng mLastLocation;
     /**
      * Represents a geographical location.
      */
     protected Location latestLocation;
-    /**
-     * The application Context
-     */
-    private Context mContext;
 
-    /**
-     * Provides the entry point to Google Play services.
-     */
-    protected GoogleApiClient mGoogleApiClient;
-
-    /**
-     * MapsFragment listener
-     */
-    private OnLocationSetListener onLocationSetListener;
-
-    /**
-     * CloseBuildingsFragment listener
-     */
-    private OnBuildingsSetListener onBuildingsSetListener;
-
-    /**
-     * CloseMonumentsFragment listener
-     */
-    private OnMonumentsSetListener onMonumentsSetListener;
 
     private TargetObject[] closeMonuments;
     private TargetObject[] closeBuildings;
 
-
-    // Define a listener that responds to location updates
-    LocationListener locationListener;
-    LocationManager locationManager;
 
     /**
      * Method that updates the last location
@@ -102,31 +57,13 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
     }
 
 
-    public LocationHelper(Context context) {
-        this.mContext = context;
-        buildGoogleApiClient();
-
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
-                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
-                            Manifest.permission.ACCESS_FINE_LOCATION)) {
-                        new AlertDialog.Builder(context).setTitle("Permiso de ubicación").setMessage("Necesitamos tu ubicación para que el app funcione").show();
-
-                    } else {
-
-                        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                    }
-                }
-            }
-        }
-
-
+    public Location getLatestLocation() {
+        return latestLocation;
     }
 
+    public void setLatestLocation(Location latestLocation) {
+        this.latestLocation = latestLocation;
+    }
 
     /**
      * Method that retrieves the closest buildings
@@ -134,8 +71,9 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
      * @param ammount
      * @return
      */
-    public TargetObject[] getClosestBuildings(int ammount) {
-        if (latestLocation != null) {
+    public TargetObject[] getClosestBuildings(Location location,int ammount) {
+        if (location != null) {
+            latestLocation = location;
             TargetObject[] closest = new TargetObject[ammount];
             topidx = new int[ammount];
             mindist = new double[ammount];
@@ -162,6 +100,7 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
             for (int i = 0; i < ammount; i++) {
                 closest[i] = Data.targetObjects.get(topidx[i]);
             }
+            Log.d("konri", "closest buildings");
             return closest;
         }
         return null;
@@ -174,8 +113,9 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
      * @param ammount
      * @return
      */
-    public TargetObject[] getClosestMonuments(int ammount) {
+    public TargetObject[] getClosestMonuments(Location location, int ammount) {
         if (latestLocation != null) {
+            latestLocation = location;
             TargetObject[] closest = new TargetObject[ammount];
             topidx = new int[ammount];
             mindist = new double[ammount];
@@ -203,6 +143,7 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
             for (int i = 0; i < ammount; i++) {
                 closest[i] = Data.targetObjects.get(topidx[i]);
             }
+            Log.d("konri", "closest buildings");
             return closest;
         }
         return null;
@@ -254,7 +195,7 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
         double mod1 = 0;
         double mod2 = 0;
         double angulo = 0;
-        TargetObject c[] = getClosestBuildings(3);
+        TargetObject c[] = getClosestBuildings(latestLocation,3);
         for (int i = 0; i < 3; i++) {
             errorAngle = getErrorAngle(loc, c[i].getLatitude(), c[i].getLongitude());
             if (errorAngle != -1) {
@@ -300,134 +241,13 @@ public class LocationHelper implements ConnectionCallbacks, OnConnectionFailedLi
     }
 
 
-    /**
-     * Builds a GoogleApiClient. Uses the addApi() method to request the LocationServices API.
-     */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
 
-        mGoogleApiClient.connect();
+    public void calculateClosest(Location location) {
+        closeBuildings = getClosestBuildings(location, TARGET_AMMOUNT);
+        closeMonuments = getClosestMonuments(location, TARGET_AMMOUNT);
     }
 
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        latestLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (latestLocation != null) {
-//
-            Log.d("konri2", "" + latestLocation.getLatitude());
-            Log.d("konri2", "" + latestLocation.getLongitude());
-            calculateClosest();
-
-        } else {
-            Toast.makeText(mContext, "error", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
-        // onConnectionFailed.
-        Log.i("konri", "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
-    }
-
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        // The connection to Google Play services was lost for some reason. We call connect() to
-        // attempt to re-establish the connection.
-        Log.i("konri", "Connection suspended");
-        mGoogleApiClient.connect();
-    }
-
-
-    /**
-     * Method that updates the custom markers when the location changes
-     *
-     * @param location
-     */
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d("konri", "Mae si entra" + location);
-        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        latestLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location != null) {
-            latestLocation = location;
-
-            calculateClosest();
-            Log.d("konri", "" + latestLocation.getLatitude());
-            Log.d("konri", "" + latestLocation.getLongitude());
-        }
-
-        Log.d("konri", "No estoy entrado acá");
-    }
-
-    void calculateClosest() {
-        closeBuildings = getClosestBuildings(TARGET_AMMOUNT);
-        if (closeBuildings != null) {
-            if (onBuildingsSetListener != null) {
-                onBuildingsSetListener.onBuildingsCalculated();
-            }
-        }
-        closeMonuments = getClosestMonuments(TARGET_AMMOUNT);
-        if (closeMonuments != null) {
-            if (onMonumentsSetListener != null) {
-                onMonumentsSetListener.onMonumentsCalculated();
-            }
-        }
-    }
-
-    /**
-     * Setter for the MapsFragment listener
-     *
-     * @param onLocationSetListener
-     */
-    public void setOnLocationSetListener(OnLocationSetListener onLocationSetListener) {
-        this.onLocationSetListener = onLocationSetListener;
-    }
-
-    /**
-     * Setter for the ClosestBuildingsFragment listener
-     *
-     * @param onBuildingsSetListener
-     */
-    public void setOnBuildingsSetListener(OnBuildingsSetListener onBuildingsSetListener) {
-        this.onBuildingsSetListener = onBuildingsSetListener;
-    }
-
-    /**
-     * Setter for the ClosestMonumentFragment listener
-     *
-     * @param onMonumentsSetListener
-     */
-    public void setOnMonumentsSetListener(OnMonumentsSetListener onMonumentsSetListener) {
-        this.onMonumentsSetListener = onMonumentsSetListener;
-    }
 
     public TargetObject[] getCloseMonuments() {
         return closeMonuments;
