@@ -80,7 +80,7 @@ public class CloseMonumentsFragment extends Fragment {
         if (locationHelper != null) {
             closeMonuments = locationHelper.getClosestMonuments(locationHelper.getLatestLocation(),MapsFragment.CLOSEST_AMOUNT);
             if (closeMonuments != null) {
-                mAdapter.setCercanos(closeMonuments);
+                mAdapter.setCloseTargets(closeMonuments);
             }
         }
         return view;

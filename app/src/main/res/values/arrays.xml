@@ -65,4 +65,12 @@
     </string-array>
 
 
+
+    <!-- Strings related to Settings -->
+    <string-array name="language">
+        <item>Español</item>
+    </string-array>
+
+
+
 </resources>

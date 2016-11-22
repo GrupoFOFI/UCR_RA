@@ -1,8 +1,11 @@
 package ra.inge.ucr.ucraumentedreality.activities;
 
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -16,10 +19,12 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.support.design.widget.AppBarLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatCheckedTextView;
 import android.support.v7.widget.AppCompatEditText;
@@ -30,6 +35,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -49,7 +55,7 @@ import ra.inge.ucr.ucraumentedreality.activities.AppCompatPreferenceActivity;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity implements Preference.OnPreferenceClickListener{
+public class SettingsActivity extends AppCompatPreferenceActivity implements Preference.OnPreferenceClickListener {
 
     private static String appVersion;
     private Toolbar toobar;
@@ -127,22 +133,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
         /**
          *  Reference the preference keys
          */
-        findPreference("settings_notifications").setOnPreferenceClickListener(this);
-        findPreference("settings_profile").setOnPreferenceClickListener(this);
-        findPreference("settings_language").setOnPreferenceClickListener(this);
-        findPreference("settings_help").setOnPreferenceClickListener(this);
-        findPreference("settings_feedback").setOnPreferenceClickListener(this);
-        findPreference("settings_version").setOnPreferenceClickListener(this);
+        findPreference("feedback").setOnPreferenceClickListener(this);
+        findPreference("version").setOnPreferenceClickListener(this);
 
         /**
          *  Add the summary preference
          */
-        bindPreferenceSummaryToValue(findPreference("settings_notifications"));
-        bindPreferenceSummaryToValue(findPreference("settings_profile"));
-        bindPreferenceSummaryToValue(findPreference("settings_language"));
-        bindPreferenceSummaryToValue(findPreference("settings_help"));
-        bindPreferenceSummaryToValue(findPreference("settings_feedback"));
-        bindPreferenceSummaryToValue(findPreference("settings_version"));
+        bindPreferenceSummaryToValue(findPreference("feedback"));
+        bindPreferenceSummaryToValue(findPreference("version"));
 
     }
 
@@ -231,7 +229,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
         View listRoot = dialog.findViewById(android.R.id.list);
         ViewGroup mRootView = (ViewGroup) dialog.findViewById(android.R.id.content);
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             LinearLayout root = (LinearLayout) dialog.findViewById(android.R.id.list).getParent();
             appBar = (AppBarLayout) LayoutInflater.from(this).inflate(R.layout.toolbar_settings, root, false);
@@ -277,33 +274,38 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Pre
      */
     @Override
     public boolean onPreferenceClick(Preference preference) {
-//        switch (preference.getKey()) {
-//            case "settings_profile":
-//                startActivity(new Intent(getApplicationContext(), GeneralPreferences.class));
-//                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//                break;
-//            case "settings_notifications":
-//                startActivity(new Intent(getApplicationContext(), NotificationPreferences.class));
-//                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//                break;
-//            case "settings_language":
-//                new LanguageDialog().show(getFragmentManager(), getResources().getString(R.string.languages));
-//                break;
-//            case "settings_help":
-//                new HelpDialog().show(getFragmentManager(), null);
-//                break;
-//            case "settings_feedback":
-//                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-//                        "mailto", "feedback@symbiotic.net", null));
-//                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
-//                emailIntent.putExtra(Intent.EXTRA_TEXT, "Body");
-//                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-//                break;
-//            case "settings_version":
-//                new VersionDialog().show(getFragmentManager(), null);
-//                break;
-//        }
+        switch (preference.getKey()) {
+
+            case "feedback":
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "fofijones@gmail.com", null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "");
+                startActivity(Intent.createChooser(emailIntent, "Enviar correo.."));
+                break;
+
+            case "version":
+                showVersionDialog();
+                break;
+        }
         return false;
+    }
+
+
+
+    void showVersionDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Versión 1.0");
+        alertDialogBuilder
+                .setMessage("Desarrollada por el grupo \"Fofijones\" de Informática de Universidad de Costa Rica")
+                .setCancelable(false)
+                .setNeutralButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
 

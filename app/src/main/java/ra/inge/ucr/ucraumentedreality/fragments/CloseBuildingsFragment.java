@@ -83,13 +83,12 @@ public class CloseBuildingsFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-
         recyclerView.setAdapter(mAdapter);
 
         if (locationHelper != null) {
             closeBuildings = locationHelper.getClosestBuildings(locationHelper.getLatestLocation(), 3);
             if (closeBuildings != null) {
-                mAdapter.setCercanos(closeBuildings);
+                mAdapter.setCloseTargets(closeBuildings);
             }
         }
         return view;

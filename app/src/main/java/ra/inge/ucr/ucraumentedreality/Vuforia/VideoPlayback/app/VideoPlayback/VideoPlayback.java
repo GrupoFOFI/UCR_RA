@@ -44,6 +44,7 @@ import com.vuforia.Vuforia;
 
 import java.util.Vector;
 
+import ra.inge.ucr.da.Data;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationControl;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationException;
@@ -74,7 +75,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private SimpleOnGestureListener mSimpleListener = null;
 
     // Movie for the Targets:
-    public static final int NUM_TARGETS = 16;
+    public static final int NUM_TARGETS = Data.targetObjects.size();
 
     public static final int ANTART = 0;
     public static final int OSOS = 1;
@@ -96,7 +97,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
     private boolean mWasPlaying[] = null;
-    private String mMovieName[] = null;
+//    private String mMovieName[] = null;
 
     // A boolean to indicate whether we come from full screen:
     private boolean mReturningFromFullScreen = false;
@@ -137,8 +138,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()) {
             Log.d(DEBUG_TAG, "Vamoooos");
             mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
+
+
         }
     }
+
+
 
     // Called when the activity first starts or the user navigates back
     // to an activity.
@@ -170,7 +175,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         mVideoPlayerHelper = new VideoPlayerHelper[NUM_TARGETS];
         mSeekPosition = new int[NUM_TARGETS];
         mWasPlaying = new boolean[NUM_TARGETS];
-        mMovieName = new String[NUM_TARGETS];
+//        mMovieName = new String[NUM_TARGETS];
 
         // Create the video player helper that handles the playback of the movie
         // for the targets:
@@ -180,22 +185,22 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             mVideoPlayerHelper[i].setActivity(this);
         }
 
-        mMovieName[0] = "VideoPlayback/antarticos.mp4";
-        mMovieName[1] = "VideoPlayback/osos.mp4";
-        mMovieName[2] = "VideoPlayback/mate.mp4";
-        mMovieName[3] = "VideoPlayback/leda.mp4";
-        mMovieName[4] = "VideoPlayback/24-abril.mp4";
-        mMovieName[5] = "VideoPlayback/carlos-monge.mp4";
-        mMovieName[6] = "VideoPlayback/comedor.mp4";
-        mMovieName[7] = "VideoPlayback/joaquin.mp4";
-        mMovieName[8] = "VideoPlayback/derecho.mp4";
-        mMovieName[9] = "VideoPlayback/ecci.mp4";
-        mMovieName[10] = "VideoPlayback/generales.mp4";
-        mMovieName[11] = "VideoPlayback/fernando.mp4";
-        mMovieName[12] = "VideoPlayback/centro-info.mp4";
-        mMovieName[13] = "VideoPlayback/quebrada_negritos.mp4";
-        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
-        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
+//        mMovieName[0] = "VideoPlayback/antarticos.mp4";
+//        mMovieName[1] = "VideoPlayback/osos.mp4";
+//        mMovieName[2] = "VideoPlayback/mate.mp4";
+//        mMovieName[3] = "VideoPlayback/leda.mp4";
+//        mMovieName[4] = "VideoPlayback/24-abril.mp4";
+//        mMovieName[5] = "VideoPlayback/carlos-monge.mp4";
+//        mMovieName[6] = "VideoPlayback/comedor.mp4";
+//        mMovieName[7] = "VideoPlayback/joaquin.mp4";
+//        mMovieName[8] = "VideoPlayback/derecho.mp4";
+//        mMovieName[9] = "VideoPlayback/ecci.mp4";
+//        mMovieName[10] = "VideoPlayback/generales.mp4";
+//        mMovieName[11] = "VideoPlayback/fernando.mp4";
+//        mMovieName[12] = "VideoPlayback/centro-info.mp4";
+//        mMovieName[13] = "VideoPlayback/quebrada_negritos.mp4";
+//        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
+//        mMovieName[14] = "VideoPlayback/juan_maria.mp4";
 
         // Set the double tap listener:
         mGestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener() {
@@ -310,10 +315,12 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         if (mRenderer != null) {
             for (int i = 0; i < NUM_TARGETS; i++) {
                 if (!mReturningFromFullScreen) {
-                    mRenderer.requestLoad(i, mMovieName[i], mSeekPosition[i],
+                    mRenderer.requestLoad(i, Data.targetObjects.get(i).getVideo(), // mMovieName[i],
+                            mSeekPosition[i],
                             false);
                 } else {
-                    mRenderer.requestLoad(i, mMovieName[i], mSeekPosition[i],
+                    mRenderer.requestLoad(i, Data.targetObjects.get(i).getVideo(),// mMovieName[i],
+                            mSeekPosition[i],
                             mWasPlaying[i]);
                 }
             }
@@ -338,7 +345,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
                 // Find the movie that was being played full screen
                 for (int i = 0; i < NUM_TARGETS; i++) {
-                    if (movieBeingPlayed.compareTo(mMovieName[i]) == 0) {
+                    if (movieBeingPlayed.compareTo(Data.targetObjects.get(i).getVideo()) == 0) {
                         mSeekPosition[i] = data.getIntExtra(
                                 "currentSeekPosition", 0);
                         mWasPlaying[i] = false;
@@ -477,7 +484,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         // tell the GL thread to load it once the surface has been created.
         for (int i = 0; i < NUM_TARGETS; i++) {
             mRenderer.setVideoPlayerHelper(i, mVideoPlayerHelper[i]);
-            mRenderer.requestLoad(i, mMovieName[i], 0, false);
+            mRenderer.requestLoad(i, Data.targetObjects.get(i).getVideo(), 0, false);
         }
 
         mGlView.setRenderer(mRenderer);

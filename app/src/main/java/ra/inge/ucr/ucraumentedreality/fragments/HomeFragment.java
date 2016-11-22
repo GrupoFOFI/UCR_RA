@@ -291,7 +291,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                             Log.d("konri", "Updating buildings 2");
                             closeBuildings = locationHelper.getCloseBuildings();
                             Log.d("konri", "Updating buildings 3");
-                            closeBuildingsFragment.getmAdapter().setCercanos(closeBuildings);
+                            closeBuildingsFragment.getmAdapter().setCloseTargets(closeBuildings);
                             closeBuildingsFragment.getmAdapter().notifyDataSetChanged();
                         }
                     }
@@ -309,7 +309,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
                         if (closeMonumentsFragment.getmAdapter() != null) {
 
                             Log.d("konri", "Updating monuments?2");
-                            closeMonumentsFragment.getmAdapter().setCercanos(closeMonuments);
+                            closeMonumentsFragment.getmAdapter().setCloseTargets(closeMonuments);
                             closeMonumentsFragment.getmAdapter().notifyDataSetChanged();
                         }
                     }

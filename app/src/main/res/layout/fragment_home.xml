@@ -117,9 +117,9 @@
             app:pageColor="#00000000"
             app:radius="6dp"
             app:indicatorGravity="right"
-            app:strokeColor="#FF777777"
+            app:strokeColor="@color/white"
             app:indicatorOrientation="horizontal"
-            app:strokeWidth="0.7dp" />
+            app:strokeWidth="0.9dp" />
 
     </LinearLayout>
 
