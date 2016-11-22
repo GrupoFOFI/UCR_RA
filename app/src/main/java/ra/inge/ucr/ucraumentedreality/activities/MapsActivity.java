@@ -25,7 +25,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -271,25 +270,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         addMarkers();
 
-        PolylineOptions lineOptions = new PolylineOptions();
-        ArrayList points = new ArrayList<>();
-
-        double lat = 9.998020;
-        double lng = -84.112338;
-        LatLng position = new LatLng(lat, lng);
-        points.add(position);
-
-        double lat2 = 9.979326;
-        double lng2 = -84.090859;
-        LatLng position2 = new LatLng(lat2, lng2);
-        points.add(position2);
-
-        lineOptions.addAll(points);
-        if (lineOptions != null) {
-            googleMap.addPolyline(lineOptions);
-        } else {
-            Log.d("onPostExecute", "without Polylines drawn");
-        }
     }
 
     /**

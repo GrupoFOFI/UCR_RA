@@ -23,10 +23,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
+import java.util.List;
 
+import ra.inge.ucr.da.Path;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
+import ra.inge.ucr.location.NavigationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
@@ -60,6 +62,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     private static final long POLLING_FREQ = 200;
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
+    private NavigationHelper navigationHelper;
 
     /**
      * Empty constructor for the class
@@ -125,12 +128,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
             markers[i] = googleMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.building)).visible(false)
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
-
         locationHelper = new LocationHelper();
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
-//                locationHelper.getLastLocation().longitude), 12);
-//        googleMap.animateCamera(cameraUpdate);
-
+        navigationHelper = new NavigationHelper(this.getContext());
+        List<Path> routes = navigationHelper.getPathsToPoint(new LatLng(9.938747, -84.052131),37);
+        /*for(int i = 0;i<routes.size();i++){
+            List<LatLng> route = routes.get(i).getPoints();
+            drawRoute(route);
+        }*/
+//        List<LatLng> route = routes.get(0).getPoints();
+//        for(int i = 0;i<route.size();i++){
+//            Log.d("Tag", route.get(i).toString());
+//        }
+//        drawRoute(route);
+        /*for(int i = 0;i<route.size();i++){
+            Log.d("Tag", route.get(i).toString());
+        }*/
     }
 
     /**
@@ -190,25 +202,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
 
         addMarkers();
 
-        PolylineOptions lineOptions = new PolylineOptions();
-        ArrayList points = new ArrayList<>();
-
-        double lat = 9.998020;
-        double lng = -84.112338;
-        LatLng position = new LatLng(lat, lng);
-        points.add(position);
-
-        double lat2 = 9.979326;
-        double lng2 = -84.090859;
-        LatLng position2 = new LatLng(lat2, lng2);
-        points.add(position2);
-
-        lineOptions.addAll(points);
-        if (lineOptions != null) {
-            googleMap.addPolyline(lineOptions);
-        } else {
-            Log.d("onPostExecute", "without Polylines drawn");
-        }
     }
 
     /**
@@ -253,6 +246,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
+    public void drawRoute(List points){
+        PolylineOptions lineOptions = new PolylineOptions();
 
+        lineOptions.addAll(points);
+        if (lineOptions != null) {
+            googleMap.addPolyline(lineOptions);
+        } else {
+            Log.d("onPostExecute", "without Polylines drawn");
+        }
+    }
 }
 
