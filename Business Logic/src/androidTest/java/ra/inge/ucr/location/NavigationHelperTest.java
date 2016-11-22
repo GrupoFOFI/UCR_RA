@@ -24,8 +24,8 @@ public class NavigationHelperTest extends AndroidJUnitRunner {
     @Test
     public void getPathsToPoint() throws Exception {
         NavigationHelper navigationHelper = new NavigationHelper(getTestContext());
-        //List<Path> paths = navigationHelper.getPathsToPoint(new LatLng(9.939178, -84.052879), 37);
-        List<Path> paths = navigationHelper.getPathsToPoint(new LatLng(9.935723, -84.048662), 1);
+        List<Path> paths = navigationHelper.getPathsToPoint(new LatLng(9.939178, -84.052879), 10);
+        //List<Path> paths = navigationHelper.getPathsToPoint(new LatLng(9.935723, -84.048662), 1);
         LatLng userPosition = new LatLng(9.939178, -84.052879);
         for (int i = 0; i < 156; i++) {
             List<Path> p = navigationHelper.getPathsToPoint(userPosition, i);

@@ -132,7 +132,7 @@ public class Main {
             distanceFileReader.close();
             return matrix;
         } catch (Exception ex) {
-
+            System.out.println(ex.getMessage());
         }
         return null;
     }

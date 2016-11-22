@@ -89,7 +89,7 @@ public class NavigationHelper {
             distances[minorIndex] = Float.POSITIVE_INFINITY;
         }*/
 
-        if (distances[point+1] == Float.POSITIVE_INFINITY) return paths; // path doesn't exist
+        if (distances[point] == Float.POSITIVE_INFINITY) return paths; // path doesn't exist
         //pIndex.add(distances[minorIndex]);
 
         Path path = new Path();
