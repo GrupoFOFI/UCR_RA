@@ -60,7 +60,7 @@ public class TargetObject {
     }
 
     /**
-     * Complete constructor
+     * Basic constructor
      *
      * @param id
      * @param type
@@ -81,6 +81,7 @@ public class TargetObject {
     }
 
     /**
+     * All but entrances
      *
      * @param id
      * @param type
@@ -105,6 +106,7 @@ public class TargetObject {
     }
 
     /**
+     * Complete constructor
      *
      * @param id
      * @param type
@@ -264,5 +266,21 @@ public class TargetObject {
      */
     public void setVideo(String video) {
         this.video = video;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int[] getEntrances() {
+        return entrances;
+    }
+
+    /**
+     *
+     * @param entrances
+     */
+    public void setEntrances(int[] entrances) {
+        this.entrances = entrances;
     }
 }

@@ -113,7 +113,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onShake() {
         if (prefs.getBoolean("accessibility", false) == true) {
 
-            vibe.vibrate(100);
+            //vibe.vibrate(100);
             if (showingPopUp == false) {
                 promptSpeechInput();
             }

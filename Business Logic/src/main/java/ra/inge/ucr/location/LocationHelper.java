@@ -1,9 +1,14 @@
 package ra.inge.ucr.location;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
 
 import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
@@ -256,5 +261,8 @@ public class LocationHelper {
     public TargetObject[] getCloseBuildings() {
         return closeBuildings;
     }
+
+
+
 }
 

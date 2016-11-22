@@ -1,9 +1,12 @@
 package ra.inge.ucr.location;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.location.Location;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +93,7 @@ public class NavigationHelper {
             distances[minorIndex] = Float.POSITIVE_INFINITY;
         }*/
 
-        if (distances[point+1] == Float.POSITIVE_INFINITY) return paths; // path doesn't exist
+        if (distances[point] == Float.POSITIVE_INFINITY) return paths; // path doesn't exist
         //pIndex.add(distances[minorIndex]);
 
         Path path = new Path();
@@ -123,5 +126,32 @@ public class NavigationHelper {
             path.add(from);
         }
         return path;
+    }
+
+    public void drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map)
+    {
+        if ( map == null )
+        {
+            return;
+        }
+
+        if ( listLocsToDraw.size() < 2 )
+        {
+            return;
+        }
+
+        PolylineOptions options = new PolylineOptions();
+
+        options.color( Color.parseColor( "#CC0000FF" ) );
+        options.width( 5 );
+        options.visible( true );
+
+        for ( LatLng locRecorded : listLocsToDraw )
+        {
+            options.add(locRecorded);
+        }
+
+        map.addPolyline( options );
+
     }
 }

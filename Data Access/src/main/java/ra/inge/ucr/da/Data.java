@@ -63,4 +63,14 @@ public class Data {
      * List of distances
      */
     public static double[] distances = new double[targetObjects.size()];
+
+
+    public static TargetObject getByName(String name){
+        for(TargetObject to:targetObjects){
+            if(to.getName().contains(name)){
+                return to;
+            }
+        }
+        return null;
+    }
 }

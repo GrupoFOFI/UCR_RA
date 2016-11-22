@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,9 +28,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import ra.inge.ucr.da.Data;
+import ra.inge.ucr.da.Path;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
+import ra.inge.ucr.location.NavigationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
@@ -121,10 +124,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
 
-        locationHelper = new LocationHelper();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
-                locationHelper.getLastLocation().longitude), 12);
-        googleMap.animateCamera(cameraUpdate);
+//        locationHelper = new LocationHelper();
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
+//                locationHelper.getLastLocation().longitude), 12);
+//        googleMap.animateCamera(cameraUpdate);
 
     }
 
@@ -221,6 +224,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
         }
+        newDestination(Data.getByName("Derecho"));
+
     }
 
     /**
@@ -328,5 +333,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false;
     }
 
-
+    public void newDestination(TargetObject to) {
+        NavigationHelper na = new NavigationHelper(getBaseContext());
+        List<Path> paths = null;
+        if (to.getEntrances().length > 0) {
+            int entrance = 0;
+            if (to.getEntrances().length > 1)
+                //choose entrance
+                paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), to.getEntrances()[0]);
+            if(paths != null && !paths.isEmpty()){
+                na.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(0).getPoints(), googleMap);
+            }
+        }
+    }
 }
