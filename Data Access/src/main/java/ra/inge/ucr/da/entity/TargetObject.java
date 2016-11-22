@@ -42,11 +42,11 @@ public class TargetObject {
     /**
      * The object's website
      */
-    private String website;
+    private String video;
     /**
      * The object's video
      */
-    private String video;
+    private String website;
 
     /**
      *
@@ -118,7 +118,7 @@ public class TargetObject {
      * @param website
      * @param video
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String description, String website, String video) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String description, String video, String website) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
