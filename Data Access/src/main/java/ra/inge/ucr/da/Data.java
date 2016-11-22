@@ -9,7 +9,6 @@ import ra.inge.ucr.da.entity.TargetType;
 /**
  * <h1> Data </h1>
  * Class used to load all the target data to the app
- *
  */
 public class Data {
 
@@ -65,9 +64,9 @@ public class Data {
     public static double[] distances = new double[targetObjects.size()];
 
 
-    public static TargetObject getByName(String name){
-        for(TargetObject to:targetObjects){
-            if(to.getName().contains(name)){
+    public static TargetObject getByName(String name) {
+        for (TargetObject to : targetObjects) {
+            if (to.getName().contains(name)) {
                 return to;
             }
         }

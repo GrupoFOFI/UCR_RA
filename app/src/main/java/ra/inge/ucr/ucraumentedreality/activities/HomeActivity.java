@@ -32,6 +32,7 @@ import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayback;
 import ra.inge.ucr.ucraumentedreality.fragments.HomeFragment;
+import ra.inge.ucr.ucraumentedreality.fragments.TakeMeFragment;
 import ra.inge.ucr.ucraumentedreality.utils.CommandHandler;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
@@ -95,7 +96,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -211,9 +211,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                 break;
 
-//            case R.id.nav_takeme:
-//                fragment = new MapsFragment();
-//                break;
+            case R.id.nav_takeme:
+                TakeMeFragment takeMeFragment = new TakeMeFragment();
+                setFragment(takeMeFragment);
+                break;
 
             case R.id.nav_accessibility:
                 accessibilityDialog();
@@ -290,10 +291,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment_container, fragment);
-        if (currentFragmentType == HomeFragment.class) {
-            fragmentTransaction.addToBackStack("HomeFragment");
-
-        }
+//        if (currentFragmentType == HomeFragment.class) {
+//            fragmentTransaction.addToBackStack("HomeFragment");
+//
+//        }
         currentFragmentType = fragment.getClass();
         fragmentTransaction.commit();
     }

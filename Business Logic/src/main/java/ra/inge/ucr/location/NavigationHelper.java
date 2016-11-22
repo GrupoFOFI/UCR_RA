@@ -51,7 +51,11 @@ public class NavigationHelper {
         if (userLastLocation == null) return null; // We need the user's location
 
         // find the nearest point to the user
-        LatLng[] nodes = nodeParser.getNodes();
+        LatLng[] nodes;
+        if(NodeParser.m_Nodes == null)
+             nodes = nodeParser.getNodes();
+        else
+            nodes = NodeParser.m_Nodes;
         int closestNodeIndex = -1;
         LatLng closest = userLocation;
         float lastDist = Float.POSITIVE_INFINITY;
@@ -142,7 +146,7 @@ public class NavigationHelper {
 
         PolylineOptions options = new PolylineOptions();
 
-        options.color( Color.parseColor( "#CC0000FF" ) );
+        options.color( Color.parseColor( "#AA0000FF" ) );
         options.width( 5 );
         options.visible( true );
 
@@ -153,5 +157,13 @@ public class NavigationHelper {
 
         map.addPolyline( options );
 
+    }
+
+    public NodeParser getNodeParser() {
+        return nodeParser;
+    }
+
+    public void setNodeParser(NodeParser nodeParser) {
+        this.nodeParser = nodeParser;
     }
 }
