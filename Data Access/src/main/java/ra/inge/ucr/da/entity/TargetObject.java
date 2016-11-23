@@ -1,6 +1,8 @@
 package ra.inge.ucr.da.entity;
 
 
+import ra.inge.ucr.da.R;
+
 /**
  * <h1>Target Object </h1>
  * Base class for objects to recognize later or display information
@@ -44,13 +46,17 @@ public class TargetObject {
      */
     private String description;
     /**
-     * The object's website
+     * The object's video
      */
     private String video;
     /**
-     * The object's video
+     * The object's website
      */
     private String website;
+    /**
+     * The object's image
+     */
+    int image;
 
     /**
      *
@@ -74,7 +80,7 @@ public class TargetObject {
      * @param name
      * @param description
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String hint, String description) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String hint, String description, int image) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
@@ -83,6 +89,7 @@ public class TargetObject {
         this.name = name;
         this.hint = hint;
         this.description = description;
+        this.image = image;
     }
 
     /**
@@ -98,7 +105,7 @@ public class TargetObject {
      * @param website
      * @param video
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String hint, String description, String video, String website) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, String name, String hint, String description, String video, String website, int image) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
@@ -108,7 +115,8 @@ public class TargetObject {
         this.hint = hint;
         this.description = description;
         this.video = video;
-        this.website = website;
+        this.website = website;;
+        this.image = image;
     }
 
     /**
@@ -124,7 +132,7 @@ public class TargetObject {
      * @param website
      * @param video
      */
-    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String hint, String description, String video, String website) {
+    public TargetObject(int id, TargetType type, double latitude, double longitude, double altitude, int[] entrances, String name, String hint, String description, String video, String website, int image) {
         this.id = id;
         this.type = type;
         this.latitude = latitude;
@@ -135,7 +143,8 @@ public class TargetObject {
         this.description = description;
         this.website = website;
         this.video = video;
-        this.entrances = entrances;
+        this.entrances = entrances;;
+        this.image = image;
     }
 
 
