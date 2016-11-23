@@ -39,7 +39,8 @@ public class NavigationHelper {
 
     /**
      * Returns the closest paths to the specified point
-     * The maximum number of paths is 1
+     * The maximum number of paths is 3
+     * The first index on the list is always the closest path
      *
      * @param userLocation the user's position in the map.
      * @param point the point index to calculate the closest paths.
@@ -73,33 +74,10 @@ public class NavigationHelper {
         // we have the closest node, calculate closest path
         float[] distances = nodeParser.getClosestDistances(closestNodeIndex);
         int[][] pathsMatrix = nodeParser.getPathsMatrix();
-        List<Float> pIndex = new ArrayList<Float>();
-        /*for (int i = 0; i < 3; i++) {
-            int minorIndex = 0;
-            for (int j = 0; j < distances.length; j++) {
-                if (distances[j] < distances[minorIndex] && j != point) {
-                    minorIndex = j;
-                }
-            }
-            if (distances[minorIndex] == Float.POSITIVE_INFINITY) break; // no more paths
-            //pIndex.add(distances[minorIndex]);
-
-            Path path = new Path();
-            List<Integer> indexPath = findPath(pathsMatrix, minorIndex, point + 1);
-            List<LatLng> actualPath = new ArrayList<LatLng>();
-            for (int k = 0; k < indexPath.size(); k++) {
-                actualPath.add(nodes[indexPath.get(k)]);
-            }
-            path.setPoints(actualPath);
-            paths.add(path);
-
-            // Remove the closest path from the array
-            distances[minorIndex] = Float.POSITIVE_INFINITY;
-        }*/
 
         if (distances[point] == Float.POSITIVE_INFINITY) return paths; // path doesn't exist
-        //pIndex.add(distances[minorIndex]);
 
+        // closest path
         Path path = new Path();
         List<Integer> indexPath = findPath(pathsMatrix, closestNodeIndex, point);
         List<LatLng> actualPath = new ArrayList<LatLng>();
@@ -108,6 +86,25 @@ public class NavigationHelper {
         }
         path.setPoints(actualPath);
         paths.add(path);
+
+        int[] adj = nodeParser.getAdjacencies(closestNodeIndex);
+        if (adj != null) {
+            int i, count = 0;
+            for (i = 0; count < 2 && i < adj.length; i++) {
+                if (adj[i] != -1) {
+                    path = new Path();
+                    indexPath = findPath(pathsMatrix, adj[i], point);
+                    indexPath.add(0, closestNodeIndex); // add start node
+                    actualPath = new ArrayList<LatLng>();
+                    for (int k = 0; k < indexPath.size(); k++) {
+                        actualPath.add(nodes[indexPath.get(k)]);
+                    }
+                    path.setPoints(actualPath);
+                    paths.add(path);
+                    count++;
+                }
+            }
+        }
 
         return paths;
     }
