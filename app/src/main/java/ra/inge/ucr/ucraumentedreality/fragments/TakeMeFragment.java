@@ -88,16 +88,16 @@ public class TakeMeFragment extends Fragment implements HomeActivity.OnSearchInt
     }
 
     @Override
-    public void onSearchStarted(String searchPattern) {
+    public void onSearchStargted(String searchPattern) {
         Log.d("konri", "Normal search");
-        mAdapter.setTargetObjects(Data.targetObjects);
+//        mAdapter.setTargetObjects(Data.targetObjects);
         mAdapter.getFilter().filter(searchPattern.toString());
     }
 
     @Override
     public void onVoiceSearchStarted(String searchPattern) {
         Log.d("konri", "Voice searching");
-        mAdapter.getFilter().filter("");
+        mAdapter.setTargetObjects(Data.targetObjects);
         mAdapter.getFilter().filter(searchPattern.toString());
 
     }
