@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -73,8 +74,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private HomeFragment homeFragment;
     private TakeMeFragment takeMeFragment;
     private LocationHelper locationHelper;
+    NavigationView navigationView;
+
+    private TextView userNameTextView, userMailTextView;
+
 
     FragmentManager fragmentManager;
+    View headerLayout;
 
     public void setOnSearchInteractionListener(OnSearchInteractionListener onSearchInteractionListener) {
         this.onSearchInteractionListener = onSearchInteractionListener;
@@ -99,7 +105,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         fragmentManager = getSupportFragmentManager();
@@ -122,6 +128,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        headerLayout = navigationView.getHeaderView(0);
+        userNameTextView = (TextView) headerLayout.findViewById(R.id.userNameText);
+        userNameTextView.setText(prefs.getString("name", "Fofi"));
+
+        userMailTextView = (TextView) headerLayout.findViewById(R.id.userMailText);
+        userMailTextView.setText(prefs.getString("mail", "fofijones@gmail.com"));
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -146,6 +159,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        userNameTextView.setText(prefs.getString("name", "Fofi"));
+        userMailTextView.setText(prefs.getString("mail", "fofijones@gmail.com"));
+
+    }
 
     /**
      * Method that prompts the user to speak

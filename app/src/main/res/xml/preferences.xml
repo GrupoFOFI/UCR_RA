@@ -2,30 +2,30 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <PreferenceCategory android:title="Ajustes" />
+    <PreferenceCategory android:title="Perfil" />
 
 
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
     <EditTextPreference
         android:capitalize="words"
-        android:defaultValue="fofijones@gmail.com"
+        android:defaultValue="Fofi"
         android:inputType="textCapWords"
         android:key="name"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:summary="Fofi"
+        android:summary="Nombre que desea desplegar en el app"
         android:title="Nombre" />
 
     <EditTextPreference
         android:capitalize="words"
-        android:defaultValue="Fofi"
+        android:defaultValue="fofijones@gmail.com"
         android:inputType="textCapWords"
         android:key="mail"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:summary="fofijones@gmail.com"
+        android:summary="Correo electrónico a utilizar en el app"
         android:title="Correo electrónico" />
 
 
