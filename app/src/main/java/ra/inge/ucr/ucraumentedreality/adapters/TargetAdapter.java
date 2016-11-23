@@ -1,5 +1,8 @@
 package ra.inge.ucr.ucraumentedreality.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.activities.SingleTargetObjectActivity;
 
 /**
  * <h1> Custom Adapter </h1>
@@ -35,6 +39,9 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     public ArrayList<TargetObject> filteredTargetObjects;// = new ArrayList<TargetObject>
 
+    /**
+     * The filter object
+     */
     private Filter mFilter;
 
     /**
@@ -70,8 +77,21 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * @param i
      */
     @Override
-    public void onBindViewHolder(CustomViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(CustomViewHolder myViewHolder, final int i) {
         myViewHolder.title.setText(filteredTargetObjects.get(i).getName());
+        myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final TargetObject targetObject = filteredTargetObjects.get(i);
+                Context context = v.getContext();
+
+                Intent intent = new Intent(context, SingleTargetObjectActivity.class);
+                intent.putExtra("objectId", targetObject.getId());
+                context.startActivity(intent);
+
+            }
+        });
     }
 
     /**
@@ -90,14 +110,17 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
     class CustomViewHolder extends RecyclerView.ViewHolder {
 
         TextView title;
+        View mView;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
 
+            mView = itemView;
             title = (TextView) itemView.findViewById(R.id.listitem_name);
+
+
         }
     }
-
 
 
     @Override
