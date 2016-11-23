@@ -554,7 +554,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         }
 
         // Load the data sets:
-        if (!ucrTargetDataset.load(LITE_DATASET,
+        if (!ucrTargetDataset.load(LITTLE_DATASET,
                 STORAGE_TYPE.STORAGE_APPRESOURCE)) {
             Log.d(LOGTAG, "Failed to load data set.");
             return false;

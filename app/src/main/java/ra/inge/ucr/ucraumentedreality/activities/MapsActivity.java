@@ -82,7 +82,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buildGoogleApiClient();
 
         if(getIntent().hasExtra("Objective index")){
-            TargetObject to = Data.targetObjects.get(getIntent().getIntExtra("Objective index", 0));
+            TargetObject to = Data.getByName(getIntent().getStringExtra("Objective index"));
             hasObjective = true;
             objective = to;
         }
