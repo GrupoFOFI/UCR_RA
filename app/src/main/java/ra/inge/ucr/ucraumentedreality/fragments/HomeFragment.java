@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -28,6 +29,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
+
+import java.util.List;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
@@ -137,6 +140,16 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
      */
     private void setupViewPager() {
 
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        List<Fragment> fragments = getFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment frag : fragments) {
+                if (frag instanceof CloseBuildingsFragment || frag instanceof CloseMonumentsFragment || frag instanceof LatestRecognitionFragment) {
+                    transaction.remove(frag);
+                }
+            }
+        }
+        transaction.commit();
         final ViewPager viewPager = (ViewPager) root.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
