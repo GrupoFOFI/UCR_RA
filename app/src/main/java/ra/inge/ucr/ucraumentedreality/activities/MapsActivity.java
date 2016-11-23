@@ -68,6 +68,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final long POLLING_FREQ = 200;
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
+    private boolean hasObjective = false;
+    private TargetObject objective;
 
 
     @Override
@@ -78,6 +80,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setupMap(savedInstanceState);
         locationHelper = new LocationHelper();
         buildGoogleApiClient();
+
+        if(getIntent().hasExtra("Objective index")){
+            TargetObject to = Data.targetObjects.get(getIntent().getIntExtra("Objective index", 0));
+            hasObjective = true;
+            objective = to;
+        }
 
     }
 
@@ -157,6 +165,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        if(getIntent().hasExtra("Objective index")){
+            TargetObject to = Data.targetObjects.get(getIntent().getIntExtra("Objective index", 0));
+            hasObjective = true;
+            objective = to;
+        }
     }
 
     /**
@@ -221,7 +234,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
         }
-        newDestination(Data.getByName("Derecho"));
+        if(hasObjective){
+            newDestination(objective);
+        }
+
 
     }
 

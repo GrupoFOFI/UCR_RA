@@ -1,5 +1,6 @@
 package ra.inge.ucr.ucraumentedreality.adapters;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
+import ra.inge.ucr.ucraumentedreality.activities.MapsActivity;
 
 /**
  * Created by Konrad on 11/22/16.
@@ -32,6 +35,10 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     public ArrayList<TargetObject> targetObjects;// = new ArrayList<TargetObject>
 
+
+    private HomeActivity homeActivity;
+
+
     /**
      * Constructor for the class that receives the current closes buildings as parameter
      *
@@ -46,6 +53,8 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     public TargetAdapter() {
     }
+
+
 
     public void setTargetObjects(ArrayList<TargetObject> targetObjects) {
         this.targetObjects = targetObjects;
@@ -73,8 +82,17 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * @param i
      */
     @Override
-    public void onBindViewHolder(CustomViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(final CustomViewHolder myViewHolder, final int i) {
         myViewHolder.title.setText(targetObjects.get(i).getName());
+        TargetAdapter ta = this;
+        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(homeActivity.getApplicationContext(), MapsActivity.class);
+                intent.putExtra("Objective index",i);
+                homeActivity.startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -92,14 +110,20 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * Class used to handle the custom adapter elements
      */
     class CustomViewHolder extends RecyclerView.ViewHolder {
-
+        View itemView;
         TextView title;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
-
+            this.itemView = itemView;
             title = (TextView) itemView.findViewById(R.id.listitem_name);
         }
+    }
+
+
+
+    public void setHomeActivity(HomeActivity homeActivity) {
+        this.homeActivity = homeActivity;
     }
 
 }
