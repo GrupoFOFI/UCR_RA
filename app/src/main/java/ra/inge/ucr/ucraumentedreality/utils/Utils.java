@@ -46,6 +46,13 @@ public class Utils {
     }
 
     /**
+     * Generic method to create toast logs
+     */
+    public static void toastLog(String str, Context context) {
+        Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * Generic method to create snack bar logs
      */
     public void snack_log(View view, String log) {
