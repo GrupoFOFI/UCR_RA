@@ -91,7 +91,7 @@ public class NavigationHelper {
         if (adj != null) {
             int i, count = 0;
             for (i = 0; count < 2 && i < adj.length; i++) {
-                if (adj[i] != -1) {
+                if (adj[i] != -1 && adj[i] != closestNodeIndex) {
                     path = new Path();
                     indexPath = findPath(pathsMatrix, adj[i], point);
                     indexPath.add(0, closestNodeIndex); // add start node
