@@ -74,6 +74,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TakeMeFragment takeMeFragment;
     private LocationHelper locationHelper;
 
+    FragmentManager fragmentManager;
+
     public void setOnSearchInteractionListener(OnSearchInteractionListener onSearchInteractionListener) {
         this.onSearchInteractionListener = onSearchInteractionListener;
     }
@@ -88,7 +90,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("UCR Realidad Aumentada");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -100,6 +101,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        fragmentManager = getSupportFragmentManager();
 
         drawerTitles = getResources().getStringArray(R.array.drawer_titles);
         locationHelper = new LocationHelper();
@@ -310,7 +313,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      */
     private void setFragment(Fragment fragment) {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.home_fragment_container, fragment);
 //        if (currentFragmentType == HomeFragment.class) {
@@ -356,7 +358,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        Log.d("konri","Search input is "+ newText);
+        Log.d("konri", "Search input is " + newText);
         if (currentFragmentType != TakeMeFragment.class) {
             setFragment(takeMeFragment);
         }

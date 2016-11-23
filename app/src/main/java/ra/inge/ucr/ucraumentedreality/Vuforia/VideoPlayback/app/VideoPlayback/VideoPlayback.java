@@ -80,24 +80,6 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
     // Movie for the Targets:
     public static final int NUM_TARGETS = Data.targetObjects.size();
-//
-//    public static final int ANTART = 0;
-//    public static final int OSOS = 1;
-//    public static final int MATE = 2;
-//    public static final int LEDA = 3;
-//    public static final int PLAZA = 4;
-//    public static final int MONGE = 5;
-//    public static final int COMEDOR = 6;
-//    public static final int BUSTO = 7;
-//    public static final int DERECHO = 8;
-//    public static final int ECCI = 9;
-//    public static final int GIRASOL = 10;
-//    public static final int FERNANDO = 11;
-//    public static final int INFO = 12;
-//    public static final int NEGRITOS = 13;
-//    public static final int JUAN = 14;
-//    public static final int NULO = 15;
-
     private VideoPlayerHelper mVideoPlayerHelper[] = null;
     private int mSeekPosition[] = null;
     private boolean mWasPlaying[] = null;

@@ -53,6 +53,13 @@ public class TakeMeFragment extends Fragment implements HomeActivity.OnSearchInt
         homeActivity.setOnSearchInteractionListener(this);
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActivity().setTitle("Llévame");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getActivity().setTitle("UCR RA");
         closeBuildingsFragment = new CloseBuildingsFragment();
         closeMonumentsFragment = new CloseMonumentsFragment();
     }
