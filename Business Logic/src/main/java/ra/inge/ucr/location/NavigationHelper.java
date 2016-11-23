@@ -6,6 +6,7 @@ import android.location.Location;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -129,16 +130,16 @@ public class NavigationHelper {
         return path;
     }
 
-    public void drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map)
+    public Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map)
     {
         if ( map == null )
         {
-            return;
+            return null;
         }
 
         if ( listLocsToDraw.size() < 2 )
         {
-            return;
+            return null;
         }
 
         PolylineOptions options = new PolylineOptions();
@@ -152,8 +153,7 @@ public class NavigationHelper {
             options.add(locRecorded);
         }
 
-        map.addPolyline( options );
-
+        return map.addPolyline( options );
     }
 
     public NodeParser getNodeParser() {

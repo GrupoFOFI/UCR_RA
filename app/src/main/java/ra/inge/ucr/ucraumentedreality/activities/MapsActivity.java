@@ -2,13 +2,20 @@ package ra.inge.ucr.ucraumentedreality.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
+import android.graphics.Color;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,6 +32,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +43,9 @@ import ra.inge.ucr.da.Path;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.NavigationHelper;
+import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Arrow;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
@@ -64,12 +75,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected GoogleApiClient mGoogleApiClient;
     protected Location mLastLocation;
+    private Location previousLocation;
     private LocationRequest mLocationRequest;
     private static final long POLLING_FREQ = 200;
     private static final long FASTEST_UPDATE_FREQ = 1000;
     private LocationHelper locationHelper;
+    private SensorHelper sensorHelper;
     private boolean hasObjective = false;
     private TargetObject objective;
+    private List<Path> paths;
+    private Polyline polyline;
+    private ImageView arrowUp, arrowLeft, arrowRight;
 
 
     @Override
@@ -79,6 +95,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.fragment_maps);
         setupMap(savedInstanceState);
         locationHelper = new LocationHelper();
+        sensorHelper = new SensorHelper(getApplicationContext());
+        sensorHelper.start();
         buildGoogleApiClient();
 
         if(getIntent().hasExtra("TargetName")){
@@ -87,7 +105,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             hasObjective = true;
             objective = to;
         }
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.arrow_view);
+        relativeLayout.setBackgroundColor(Color.TRANSPARENT);
+        relativeLayout.bringToFront();
 
+        arrowUp = (ImageView) findViewById(R.id.arrow_up);
+        arrowUp.bringToFront();
+        arrowUp.setVisibility(View.GONE);
+
+        arrowLeft = (ImageView) findViewById(R.id.arrow_left);
+        arrowLeft.bringToFront();
+        arrowLeft.setVisibility(View.GONE);
+
+        arrowRight = (ImageView) findViewById(R.id.arrow_right);
+        arrowRight.bringToFront();
+        arrowRight.setVisibility(View.GONE);
     }
 
 
@@ -236,10 +268,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleMap.animateCamera(cameraUpdate);
         }
         if(hasObjective){
-            newDestination(objective);
+            paths = newDestination(objective);
         }
-
-
+        previousLocation = mLastLocation;
     }
 
     /**
@@ -285,7 +316,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             addMarkers();
         }
+        if(hasObjective) {
+            polyline.remove();
+            List<Path> newPaths = newDestination(objective);
+            if (paths.get(0).getPoints().size() < newPaths.get(0).getPoints().size()) {
+                paths = newPaths;
+                Path path = paths.get(0);
+                List<LatLng> route = path.getPoints();
+                directionSound(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), route.get(0));
+                hasObjective = false;
+                objective = null;
+            }
 
+            if (mLastLocation.distanceTo(previousLocation) > 5) {
+                Path path = paths.get(0);
+                List<LatLng> route = path.getPoints();
+                directionSound(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), route.get(0));
+                previousLocation = mLastLocation;
+            }
+        }
     }
 
     /**
@@ -329,7 +378,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false;
     }
 
-    public void newDestination(TargetObject to) {
+    public List<Path> newDestination(TargetObject to) {
         NavigationHelper na = new NavigationHelper(getBaseContext());
         List<Path> paths = null;
         LatLng[] nodes;
@@ -350,8 +399,88 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance-1);
             if (paths != null && !paths.isEmpty()) {
-                na.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
+                polyline = na.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
             }
+        }
+        return paths;
+    }
+
+    public void directionSound(LatLng point1, LatLng point2){
+        int azimuth = sensorHelper.getAzimuth();
+
+        double dLon = (point2.longitude - point1.longitude);
+
+        double y = Math.sin(dLon) * Math.cos(point2.latitude);
+        double x = Math.cos(point1.latitude) * Math.sin(point2.latitude) - Math.sin(point1.latitude)
+                * Math.cos(point2.latitude) * Math.cos(dLon);
+
+        double angle = Math.atan2(y, x);
+
+        angle = Math.toDegrees(angle);
+        angle = ((angle + 360) % 360)-90;
+
+        double direccion = Math.abs(azimuth - angle);
+        if(direccion >= 315 || direccion < 45) {
+            showArrow(Arrow.UP);
+            try {
+                AssetFileDescriptor afd = getAssets().openFd("Continue.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+        else if(direccion >= 45 && direccion < 135) {
+            showArrow(Arrow.RIGHT);
+            try {
+                AssetFileDescriptor afd = getAssets().openFd("Derecha.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+        else if(direccion >= 135 && direccion < 225) {
+            arrowLeft.setVisibility(View.GONE);
+            arrowRight.setVisibility(View.GONE);
+            arrowUp.setVisibility(View.GONE);
+            try {
+                AssetFileDescriptor afd = getAssets().openFd("Vuelta.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+        else {
+            showArrow(Arrow.LEFT);
+            try {
+                AssetFileDescriptor afd = getAssets().openFd("Izquierda.mp3");
+                MediaPlayer player = new MediaPlayer();
+                player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                player.prepare();
+                player.start();
+            }catch (Exception e){}
+        }
+    }
+
+    public void showArrow(Arrow arrow) {
+        switch (arrow) {
+            case LEFT:
+                arrowLeft.setVisibility(View.VISIBLE);
+                arrowRight.setVisibility(View.GONE);
+                arrowUp.setVisibility(View.GONE);
+                break;
+            case RIGHT:
+                arrowRight.setVisibility(View.VISIBLE);
+                arrowLeft.setVisibility(View.GONE);
+                arrowUp.setVisibility(View.GONE);
+                break;
+            case UP:
+                arrowUp.setVisibility(View.VISIBLE);
+                arrowLeft.setVisibility(View.GONE);
+                arrowRight.setVisibility(View.GONE);
+                break;
         }
     }
 }

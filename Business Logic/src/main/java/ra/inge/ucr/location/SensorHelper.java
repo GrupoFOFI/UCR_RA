@@ -31,6 +31,9 @@ public class SensorHelper implements SensorEventListener {
     float[] acclReading = new float[3], mgntReading = new float[3];
     float[] orientationAngles = new float[3];
     float[] rotationVector = new float[3];
+    float[] iMat = new float[9];
+    float[] rMat = new float[9];
+    private int mAzimuth = 0; // degree
 
 //    LocationHelper locationHelper = new LocationHelper();
 
@@ -116,6 +119,9 @@ public class SensorHelper implements SensorEventListener {
                     mListener.onStartLookingAtBuilding(ed);
             }
         }
+        if ( SensorManager.getRotationMatrix( rMat, iMat, acclReading, mgntReading ) ) {
+            mAzimuth= (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientationAngles )[0] ) + 360 ) % 360;
+        }
         //if (mListener != null) mListener.onRotationUpdate(rotationVector);
     }
 
@@ -127,5 +133,9 @@ public class SensorHelper implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public int getAzimuth(){
+        return mAzimuth;
     }
 }

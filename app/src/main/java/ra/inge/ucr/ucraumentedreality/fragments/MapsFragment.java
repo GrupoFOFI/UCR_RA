@@ -130,19 +130,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
         }
         locationHelper = new LocationHelper();
         navigationHelper = new NavigationHelper(this.getContext());
-        List<Path> routes = navigationHelper.getPathsToPoint(new LatLng(9.938747, -84.052131),37);
-        /*for(int i = 0;i<routes.size();i++){
-            List<LatLng> route = routes.get(i).getPoints();
-            drawRoute(route);
-        }*/
-//        List<LatLng> route = routes.get(0).getPoints();
-//        for(int i = 0;i<route.size();i++){
-//            Log.d("Tag", route.get(i).toString());
-//        }
-//        drawRoute(route);
-        /*for(int i = 0;i<route.size();i++){
-            Log.d("Tag", route.get(i).toString());
-        }*/
     }
 
     /**
@@ -243,18 +230,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(Marker marker) {
         return false;
-    }
-
-
-    public void drawRoute(List points){
-        PolylineOptions lineOptions = new PolylineOptions();
-
-        lineOptions.addAll(points);
-        if (lineOptions != null) {
-            googleMap.addPolyline(lineOptions);
-        } else {
-            Log.d("onPostExecute", "without Polylines drawn");
-        }
     }
 }
 
