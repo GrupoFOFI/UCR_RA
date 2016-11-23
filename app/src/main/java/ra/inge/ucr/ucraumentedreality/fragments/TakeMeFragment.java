@@ -19,10 +19,8 @@ import android.view.ViewGroup;
 import java.util.Locale;
 
 import ra.inge.ucr.da.Data;
-import ra.inge.ucr.da.entity.TargetObject;
-import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
-import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
+import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
 
 /**
@@ -66,6 +64,7 @@ public class TakeMeFragment extends Fragment implements SearchView.OnQueryTextLi
         setHasOptionsMenu(true);
 
         mAdapter.setTargetObjects(Data.targetObjects);
+        mAdapter.setHomeActivity((HomeActivity)getActivity());
         return root;
     }
 //

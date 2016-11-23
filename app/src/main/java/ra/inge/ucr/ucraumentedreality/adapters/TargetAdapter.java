@@ -3,6 +3,7 @@ package ra.inge.ucr.ucraumentedreality.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.SingleTargetObjectActivity;
+import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
+import ra.inge.ucr.ucraumentedreality.activities.MapsActivity;
 
 /**
  * <h1> Custom Adapter </h1>
@@ -34,6 +37,10 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     public ArrayList<TargetObject> targetObjects;// = new ArrayList<TargetObject>
 
+
+    private HomeActivity homeActivity;
+
+
     /**
      * The closest target objects
      */
@@ -49,6 +56,7 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     public TargetAdapter() {
     }
+
 
     public void setTargetObjects(ArrayList<TargetObject> targetObjects) {
         this.targetObjects = targetObjects;
@@ -87,11 +95,12 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
                 Context context = v.getContext();
 
                 Intent intent = new Intent(context, SingleTargetObjectActivity.class);
+                // La idea de agarrar por id es no tener un loop luego con el nombre.
                 intent.putExtra("objectId", targetObject.getId());
                 context.startActivity(intent);
-
             }
         });
+
     }
 
     /**
@@ -108,20 +117,24 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * Class used to handle the custom adapter elements
      */
     class CustomViewHolder extends RecyclerView.ViewHolder {
-
+        View itemView;
         TextView title;
         View mView;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
-
             mView = itemView;
+            this.itemView = itemView;
             title = (TextView) itemView.findViewById(R.id.listitem_name);
 
 
         }
     }
 
+
+    public void setHomeActivity(HomeActivity homeActivity) {
+        this.homeActivity = homeActivity;
+    }
 
     @Override
     public Filter getFilter() {
