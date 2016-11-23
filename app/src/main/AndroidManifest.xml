@@ -59,7 +59,7 @@
         android:allowBackup="true"
         android:debuggable="true"
         android:hardwareAccelerated="false"
-        android:icon="@drawable/logo_ucr"
+        android:icon="@drawable/ic_ucr"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
