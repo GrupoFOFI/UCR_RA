@@ -95,6 +95,11 @@ public class NodeParser {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(m_Context.getResources().openRawResource(ADJACENCIES_FILE)));
                 String line = "";
                 int[][] adjacencies = new int[N][N];
+                for (int i = 0; i < N; i++) {
+                    for (int j = 0; j < N; j++) {
+                        adjacencies[i][j] = -1;
+                    }
+                }
                 int count = 0;
                 while ((line = reader.readLine()) != null) {
                     String[] split = line.split(",");
@@ -106,12 +111,12 @@ public class NodeParser {
                 }
                 reader.close();
                 m_Adjacencies = adjacencies;
-                return m_Adjacencies[nodeIndex - 1];
+                return m_Adjacencies[nodeIndex];
             } catch (Exception ex) {
-
+                System.out.println(ex.getMessage());
             }
         } else {
-            return m_Adjacencies[nodeIndex-1];
+            return m_Adjacencies[nodeIndex];
         }
         return null;
     }
