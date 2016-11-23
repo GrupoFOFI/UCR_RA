@@ -126,7 +126,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         shakeHandler.setOnShakeListener(this);
 
-
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -154,7 +153,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void onShake() {
         if (prefs.getBoolean("accessibility", false) == true) {
 
-            //vibe.vibrate(100);
             if (showingPopUp == false) {
                 promptSpeechInput();
             }
@@ -208,8 +206,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     text2Speech = result.get(0);
                     Log.i("totoo", "Le entendí: " + text2Speech);
-                    commandHandler.translate(text2Speech);
-
+                    if (currentFragmentType != TakeMeFragment.class) {
+                        setFragment(takeMeFragment);
+                    }
+                    onSearchInteractionListener.onVoiceSearchStarted(text2Speech);
+                    Toast.makeText(this, "Buscando : " + text2Speech, Toast.LENGTH_SHORT).show();
                 }
                 break;
             }
@@ -249,7 +250,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if (!(currentFragmentType == HomeFragment.class)) {
                     setFragment(new HomeFragment());
                 }
-
                 break;
 
             case R.id.nav_camera:
@@ -371,11 +371,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             onSearchInteractionListener.onVoiceSearchStarted(query);
-            Toast.makeText(this, "Searching by: " + query, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Buscando : " + query, Toast.LENGTH_SHORT).show();
 
         } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             String uri = intent.getDataString();
-            Toast.makeText(this, "Suggestion: " + uri, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sugerencia: " + uri, Toast.LENGTH_SHORT).show();
             onSearchInteractionListener.onVoiceSearchStarted(uri);
 
         }

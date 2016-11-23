@@ -48,6 +48,8 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.utils.SampleUtils;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.Texture;
 
 import static android.opengl.GLES20.GL_CULL_FACE;
+import static ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayerHelper.MEDIA_STATE.PAUSED;
+import static ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayerHelper.MEDIA_STATE.REACHED_END;
 import static ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.VideoPlayerHelper.MEDIA_STATE.READY;
 
 
@@ -148,6 +150,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     }
 
     int currentTarget = -1;
+    int latestTarget = -1;
+
 
     public VideoPlaybackRenderer(VideoPlayback activity,
                                  SampleApplicationSession session) {
@@ -319,9 +323,12 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             // Ask whether the target is currently being tracked and if so react
             // to it
             if (isTracking(i)) {
+                Log.d("fofi", "Estoy trackeando");
                 // If it is tracking reset the timestamp for lost tracking
                 mLostTrackingSince[i] = -1;
             } else {
+
+                Log.d("konri", "Ya no estoy trackeando");
                 // If it isn't tracking
                 // check whether it just lost it or if it's been a while
                 if (mLostTrackingSince[i] < 0)
@@ -544,7 +551,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
             // calculation
 
             currentTarget = retrieveTarget2(imageTarget.getName().toLowerCase());
-            if (currentTarget !=  -1) {
+            if (currentTarget != -1) {
                 modelViewMatrix[currentTarget] = Tool.convertPose2GLMatrix(trackableResult.getPose());
                 isTracking[currentTarget] = true;
 
@@ -711,7 +718,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
                 if ((currentStatus[currentTarget] == READY)
                         || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.REACHED_END)
-                        || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.PAUSED)
+                        || (currentStatus[currentTarget] == PAUSED)
                         || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.NOT_READY)
                         || (currentStatus[currentTarget] == VideoPlayerHelper.MEDIA_STATE.ERROR)) {
 
@@ -823,54 +830,72 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                     GLES20.glDepthFunc(GLES20.GL_LESS);
                     GLES20.glDisable(GLES20.GL_BLEND);
 
+
                 }
 
                 Log.d(VideoPlayback.DEBUG_TAG, "llega acá");
+                String mTitle = "", mDescription = "";
+                if (currentTarget != -1) {
+                    mTitle = Data.targetObjects.get(currentTarget).getName();
+                    mDescription = Data.targetObjects.get(currentTarget).getDescription();
+
+                }
+
 
                 VideoPlayerHelper.MEDIA_STATE testState = currentStatus[currentTarget];
-                if (testState == READY) {
+                if (testState == READY || testState == PAUSED) {
+                    latestTarget = currentTarget;
+
                     Log.d(VideoPlayback.DEBUG_TAG, "Vamo a pl es" + currentTarget);
 
-
-                    if (currentTarget != -1) {
-                        final String mTitle = Data.targetObjects.get(currentTarget).getName();
-                        final String mDescription = Data.targetObjects.get(currentTarget).getDescription(); //descriptionArray[currentTarget];
-
-                        // Testing purpose
-//
-//                final ImageTarget tempTarget = imageTarget;
-//                mActivity.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mActivity.toastLog("Encontré el target" + tempTarget.getName().toLowerCase());
-//                    }
-//                });
-
-                        // Método para updeitear los textfields
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mActivity.updateTextFields(mTitle, mDescription);
-                            }
-                        });
-
-                        if (!mVideoPlayerHelper[currentTarget].isVideoPlaying()) {
-                            onTrackListener.onTargetFound(currentTarget);
+                    final String finalMTitle = mTitle;
+                    final String finalMDescription = mDescription;
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActivity.updateTextFields(finalMTitle, finalMDescription);
                         }
+                    });
+
+                    if (!mVideoPlayerHelper[currentTarget].isVideoPlaying()) {
+                        onTrackListener.onTargetFound(currentTarget);
                     }
 
+                    SampleUtils.checkGLError("VideoPlayback renderFrame");
+
+                } else if (testState == REACHED_END && currentTarget != latestTarget) {
+
+                    latestTarget = currentTarget;
+                    Log.d(VideoPlayback.DEBUG_TAG, "Vamo a pl es" + currentTarget);
+
+                    final String finalMTitle = mTitle;
+                    final String finalMDescription = mDescription;
+
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActivity.updateTextFields(finalMTitle, finalMDescription);
+                        }
+                    });
+
+                    if (!mVideoPlayerHelper[currentTarget].isVideoPlaying()) {
+                        onTrackListener.onTargetFound(currentTarget);
+
+                    }
 
                     SampleUtils.checkGLError("VideoPlayback renderFrame");
+
                 }
 
                 GLES20.glDisable(GLES20.GL_DEPTH_TEST);
                 Renderer.getInstance().end();
 
             } else {
-                Log.d(VideoPlayback.DEBUG_TAG,"Error encontrando el target!");
+                Log.d(VideoPlayback.DEBUG_TAG, "Error encontrando el target!");
 
             }
         }
+
     }
 
     boolean isTapOnScreenInsideTarget(int target, float x, float y) {
@@ -1001,7 +1026,7 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
                 currentStatus[target] = VideoPlayerHelper.MEDIA_STATE.REACHED_END;
                 break;
             case 1:
-                currentStatus[target] = VideoPlayerHelper.MEDIA_STATE.PAUSED;
+                currentStatus[target] = PAUSED;
                 break;
             case 2:
                 currentStatus[target] = VideoPlayerHelper.MEDIA_STATE.STOPPED;
@@ -1026,14 +1051,14 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
 
     int retrieveTarget2(String targetName) {
         Log.d(VideoPlayback.DEBUG_TAG, "Pidiendo el target " + targetName);
-        for (int i = 0; i < Data.targetObjects.size()-1; i++) {
+        for (int i = 0; i < Data.targetObjects.size() - 1; i++) {
             String targetHint = Data.targetObjects.get(i).getHint();
 
             if (targetName.contains(targetHint)) {
-                Log.d("konri","Contains hint with "+ targetHint);
+                Log.d("konri", "Contains hint with " + targetHint);
                 int result = Data.targetObjects.get(i).getId();
                 Log.d(VideoPlayback.DEBUG_TAG, "Found target with result" + result);
-                return result-1;
+                return result - 1;
             }
         }
         return -1;
