@@ -2,10 +2,10 @@ package ra.inge.ucr.ucraumentedreality.fragments;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -36,8 +36,8 @@ import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.NavigationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.activities.MapsActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
-import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
@@ -87,6 +87,15 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
      */
     private TargetObject[] closeBuildings;
 
+    /**
+     * The carousel imageview reference
+     */
+    private ImageView carouselImageView;
+
+    /**
+     *
+     */
+    private TextView carouselTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,6 +117,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
         locationHelper = new LocationHelper();
 
+
         customCarouselView = (CarouselView) root.findViewById(R.id.customCarouselView);
         customCarouselView.setPageCount(sampleImages.length);
         customCarouselView.setSlideInterval(4000);
@@ -116,13 +126,26 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             public View setViewForPosition(int position) {
 
                 View customView = inflater.inflate(R.layout.carousel_custom, customCarouselView, false);
-                TextView labelTextView = (TextView) customView.findViewById(R.id.carouselTargetName);
-                ImageView fruitImageView = (ImageView) customView.findViewById(R.id.carouselImage);
+                carouselTextView = (TextView) customView.findViewById(R.id.carouselTargetName);
+                carouselImageView = (ImageView) customView.findViewById(R.id.carouselImage);
 
-                fruitImageView.setImageResource(sampleImages[position]);
-                labelTextView.setText(sampleTitles[position]);
+                carouselImageView.setImageResource(sampleImages[position]);
+                carouselImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO agarrar el target object
 
+                        Log.d("konri", "Cant touch this");
+//
+//                        TargetObject targetFound = null;
+//                        Intent intent = new Intent(getContext(), MapsActivity.class);
+//                        intent.putExtra("TargetName", targetFound.getName());
+//                        startActivity(intent);
+                    }
+                });
+                carouselTextView.setText(sampleTitles[position]);
                 customCarouselView.setIndicatorGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+
                 return customView;
             }
         });

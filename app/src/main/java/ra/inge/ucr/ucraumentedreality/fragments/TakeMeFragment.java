@@ -22,6 +22,7 @@ import ra.inge.ucr.da.Data;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
+import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 /**
  * Fragment that handles the action to take the user to a point
@@ -30,7 +31,8 @@ import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
  * @version 1.0
  * @since 10/11/2016
  */
-public class TakeMeFragment extends Fragment implements SearchView.OnQueryTextListener {
+public class TakeMeFragment extends Fragment implements HomeActivity.OnSearchInteractionListener {
+
 
     /**
      * Custom adapter for the fragment
@@ -41,9 +43,15 @@ public class TakeMeFragment extends Fragment implements SearchView.OnQueryTextLi
      * Default constructor
      */
     public TakeMeFragment() {
-//        mAdapter = new TargetAdapter();
+        mAdapter = new TargetAdapter();
     }
 
+    HomeActivity homeActivity;
+
+    public void setHomeActivity(HomeActivity homeActivity) {
+        this.homeActivity = homeActivity;
+        homeActivity.setOnSearchInteractionListener(this);
+    }
 
     @Nullable
     @Override
@@ -56,41 +64,25 @@ public class TakeMeFragment extends Fragment implements SearchView.OnQueryTextLi
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        SearchView searchView = (SearchView) root.findViewById(R.id.search_view);
-        searchView.setOnQueryTextListener(this);
-
-        mAdapter = new TargetAdapter();
+        if (mAdapter == null) {
+            mAdapter = new TargetAdapter();
+        }
         recyclerView.setAdapter(mAdapter);
         setHasOptionsMenu(true);
 
         mAdapter.setTargetObjects(Data.targetObjects);
-        mAdapter.setHomeActivity((HomeActivity)getActivity());
+        mAdapter.setHomeActivity((HomeActivity) getActivity());
         return root;
     }
-//
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//
-//        inflater.inflate(R.menu.menu_search, menu);
-//
-//        MenuItem searchItem = menu.findItem(R.id.search);
-//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-//        searchView.setOnQueryTextListener(this);
-//
-//    }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        Log.d("konri", "Filered " + newText);
-        mAdapter.getFilter().filter(newText.toString());
-        return true;
+
+    public TargetAdapter getmAdapter() {
+        return mAdapter;
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
+    public void onSearchStarted(String searchPattern) {
+        Log.d("konri", "TOMELA FOFI MARICON");
+        mAdapter.getFilter().filter(searchPattern.toString());
     }
-
-
 }

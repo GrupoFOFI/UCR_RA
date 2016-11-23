@@ -45,6 +45,13 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         ShakeHandler.OnShakeListener, SearchView.OnQueryTextListener {
 
+
+    private OnSearchInteractionListener onSearchInteractionListener;
+
+    public interface OnSearchInteractionListener {
+        void onSearchStarted(String searchPattern);
+    }
+
     /* UI elements */
     private Toolbar toolbar;
     private DrawerLayout drawer;
@@ -64,7 +71,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private SharedPreferences prefs;
 
     private HomeFragment homeFragment;
+    private TakeMeFragment takeMeFragment;
     private LocationHelper locationHelper;
+
+    public void setOnSearchInteractionListener(OnSearchInteractionListener onSearchInteractionListener) {
+        this.onSearchInteractionListener = onSearchInteractionListener;
+    }
 
     /**
      * @param savedInstanceState
@@ -94,9 +106,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         homeFragment = new HomeFragment();
         setFragment(new HomeFragment());
 
+        currentFragmentType = homeFragment.getClass();
+
+        takeMeFragment = new TakeMeFragment();
+        takeMeFragment.setHomeActivity(this);
+
         shakeHandler = new ShakeHandler(this);
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         shakeHandler.setOnShakeListener(this);
+
 
         utils = new Utils(this, getApplicationContext());
         commandHandler = new CommandHandler(getApplicationContext());
@@ -217,7 +235,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_takeme:
-                TakeMeFragment takeMeFragment = new TakeMeFragment();
                 setFragment(takeMeFragment);
                 break;
 
@@ -307,38 +324,44 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     // TODO si da tiempo un search en el homescreen del app que sustituya el searchview del takemefragment
 
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_search, menu);
-//
-//        MenuItem searchItem = menu.findItem(R.id.search);
-//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-//        searchView.setOnQueryTextListener(this);
-//
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(
-//                new ComponentName(this, HomeActivity.class)));
-//        searchView.setIconifiedByDefault(false);
-//
-//        return true;
-//    }
-//
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-//            String query = intent.getStringExtra(SearchManager.QUERY);
-//            Toast.makeText(this, "Searching by: "+ query, Toast.LENGTH_SHORT).show();
-//
-//        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-//            String uri = intent.getDataString();
-//            Toast.makeText(this, "Suggestion: "+ uri, Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+                new ComponentName(this, HomeActivity.class)));
+        searchView.setIconifiedByDefault(false);
+
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Toast.makeText(this, "Searching by: " + query, Toast.LENGTH_SHORT).show();
+
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            String uri = intent.getDataString();
+            Toast.makeText(this, "Suggestion: " + uri, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        return false;
+        Log.d("konri","Search input is "+ newText);
+        if (currentFragmentType != TakeMeFragment.class) {
+            setFragment(takeMeFragment);
+        }
+        onSearchInteractionListener.onSearchStarted(newText);
+        return true;
     }
 
     @Override

@@ -15,6 +15,7 @@ import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.adapters.CustomAdapter;
+import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
 
 /**
  * Fragment used to present the result of the latest targets that the user has recognized
@@ -29,7 +30,7 @@ public class LatestRecognitionFragment extends Fragment {
     /**
      * Custom adapter for the fragment
      */
-    private CustomAdapter mAdapter;
+    private TargetAdapter mAdapter;
     /**
      * Maps fragment listener
      */
@@ -38,14 +39,20 @@ public class LatestRecognitionFragment extends Fragment {
     /**
      * The closest buildings;
      */
-    public static TargetObject[] targetObjects;
+    public static ArrayList<TargetObject> targetObjects;
 
     public LatestRecognitionFragment() {
-//        targetObjects = new ArrayList<TargetObject>();
-        mAdapter = new CustomAdapter();
+        targetObjects = new ArrayList<TargetObject>();
     }
 
-
+    /**
+     * On create view method for the fragment to inflate its respective layout
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -55,9 +62,10 @@ public class LatestRecognitionFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
 
-        mAdapter.setCloseTargets(targetObjects);
+        mAdapter = new TargetAdapter();
+        recyclerView.setAdapter(mAdapter);
+        mAdapter.setTargetObjects(targetObjects);
 
         return view;
 

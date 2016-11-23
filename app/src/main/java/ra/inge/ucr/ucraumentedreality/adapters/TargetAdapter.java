@@ -2,8 +2,6 @@ package ra.inge.ucr.ucraumentedreality.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +12,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
-import ra.inge.ucr.ucraumentedreality.activities.SingleTargetObjectActivity;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
-import ra.inge.ucr.ucraumentedreality.activities.MapsActivity;
+import ra.inge.ucr.ucraumentedreality.activities.SingleTargetObjectActivity;
 
 /**
  * <h1> Custom Adapter </h1>
@@ -55,6 +53,7 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * Empty Constructor
      */
     public TargetAdapter() {
+        filteredTargetObjects = Data.targetObjects;
     }
 
 

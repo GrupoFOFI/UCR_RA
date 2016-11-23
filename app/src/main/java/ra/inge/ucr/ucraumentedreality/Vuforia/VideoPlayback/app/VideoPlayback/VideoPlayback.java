@@ -46,6 +46,7 @@ import com.vuforia.Vuforia;
 import java.util.Vector;
 
 import ra.inge.ucr.da.Data;
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationControl;
 import ra.inge.ucr.ucraumentedreality.Vuforia.SampleApplicationException;
@@ -54,6 +55,8 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Vi
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.LoadingDialogHandler;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.SampleApplicationGLView;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.Texture;
+import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
+import ra.inge.ucr.ucraumentedreality.fragments.LatestRecognitionFragment;
 import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
@@ -132,6 +135,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     private TextView titleTextView;
     private TextView descriptionTextView;
 
+    private boolean isSomeonePlaying = false;
+
     /**
      * Arrows used to guide the user
      */
@@ -144,7 +149,10 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
         Log.d(DEBUG_TAG, "Voy a intentar hacer play");
         if (!mVideoPlayerHelper[targetId].getmMediaPlayer().isPlaying()) {
             Log.d(DEBUG_TAG, "Vamoooos");
+            TargetObject targetObject = Data.targetObjects.get(targetId);
+            LatestRecognitionFragment.targetObjects.add(targetObject);
             mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
+
         }
     }
 
