@@ -6,29 +6,32 @@
     android:weightSum="1">
 
 
-    <ImageView
-        android:id="@+id/fruitImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.2"
-        android:scaleType="fitXY" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.8">
+        android:layout_weight="0.2">
 
-        <TextView
-            android:id="@+id/labelTextView"
+        <ImageView
+            android:id="@+id/carouselImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:scaleType="fitXY"
+            android:src="@drawable/pretil" />
+
+        <TextView
+            android:id="@+id/carouselTargetName"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:background="#B3000000"
+            android:foregroundGravity="top"
             android:gravity="right"
-            android:paddingRight="14dp"
-            android:text="hola"
+            android:paddingRight="10dp"
+            android:text="Hola esto es una prueba"
             android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:textSize="17dp" />
 
     </FrameLayout>
+
 
 </LinearLayout>

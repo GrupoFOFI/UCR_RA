@@ -733,15 +733,15 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
 
             arrowUp = (ImageView) findViewById(R.id.arrow_up);
             arrowUp.bringToFront();
-            arrowUp.setVisibility(View.INVISIBLE);
+            arrowUp.setVisibility(View.GONE);
 
             arrowLeft = (ImageView) findViewById(R.id.arrow_left);
             arrowLeft.bringToFront();
-            arrowLeft.setVisibility(View.INVISIBLE);
+            arrowLeft.setVisibility(View.GONE);
 
             arrowRight = (ImageView) findViewById(R.id.arrow_right);
             arrowRight.bringToFront();
-            arrowRight.setVisibility(View.INVISIBLE);
+            arrowRight.setVisibility(View.GONE);
 
             // Original
 //            addContentView(testLayout, new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -818,17 +818,16 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.arrow_up:
-                toastLog( getResources().getString(R.string.straight_ahead));
+                toastLog(getResources().getString(R.string.straight_ahead));
                 break;
 
             case R.id.arrow_left:
-                toastLog( getResources().getString(R.string.turn_left));
+                toastLog(getResources().getString(R.string.turn_left));
                 break;
 
             case R.id.arrow_right:
-                toastLog( getResources().getString(R.string.turn_right));
+                toastLog(getResources().getString(R.string.turn_right));
                 break;
-
 
         }
     }
@@ -836,7 +835,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
     /**
      * Method that sets the right arrow indicated as parameter as visible
      */
-    public void showArrow (Arrow arrow) {
+    public void showArrow(Arrow arrow) {
         switch (arrow) {
             case LEFT:
                 arrowLeft.setVisibility(View.VISIBLE);

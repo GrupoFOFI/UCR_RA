@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -28,6 +29,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
+
+import java.util.List;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
@@ -53,6 +56,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     public HomeFragment() {
 
     }
+
     private View root;
 
     int[] sampleImages = {R.drawable.pretil, R.drawable.logo_ucr};
@@ -112,8 +116,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             public View setViewForPosition(int position) {
 
                 View customView = inflater.inflate(R.layout.carousel_custom, customCarouselView, false);
-                TextView labelTextView = (TextView) customView.findViewById(R.id.labelTextView);
-                ImageView fruitImageView = (ImageView) customView.findViewById(R.id.fruitImageView);
+                TextView labelTextView = (TextView) customView.findViewById(R.id.carouselTargetName);
+                ImageView fruitImageView = (ImageView) customView.findViewById(R.id.carouselImage);
 
                 fruitImageView.setImageResource(sampleImages[position]);
                 labelTextView.setText(sampleTitles[position]);
@@ -136,6 +140,16 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
      */
     private void setupViewPager() {
 
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        List<Fragment> fragments = getFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment frag : fragments) {
+                if (frag instanceof CloseBuildingsFragment || frag instanceof CloseMonumentsFragment || frag instanceof LatestRecognitionFragment) {
+                    transaction.remove(frag);
+                }
+            }
+        }
+        transaction.commit();
         final ViewPager viewPager = (ViewPager) root.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -164,7 +178,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("konri","Me vine al on resume");
+        Log.d("konri", "Me vine al on resume");
         if (root != null) {
             Log.d("konri", "Root no es null");
         }

@@ -1,5 +1,8 @@
 package ra.inge.ucr.ucraumentedreality.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import java.util.ArrayList;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
+import ra.inge.ucr.ucraumentedreality.activities.SingleTargetObjectActivity;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.activities.MapsActivity;
 
@@ -42,6 +46,9 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     public ArrayList<TargetObject> filteredTargetObjects;// = new ArrayList<TargetObject>
 
+    /**
+     * The filter object
+     */
     private Filter mFilter;
 
     /**
@@ -78,17 +85,22 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * @param i
      */
     @Override
-    public void onBindViewHolder(final CustomViewHolder myViewHolder, final int i) {
-        myViewHolder.title.setText(targetObjects.get(i).getName());
-        TargetAdapter ta = this;
-        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+    public void onBindViewHolder(CustomViewHolder myViewHolder, final int i) {
+        myViewHolder.title.setText(filteredTargetObjects.get(i).getName());
+        myViewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(homeActivity.getApplicationContext(), MapsActivity.class);
-                intent.putExtra("Objective name", targetObjects.get(i).getName());
-                homeActivity.startActivity(intent);
+
+                final TargetObject targetObject = filteredTargetObjects.get(i);
+                Context context = v.getContext();
+
+                Intent intent = new Intent(context, SingleTargetObjectActivity.class);
+                // La idea de agarrar por id es no tener un loop luego con el nombre.
+                intent.putExtra("objectId", targetObject.getId());
+                context.startActivity(intent);
             }
         });
+
     }
 
     /**
@@ -107,11 +119,15 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
     class CustomViewHolder extends RecyclerView.ViewHolder {
         View itemView;
         TextView title;
+        View mView;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
+            mView = itemView;
             this.itemView = itemView;
             title = (TextView) itemView.findViewById(R.id.listitem_name);
+
+
         }
     }
 

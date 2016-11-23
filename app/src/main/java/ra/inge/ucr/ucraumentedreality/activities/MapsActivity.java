@@ -81,8 +81,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationHelper = new LocationHelper();
         buildGoogleApiClient();
 
-        if(getIntent().hasExtra("Objective index")){
-            TargetObject to = Data.getByName(getIntent().getStringExtra("Objective index"));
+        if(getIntent().hasExtra("TargetName")){
+
+            TargetObject to = Data.getByName(getIntent().getStringExtra("TargetName"));
             hasObjective = true;
             objective = to;
         }
@@ -334,6 +335,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng[] nodes;
         int[] entrances = to.getEntrances();
         if (entrances.length > 0) {
+
             int entrance = entrances[0];
             if (entrances.length > 1) {
                 nodes = na.getNodeParser().getNodes();
@@ -346,7 +348,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             }
-            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance);
+            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance-1);
             if (paths != null && !paths.isEmpty()) {
                 na.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
             }
