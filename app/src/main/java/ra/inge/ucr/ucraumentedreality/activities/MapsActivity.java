@@ -81,8 +81,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationHelper = new LocationHelper();
         buildGoogleApiClient();
 
-        if(getIntent().hasExtra("Objective index")){
-            TargetObject to = Data.getByName(getIntent().getStringExtra("Objective index"));
+        if(getIntent().hasExtra("Objective name")){
+            TargetObject to = Data.getByName(getIntent().getStringExtra("Objective name"));
             hasObjective = true;
             objective = to;
         }
@@ -334,6 +334,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng[] nodes;
         int[] entrances = to.getEntrances();
         if (entrances.length > 0) {
+
             int entrance = entrances[0];
             if (entrances.length > 1) {
                 nodes = na.getNodeParser().getNodes();
