@@ -56,6 +56,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     public HomeFragment() {
 
     }
+
     private View root;
 
     int[] sampleImages = {R.drawable.pretil, R.drawable.logo_ucr};
@@ -115,8 +116,8 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
             public View setViewForPosition(int position) {
 
                 View customView = inflater.inflate(R.layout.carousel_custom, customCarouselView, false);
-                TextView labelTextView = (TextView) customView.findViewById(R.id.labelTextView);
-                ImageView fruitImageView = (ImageView) customView.findViewById(R.id.fruitImageView);
+                TextView labelTextView = (TextView) customView.findViewById(R.id.carouselTargetName);
+                ImageView fruitImageView = (ImageView) customView.findViewById(R.id.carouselImage);
 
                 fruitImageView.setImageResource(sampleImages[position]);
                 labelTextView.setText(sampleTitles[position]);
@@ -177,7 +178,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("konri","Me vine al on resume");
+        Log.d("konri", "Me vine al on resume");
         if (root != null) {
             Log.d("konri", "Root no es null");
         }

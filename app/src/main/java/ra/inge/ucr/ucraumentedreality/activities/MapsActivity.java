@@ -81,8 +81,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationHelper = new LocationHelper();
         buildGoogleApiClient();
 
-        if(getIntent().hasExtra("Objective name")){
-            TargetObject to = Data.getByName(getIntent().getStringExtra("Objective name"));
+        if(getIntent().hasExtra("TargetName")){
+
+            TargetObject to = Data.getByName(getIntent().getStringExtra("TargetName"));
             hasObjective = true;
             objective = to;
         }
