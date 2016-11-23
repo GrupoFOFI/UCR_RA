@@ -328,12 +328,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 objective = null;
             }
 
-            if (mLastLocation.distanceTo(previousLocation) > 5) {
+            //if (mLastLocation.distanceTo(previousLocation) >= 4) {
                 Path path = paths.get(0);
                 List<LatLng> route = path.getPoints();
                 directionSound(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), route.get(0));
                 previousLocation = mLastLocation;
-            }
+            //}
         }
     }
 
@@ -419,8 +419,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         angle = Math.toDegrees(angle);
         angle = ((angle + 360) % 360)-90;
 
-        double direccion = Math.abs(azimuth - angle);
-        if(direccion >= 315 || direccion < 45) {
+        double direccion = azimuth - angle;
+        if(direccion > 315)
+            direccion -= 360;
+        if(direccion < 0)
+            direccion = 360+direccion;
+        if(direccion <= 45 && direccion > -45) {
             showArrow(Arrow.UP);
             try {
                 AssetFileDescriptor afd = getAssets().openFd("Continue.mp3");
@@ -430,7 +434,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.start();
             }catch (Exception e){}
         }
-        else if(direccion >= 45 && direccion < 135) {
+        else if(direccion <= 315 && direccion > 225) {
             showArrow(Arrow.RIGHT);
             try {
                 AssetFileDescriptor afd = getAssets().openFd("Derecha.mp3");
@@ -440,7 +444,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.start();
             }catch (Exception e){}
         }
-        else if(direccion >= 135 && direccion < 225) {
+        else if(direccion <= 225 && direccion > 135) {
             arrowLeft.setVisibility(View.GONE);
             arrowRight.setVisibility(View.GONE);
             arrowUp.setVisibility(View.GONE);
@@ -452,7 +456,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.start();
             }catch (Exception e){}
         }
-        else {
+        else if(direccion <= 135 && direccion > 45){
             showArrow(Arrow.LEFT);
             try {
                 AssetFileDescriptor afd = getAssets().openFd("Izquierda.mp3");
