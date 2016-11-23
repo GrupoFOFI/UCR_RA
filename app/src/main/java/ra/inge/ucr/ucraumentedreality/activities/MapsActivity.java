@@ -347,7 +347,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
             }
-            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance);
+            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance-1);
             if (paths != null && !paths.isEmpty()) {
                 na.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
             }
