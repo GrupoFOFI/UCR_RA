@@ -4,11 +4,19 @@ package ra.inge.ucr.ucraumentedreality.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.Locale;
 
 import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
@@ -24,7 +32,7 @@ import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
  * @version 1.0
  * @since 10/11/2016
  */
-public class TakeMeFragment extends Fragment {
+public class TakeMeFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     /**
      * Custom adapter for the fragment
@@ -35,7 +43,7 @@ public class TakeMeFragment extends Fragment {
      * Default constructor
      */
     public TakeMeFragment() {
-        mAdapter = new TargetAdapter();
+//        mAdapter = new TargetAdapter();
     }
 
 
@@ -50,9 +58,39 @@ public class TakeMeFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
+        SearchView searchView = (SearchView) root.findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(this);
+
+        mAdapter = new TargetAdapter();
         recyclerView.setAdapter(mAdapter);
+        setHasOptionsMenu(true);
+
         mAdapter.setTargetObjects(Data.targetObjects);
         return root;
+    }
+//
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//
+//        inflater.inflate(R.menu.menu_search, menu);
+//
+//        MenuItem searchItem = menu.findItem(R.id.search);
+//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//        searchView.setOnQueryTextListener(this);
+//
+//    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        Log.d("konri", "Filered " + newText);
+        mAdapter.getFilter().filter(newText.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
     }
 
 

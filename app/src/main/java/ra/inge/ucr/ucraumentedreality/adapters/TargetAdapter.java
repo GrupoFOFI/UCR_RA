@@ -4,16 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
-
-/**
- * Created by Konrad on 11/22/16.
- */
 
 /**
  * <h1> Custom Adapter </h1>
@@ -25,7 +23,7 @@ import ra.inge.ucr.ucraumentedreality.R;
  * @version 1.0
  * @since 1.0
  */
-public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomViewHolder> {
+public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomViewHolder> implements Filterable {
 
     /**
      * The closest target objects
@@ -33,13 +31,11 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
     public ArrayList<TargetObject> targetObjects;// = new ArrayList<TargetObject>
 
     /**
-     * Constructor for the class that receives the current closes buildings as parameter
-     *
-     * @param targetObjects
+     * The closest target objects
      */
-    public TargetAdapter(ArrayList<TargetObject> targetObjects) {
-        this.targetObjects = targetObjects;
-    }
+    public ArrayList<TargetObject> filteredTargetObjects;// = new ArrayList<TargetObject>
+
+    private Filter mFilter;
 
     /**
      * Empty Constructor
@@ -49,6 +45,7 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
 
     public void setTargetObjects(ArrayList<TargetObject> targetObjects) {
         this.targetObjects = targetObjects;
+        this.filteredTargetObjects = targetObjects;
     }
 
 
@@ -74,7 +71,7 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     @Override
     public void onBindViewHolder(CustomViewHolder myViewHolder, int i) {
-        myViewHolder.title.setText(targetObjects.get(i).getName());
+        myViewHolder.title.setText(filteredTargetObjects.get(i).getName());
     }
 
     /**
@@ -84,9 +81,8 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      */
     @Override
     public int getItemCount() {
-        return targetObjects == null ? 0 : targetObjects.size();
+        return filteredTargetObjects.size();
     }
-
 
     /**
      * Class used to handle the custom adapter elements
@@ -99,6 +95,62 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.listitem_name);
+        }
+    }
+
+
+
+    @Override
+    public Filter getFilter() {
+        if (mFilter == null) {
+            mFilter = new Filter() {
+
+                @SuppressWarnings("unchecked")
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                    filteredTargetObjects = (ArrayList<TargetObject>) results.values; // has the filtered values
+                    notifyDataSetChanged();  // notifies the data with new filtered values
+                }
+
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults results = new FilterResults();        // Holds the results of a filtering operation in values
+                    ArrayList<TargetObject> FilteredArrList = new ArrayList<TargetObject>();
+
+                    if (targetObjects == null) {
+                        targetObjects = new ArrayList<TargetObject>(filteredTargetObjects); // saves the original data in mOriginalValues
+                    }
+
+                    /********
+                     *
+                     *  If constraint(CharSequence that is received) is null returns the mOriginalValues(Original) values
+                     *  else does the Filtering and returns FilteredArrList(Filtered)
+                     *
+                     ********/
+                    if (constraint == null || constraint.length() == 0) {
+
+                        // set the Original result to return
+                        results.count = targetObjects.size();
+                        results.values = targetObjects;
+                    } else {
+                        constraint = constraint.toString().toLowerCase();
+                        for (int i = 0; i < filteredTargetObjects.size(); i++) {
+                            TargetObject targetObject = filteredTargetObjects.get(i);
+                            if (targetObject.getName().toLowerCase().contains(constraint.toString())) {
+                                FilteredArrList.add(targetObject);
+                            }
+                        }
+                        // set the Filtered result to return
+                        results.count = FilteredArrList.size();
+                        results.values = FilteredArrList;
+                    }
+                    return results;
+                }
+            };
+            return mFilter;
+        } else {
+            return mFilter;
         }
     }
 

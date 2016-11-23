@@ -53,13 +53,7 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     public HomeFragment() {
 
     }
-
-
-    private ShakeHandler shakeHandler;
-    private Vibrator vibe;
     private View root;
-    private MapsFragment mapsFragment;
-
 
     int[] sampleImages = {R.drawable.pretil, R.drawable.logo_ucr};
     String[] sampleTitles = {"Pretil", "UCR"};

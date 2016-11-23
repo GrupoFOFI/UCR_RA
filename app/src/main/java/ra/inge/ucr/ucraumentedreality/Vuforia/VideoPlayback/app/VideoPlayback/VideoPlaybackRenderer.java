@@ -1027,8 +1027,8 @@ public class VideoPlaybackRenderer implements GLSurfaceView.Renderer, SampleAppR
     int retrieveTarget2(String targetName) {
         Log.d(VideoPlayback.DEBUG_TAG, "Pidiendo el target " + targetName);
         for (int i = 0; i < Data.targetObjects.size()-1; i++) {
-            String targetObjectName = Data.targetObjects.get(i).getVideo();
-            if (targetObjectName.contains(targetName)) {
+            String targetHint = Data.targetObjects.get(i).getHint();
+            if (targetHint.contains(targetName)) {
                 int result = (Data.targetObjects.get(i).getId() % 13)-1;
                 Log.d(VideoPlayback.DEBUG_TAG, "Found target with result" + result);
                 return result;

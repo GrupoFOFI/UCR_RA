@@ -1,6 +1,8 @@
 package ra.inge.ucr.ucraumentedreality.activities;
 
+import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,12 +17,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -38,7 +43,7 @@ import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        ShakeHandler.OnShakeListener {
+        ShakeHandler.OnShakeListener, SearchView.OnQueryTextListener {
 
     /* UI elements */
     private Toolbar toolbar;
@@ -298,6 +303,46 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         currentFragmentType = fragment.getClass();
         fragmentTransaction.commit();
     }
+//
+    // TODO si da tiempo un search en el homescreen del app que sustituya el searchview del takemefragment
 
 
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_search, menu);
+//
+//        MenuItem searchItem = menu.findItem(R.id.search);
+//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//        searchView.setOnQueryTextListener(this);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+//                new ComponentName(this, HomeActivity.class)));
+//        searchView.setIconifiedByDefault(false);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    protected void onNewIntent(Intent intent) {
+//        super.onNewIntent(intent);
+//        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+//            String query = intent.getStringExtra(SearchManager.QUERY);
+//            Toast.makeText(this, "Searching by: "+ query, Toast.LENGTH_SHORT).show();
+//
+//        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+//            String uri = intent.getDataString();
+//            Toast.makeText(this, "Suggestion: "+ uri, Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
 }
