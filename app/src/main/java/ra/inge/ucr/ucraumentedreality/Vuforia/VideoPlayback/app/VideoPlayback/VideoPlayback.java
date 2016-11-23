@@ -17,16 +17,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -55,9 +54,7 @@ import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Vi
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.LoadingDialogHandler;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.SampleApplicationGLView;
 import ra.inge.ucr.ucraumentedreality.Vuforia.utils.Texture;
-import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
 import ra.inge.ucr.ucraumentedreality.fragments.LatestRecognitionFragment;
-import ra.inge.ucr.ucraumentedreality.utils.ShakeHandler;
 
 
 // The AR activity for the VideoPlayback sample.
@@ -134,6 +131,8 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             TargetObject targetObject = Data.targetObjects.get(targetId);
             LatestRecognitionFragment.targetObjects.add(targetObject);
             mVideoPlayerHelper[targetId].play(mPlayFullscreenVideo, mSeekPosition[0]);
+
+
 
         }
     }
@@ -701,6 +700,7 @@ public class VideoPlayback extends AppCompatActivity implements SampleApplicatio
             titleTextView.setText("- -");
 
             descriptionTextView = (TextView) findViewById(R.id.testview2);
+            descriptionTextView.setMovementMethod(new ScrollingMovementMethod());
             descriptionTextView.setText("No hay ningún punto de interés seleccionado");
 
             // Sets the UILayout to be drawn in front of the camera

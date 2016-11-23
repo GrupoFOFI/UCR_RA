@@ -116,14 +116,12 @@ public class TargetAdapter extends RecyclerView.Adapter<TargetAdapter.CustomView
      * Class used to handle the custom adapter elements
      */
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        View itemView;
         TextView title;
         View mView;
 
         public CustomViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
-            this.itemView = itemView;
             title = (TextView) itemView.findViewById(R.id.listitem_name);
 
 

@@ -2,6 +2,7 @@ package ra.inge.ucr.ucraumentedreality.fragments;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -32,11 +33,13 @@ import com.synnapps.carouselview.ViewListener;
 
 import java.util.List;
 
+import ra.inge.ucr.da.Data;
 import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.location.LocationHelper;
 import ra.inge.ucr.location.NavigationHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.MapsActivity;
+import ra.inge.ucr.ucraumentedreality.activities.SingleTargetObjectActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.ViewPagerAdapter;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
@@ -59,9 +62,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
 
     private View root;
 
-    int[] sampleImages = {R.drawable.pretil, R.drawable.logo_ucr};
-    String[] sampleTitles = {"Pretil", "UCR"};
-
     private CarouselView customCarouselView;
 
     protected GoogleApiClient mGoogleApiClient;
@@ -69,13 +69,13 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     private LocationRequest mLocationRequest;
     private static final long POLLING_FREQ = 200;
     private static final long FASTEST_UPDATE_FREQ = 1000;
-    private NavigationHelper navigationHelper;
-    private LocationHelper locationHelper;
 
+    private LocationHelper locationHelper;
     private Utils utils;
 
     CloseBuildingsFragment closeBuildingsFragment;
     CloseMonumentsFragment closeMonumentsFragment;
+    private Context mContext;
 
     /**
      * Close monuments
@@ -116,34 +116,30 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
         locationHelper = new LocationHelper();
-
+        mContext = getContext();
 
         customCarouselView = (CarouselView) root.findViewById(R.id.customCarouselView);
-        customCarouselView.setPageCount(sampleImages.length);
+        customCarouselView.setPageCount(5);//Data.targetObjects.size() - 1);
         customCarouselView.setSlideInterval(4000);
         customCarouselView.setViewListener(new ViewListener() {
             @Override
-            public View setViewForPosition(int position) {
+            public View setViewForPosition(final int position) {
 
                 View customView = inflater.inflate(R.layout.carousel_custom, customCarouselView, false);
                 carouselTextView = (TextView) customView.findViewById(R.id.carouselTargetName);
                 carouselImageView = (ImageView) customView.findViewById(R.id.carouselImage);
 
-                carouselImageView.setImageResource(sampleImages[position]);
+                carouselImageView.setImageResource(Data.targetObjects.get(position).getImage());
                 carouselImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO agarrar el target object
 
-                        Log.d("konri", "Cant touch this");
-//
-//                        TargetObject targetFound = null;
-//                        Intent intent = new Intent(getContext(), MapsActivity.class);
-//                        intent.putExtra("TargetName", targetFound.getName());
-//                        startActivity(intent);
+                        Intent intent = new Intent(mContext, SingleTargetObjectActivity.class);
+                        intent.putExtra("objectId", Data.targetObjects.get(position).getId());
+                        mContext.startActivity(intent);
                     }
                 });
-                carouselTextView.setText(sampleTitles[position]);
+                carouselTextView.setText(Data.targetObjects.get(position).getName());
                 customCarouselView.setIndicatorGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
 
                 return customView;
@@ -151,8 +147,6 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
         });
 
         customCarouselView.setIndicatorGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
-
-
         setupViewPager();
         return root;
     }
@@ -230,8 +224,10 @@ public class HomeFragment extends Fragment implements GoogleApiClient.Connection
     @Override
     public void onLocationChanged(Location location) {
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (mContext != null) {
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
         }
         Location latestLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location != null) {

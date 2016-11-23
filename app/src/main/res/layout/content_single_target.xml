@@ -8,25 +8,26 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.2">
+        android:layout_weight="0.275">
 
         <ImageView
+            android:id="@+id/targetImageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/pretil" />
 
         <TextView
-            android:id="@+id/promotion_preview_name"
+            android:id="@+id/targetName"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_gravity="bottom"
             android:background="#B3000000"
-            android:foregroundGravity="top"
-            android:gravity="center"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white" />
+            android:gravity="center_vertical|right"
+            android:paddingRight="18dp"
+            android:text="Testing this"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
     </FrameLayout>
 
@@ -34,29 +35,33 @@
         android:id="@+id/rel_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="2.5"
+        android:layout_marginBottom="18dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_weight="0.725"
         android:orientation="vertical"
-        android:weightSum="3">
+        android:weightSum="1">
 
         <TextView
-            android:id="@+id/testview"
+            android:id="@+id/targetDescription"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_weight="2"
-            android:textStyle="bold" />
+            android:layout_weight="0.25"
+            android:maxLines="5"
+            android:padding="6dp"
+            android:scrollbars="vertical"
+            android:text="@string/cast_tracks_chooser_dialog_no_audio_tracks"
+            android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/testview2"
+            android:id="@+id/targetWebsite"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_weight="1" />
-
+            android:layout_weight="0.75"
+            android:padding="6dp"
+            android:text="http://www.miucr.ucr.ac.cr/"
+            android:textColor="@color/blue" />
 
     </LinearLayout>
-
 
 </LinearLayout>

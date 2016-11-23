@@ -67,6 +67,7 @@
         <activity
             android:name=".activities.SplashActivity"
             android:noHistory="true"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -100,6 +101,7 @@
             android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -112,21 +114,26 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.HomeActivity">
+            android:parentActivityName=".activities.HomeActivity"
+            android:screenOrientation="portrait">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeActivity" />
         </activity>
-        <activity android:name=".activities.MapsActivity">
+        <activity
+            android:name=".activities.MapsActivity"
+            android:screenOrientation="portrait">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.HomeActivity" />
         </activity>
-        <activity android:name=".activities.SingleTargetObjectActivity">
+        <activity
+            android:name=".activities.SingleTargetObjectActivity"
+            android:screenOrientation="portrait">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

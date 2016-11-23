@@ -1,8 +1,6 @@
 package ra.inge.ucr.da.entity;
 
 
-import ra.inge.ucr.da.R;
-
 /**
  * <h1>Target Object </h1>
  * Base class for objects to recognize later or display information
@@ -306,5 +304,13 @@ public class TargetObject {
 
     public void setHint(String hint) {
         this.hint = hint;
+    }
+
+    public int getImage() {
+        return image;
+    }
+
+    public void setImage(int image) {
+        this.image = image;
     }
 }

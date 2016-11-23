@@ -19,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="20dp"
-            android:paddingBottom="30dp"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="30dp"
+            android:paddingBottom="30dp">
 
             <ImageView
                 android:id="@+id/arrow_up"
@@ -29,7 +29,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
                 android:clickable="true"
-                android:src="@drawable/circlearrow" />
+                android:src="@drawable/circlearrow"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/arrow_right"
@@ -38,7 +39,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:src="@drawable/circlearrow2" />
+                android:src="@drawable/circlearrow2"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/arrow_left"
@@ -47,15 +49,16 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:src="@drawable/circlearrow3" />
+                android:src="@drawable/circlearrow3"
+                android:visibility="gone" />
 
             <View
                 android:id="@+id/arrow_down"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="30dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="30dp" />
 
 
         </RelativeLayout>
@@ -86,6 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="6dp"
+            android:maxLines = "3"
+            android:scrollbars = "vertical"
             android:layout_marginRight="6dp"
             android:layout_weight="1" />
 

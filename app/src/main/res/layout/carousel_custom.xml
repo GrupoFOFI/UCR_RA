@@ -21,12 +21,12 @@
         <TextView
             android:id="@+id/carouselTargetName"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="65dp"
             android:layout_gravity="bottom"
             android:background="#B3000000"
             android:foregroundGravity="top"
-            android:gravity="right"
-            android:paddingRight="10dp"
+            android:gravity="left"
+            android:paddingLeft="10dp"
             android:text="Hola esto es una prueba"
             android:textColor="@color/white"
             android:textSize="17dp" />
