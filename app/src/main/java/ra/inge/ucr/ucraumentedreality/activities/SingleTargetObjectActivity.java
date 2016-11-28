@@ -26,9 +26,17 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomBottomSheetDialog;
  */
 public class SingleTargetObjectActivity extends AppCompatActivity implements CustomBottomSheetDialog.OnButtonInteractionListener {
 
+    /**
+     * The target found
+     */
     private TargetObject targetFound;
     private CustomBottomSheetDialog bottomSheetDialog;
 
+    /***
+     * Method that initializes the main content used by the activity
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

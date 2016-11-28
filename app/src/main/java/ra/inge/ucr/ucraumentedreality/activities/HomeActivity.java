@@ -150,7 +150,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public void onShake() {
-        if (prefs.getBoolean("accessibility", false) == true) {
+        if (prefs.getBoolean("accessibility", false) == true && getCallingActivity().getClass().equals(HomeActivity.class)) {
 
             if (showingPopUp == false) {
                 promptSpeechInput();
