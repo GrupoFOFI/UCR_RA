@@ -80,7 +80,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private TextView userNameTextView, userMailTextView;
 
-
     FragmentManager fragmentManager;
     View headerLayout;
 
