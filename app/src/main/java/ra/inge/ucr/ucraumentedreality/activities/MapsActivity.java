@@ -33,7 +33,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,8 +83,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean hasObjective = false;
     private TargetObject objective;
     private List<Path> paths;
+    private List<LatLng> route;
     private Polyline polyline;
+    private Polyline[] polylines;
     private ImageView arrowUp, arrowLeft, arrowRight;
+
+    private TextView angleText;
 
 
     @Override
@@ -120,6 +123,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         arrowRight = (ImageView) findViewById(R.id.arrow_right);
         arrowRight.bringToFront();
         arrowRight.setVisibility(View.GONE);
+
+        angleText = (TextView) findViewById(R.id.angle);
     }
 
 
@@ -263,12 +268,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             String error = getResources().getString(R.string.no_location_detected);
             Log.e("ERROR", error);
         } else {
-            locationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+            LocationHelper.updateLastLocation(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
         }
         if(hasObjective){
             paths = newDestination(objective);
+            polylines = new Polyline[paths.size()];
+            for(int i = 0; i < paths.size(); i++){
+                polylines[i] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(i).getPoints(), googleMap, i);
+            }
+
+            Log.d("konri", "aquí se debería escoger la ruta");
+            route = paths.get(0).getPoints();
         }
         previousLocation = mLastLocation;
     }
@@ -318,22 +330,33 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         if(hasObjective) {
             polyline.remove();
-            List<Path> newPaths = newDestination(objective);
-            if (paths.get(0).getPoints().size() < newPaths.get(0).getPoints().size()) {
-                paths = newPaths;
-                Path path = paths.get(0);
-                List<LatLng> route = path.getPoints();
-                directionSound(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), route.get(0));
+            route.set(0, new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+            Location next = new Location("Next");
+
+            next.setLatitude(route.get(1).latitude);
+
+            next.setLongitude(route.get(1).longitude);
+            if(route.size() == 1){
+                Utils.toastLog("¡Llegaste a "+ objective.getName() +"!", getApplicationContext());
                 hasObjective = false;
                 objective = null;
+                return;
+            }
+            if(mLastLocation.distanceTo(next) < 6){
+                //ya estoy en el punto
+                route.remove(1);
+                directionSound(route.get(0), route.get(1));
+                previousLocation = mLastLocation;
+                return;
             }
 
-            //if (mLastLocation.distanceTo(previousLocation) >= 4) {
-                Path path = paths.get(0);
-                List<LatLng> route = path.getPoints();
-                directionSound(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), route.get(0));
+            if (mLastLocation.distanceTo(previousLocation) >= 7) {
+                directionSound(route.get(0), route.get(1));
                 previousLocation = mLastLocation;
-            //}
+            }
+            polyline = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)route, googleMap);
+
         }
     }
 
@@ -399,31 +422,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance-1);
             if (paths != null && !paths.isEmpty()) {
-                polyline = na.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
+                polyline = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
             }
         }
         return paths;
     }
 
     public void directionSound(LatLng point1, LatLng point2){
-        int azimuth = sensorHelper.getAzimuth();
+        double azimuth = sensorHelper.getAzimuth();
+        if(mLastLocation.hasBearing()){
+            azimuth = mLastLocation.getBearing();
+        }
 
-        double dLon = (point2.longitude - point1.longitude);
-
-        double y = Math.sin(dLon) * Math.cos(point2.latitude);
-        double x = Math.cos(point1.latitude) * Math.sin(point2.latitude) - Math.sin(point1.latitude)
-                * Math.cos(point2.latitude) * Math.cos(dLon);
-
-        double angle = Math.atan2(y, x);
-
-        angle = Math.toDegrees(angle);
-        angle = ((angle + 360) % 360)-90;
+//        double dLon = (point2.longitude - point1.longitude);
+//
+//        double y = Math.sin(dLon) * Math.cos(point2.latitude);
+//        double x = Math.cos(point1.latitude) * Math.sin(point2.latitude) - Math.sin(point1.latitude)
+//                * Math.cos(point2.latitude) * Math.cos(dLon);
+//
+//        double angle = Math.atan2(y, x);
+//
+//        angle = Math.toDegrees(angle);
+//        angle = ((angle + 360) % 360);
+//        angle = 360-angle;
+        Location p1 = new Location("p1");
+        p1.setLongitude(point1.longitude);
+        p1.setLatitude(point1.latitude);
+        Location p2 = new Location("p2");
+        p2.setLongitude(point2.longitude);
+        p2.setLatitude(point2.latitude);
+        double angle = p1.bearingTo(p2);
+        if(angle < 0 ) angle += 360;
 
         double direccion = azimuth - angle;
+
         if(direccion > 315)
             direccion -= 360;
         if(direccion < 0)
             direccion = 360+direccion;
+        angleText.setText("Azimuth: " + String.valueOf(azimuth) + "\n Angle: " + String.valueOf(angle)+ "\n Dirección: " + String.valueOf(direccion));
         if(direccion <= 45 && direccion > -45) {
             showArrow(Arrow.UP);
             try {

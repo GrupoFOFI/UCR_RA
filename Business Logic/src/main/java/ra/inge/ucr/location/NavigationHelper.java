@@ -59,12 +59,16 @@ public class NavigationHelper {
         else
             nodes = NodeParser.m_Nodes;
         int closestNodeIndex = -1;
-        LatLng closest = userLocation;
+
+        LatLng closest = null;
+
         float lastDist = Float.POSITIVE_INFINITY;
+
         float[] results = new float[1];
+
         for (int i = 0; i < nodes.length; i++) {
             // calculate vector distance
-            Location.distanceBetween(closest.latitude, closest.longitude, nodes[i].latitude, nodes[i].longitude, results);
+            Location.distanceBetween(userLocation.latitude, userLocation.longitude, nodes[i].latitude, nodes[i].longitude, results);
             if (results[0] < lastDist) {
                 closestNodeIndex = i;
                 closest = nodes[i];
@@ -74,14 +78,18 @@ public class NavigationHelper {
 
         // we have the closest node, calculate closest path
         float[] distances = nodeParser.getClosestDistances(closestNodeIndex);
+
         int[][] pathsMatrix = nodeParser.getPathsMatrix();
 
         if (distances[point] == Float.POSITIVE_INFINITY) return paths; // path doesn't exist
 
         // closest path
         Path path = new Path();
+
         List<Integer> indexPath = findPath(pathsMatrix, closestNodeIndex, point);
+
         List<LatLng> actualPath = new ArrayList<LatLng>();
+
         for (int k = 0; k < indexPath.size(); k++) {
             actualPath.add(nodes[indexPath.get(k)]);
         }
@@ -130,8 +138,14 @@ public class NavigationHelper {
         return path;
     }
 
-    public Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map)
+    public static Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map){
+        return drawPrimaryLinePath(listLocsToDraw, map, 0);
+    }
+
+    public static Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map, int color)
     {
+
+
         if ( map == null )
         {
             return null;
@@ -143,8 +157,20 @@ public class NavigationHelper {
         }
 
         PolylineOptions options = new PolylineOptions();
+        switch (color){
+            case 0: options.color( Color.parseColor("#AAFF0000") );
+                break;
+            case 1: options.color( Color.parseColor("#33FF0000") );
+                break;
+            case 2: options.color( Color.parseColor("#77FF0000") );
+                break;
+            case 3: options.color( Color.parseColor("#FFFF0000") );
+                break;
+            default:
+                options.color( Color.parseColor("#330110FF") );
+                break;
+        }
 
-        options.color( Color.parseColor( "#AA0000FF" ) );
         options.width( 5 );
         options.visible( true );
 
