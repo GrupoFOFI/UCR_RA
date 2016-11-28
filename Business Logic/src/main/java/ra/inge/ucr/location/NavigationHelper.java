@@ -17,10 +17,11 @@ import ra.inge.ucr.da.parser.NodeParser;
 
 /**
  * Helper class for navigation, handles distance and path calculation based on the user's location.
- *
+ * <p>
  * Created by enrico on 11/14/16.
  */
 public class NavigationHelper {
+
     private Context m_Context;
     private LocationHelper locationHelper = new LocationHelper();
 
@@ -44,7 +45,7 @@ public class NavigationHelper {
      * The first index on the list is always the closest path
      *
      * @param userLocation the user's position in the map.
-     * @param point the point index to calculate the closest paths.
+     * @param point        the point index to calculate the closest paths.
      * @return
      */
     public List<Path> getPathsToPoint(LatLng userLocation, int point) {
@@ -54,8 +55,8 @@ public class NavigationHelper {
 
         // find the nearest point to the user
         LatLng[] nodes;
-        if(NodeParser.m_Nodes == null)
-             nodes = nodeParser.getNodes();
+        if (NodeParser.m_Nodes == null)
+            nodes = nodeParser.getNodes();
         else
             nodes = NodeParser.m_Nodes;
         int closestNodeIndex = -1;
@@ -123,8 +124,8 @@ public class NavigationHelper {
      * The vertices start at 0
      *
      * @param matrix the matrix with the paths
-     * @param from the start vertex
-     * @param to the end vertex
+     * @param from   the start vertex
+     * @param to     the end vertex
      * @return the List with the path found,
      */
     public static List<Integer> findPath(int[][] matrix, int from, int to) {
@@ -138,48 +139,48 @@ public class NavigationHelper {
         return path;
     }
 
-    public static Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map){
+    public static Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map) {
         return drawPrimaryLinePath(listLocsToDraw, map, 0);
     }
 
-    public static Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map, int color)
-    {
+    public static Polyline drawPrimaryLinePath(ArrayList<LatLng> listLocsToDraw, GoogleMap map, int color) {
 
 
-        if ( map == null )
-        {
+        if (map == null) {
             return null;
         }
 
-        if ( listLocsToDraw.size() < 2 )
-        {
+        if (listLocsToDraw.size() < 2) {
             return null;
         }
 
         PolylineOptions options = new PolylineOptions();
-        switch (color){
-            case 0: options.color( Color.parseColor("#AAFF0000") );
+        switch (color) {
+            case 0:
+                options.color(Color.parseColor("#027BCE"));
                 break;
-            case 1: options.color( Color.parseColor("#33FF0000") );
+            case 1:
+                options.color(Color.parseColor("#c44536"));
                 break;
-            case 2: options.color( Color.parseColor("#77FF0000") );
+            case 2:
+                options.color(Color.parseColor("#283d3b"));
                 break;
-            case 3: options.color( Color.parseColor("#FFFF0000") );
+            case 3:
+                options.color(Color.parseColor("#FFFF0000"));
                 break;
             default:
-                options.color( Color.parseColor("#330110FF") );
+                options.color(Color.parseColor("#330110FF"));
                 break;
         }
 
-        options.width( 5 );
-        options.visible( true );
+        options.width(5);
+        options.visible(true);
 
-        for ( LatLng locRecorded : listLocsToDraw )
-        {
+        for (LatLng locRecorded : listLocsToDraw) {
             options.add(locRecorded);
         }
 
-        return map.addPolyline( options );
+        return map.addPolyline(options);
     }
 
     /**

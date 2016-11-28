@@ -32,9 +32,9 @@ public class CustomBottomSheetDialog extends BottomSheetDialogFragment {
      * Interace to create callbacks for the activity
      */
     public interface OnButtonInteractionListener {
-        void onMapsChosen();
+        void onRouseChosen(int choice);
 
-        void onVuforiaChosen();
+//        void onVuforiaChosen();
     }
 
     public void setOnButtonInteractionListener(OnButtonInteractionListener onButtonInteractionListener) {
@@ -46,26 +46,36 @@ public class CustomBottomSheetDialog extends BottomSheetDialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.custom_bottom_sheet, container, false);
 
-        LinearLayout mapsChoice = (LinearLayout) root.findViewById(R.id.layout_maps);
-        mapsChoice.setOnClickListener(new View.OnClickListener() {
+        LinearLayout route1 = (LinearLayout) root.findViewById(R.id.route_1);
+        route1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onButtonInteractionListener != null) {
-                    onButtonInteractionListener.onMapsChosen();
+                    onButtonInteractionListener.onRouseChosen(0);
                 }
             }
         });
 
-        LinearLayout vuforiaChoice = (LinearLayout) root.findViewById(R.id.layout_vuforia);
-        vuforiaChoice.setOnClickListener(new View.OnClickListener() {
+        LinearLayout route2 = (LinearLayout) root.findViewById(R.id.route_2);
+        route2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onButtonInteractionListener != null) {
-                    onButtonInteractionListener.onVuforiaChosen();
+                    onButtonInteractionListener.onRouseChosen(1);
                 }
             }
         });
 
+
+        LinearLayout route3 = (LinearLayout) root.findViewById(R.id.route_3);
+        route3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onButtonInteractionListener != null) {
+                    onButtonInteractionListener.onRouseChosen(2);
+                }
+            }
+        });
         return root;
     }
 }

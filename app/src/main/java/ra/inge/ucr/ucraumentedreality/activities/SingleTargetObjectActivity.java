@@ -24,13 +24,13 @@ import ra.inge.ucr.ucraumentedreality.adapters.CustomBottomSheetDialog;
  * @version 1.0
  * @since 23/11/2016
  */
-public class SingleTargetObjectActivity extends AppCompatActivity implements CustomBottomSheetDialog.OnButtonInteractionListener {
+public class SingleTargetObjectActivity extends AppCompatActivity {
 
     /**
      * The target found
      */
     private TargetObject targetFound;
-    private CustomBottomSheetDialog bottomSheetDialog;
+//    private CustomBottomSheetDialog bottomSheetDialog;
 
     /***
      * Method that initializes the main content used by the activity
@@ -48,9 +48,9 @@ public class SingleTargetObjectActivity extends AppCompatActivity implements Cus
         int objectId = bundle.getInt("objectId");
         targetFound = Data.targetObjects.get(objectId - 1);
         Log.d("konrad", targetFound.getName());
-
-        bottomSheetDialog = new CustomBottomSheetDialog();
-        bottomSheetDialog.setOnButtonInteractionListener(this);
+//
+//        bottomSheetDialog = new CustomBottomSheetDialog();
+//        bottomSheetDialog.setOnButtonInteractionListener(this);
         if (targetFound != null) {
 
             setTitle(targetFound.getName());
@@ -91,25 +91,25 @@ public class SingleTargetObjectActivity extends AppCompatActivity implements Cus
         }
     }
 
-
-    /**
-     * Method that enables the user to choose google maps
-     */
-    @Override
-    public void onMapsChosen() {
-        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
-        intent.putExtra("TargetName", targetFound.getName());
-        startActivity(intent);
-    }
-
-    /**
-     * Method that enables the user to choose vuforia
-     */
-    @Override
-    public void onVuforiaChosen() {
-        Intent intent = new Intent(getApplicationContext(), VideoPlayback.class);
-        startActivity(intent);
-
-    }
+//
+//    /**
+//     * Method that enables the user to choose google maps
+//     */
+//    @Override
+//    public void onMapsChosen() {
+//        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+//        intent.putExtra("TargetName", targetFound.getName());
+//        startActivity(intent);
+//    }
+//
+//    /**
+//     * Method that enables the user to choose vuforia
+//     */
+//    @Override
+//    public void onVuforiaChosen() {
+//        Intent intent = new Intent(getApplicationContext(), VideoPlayback.class);
+//        startActivity(intent);
+//
+//    }
 
 }

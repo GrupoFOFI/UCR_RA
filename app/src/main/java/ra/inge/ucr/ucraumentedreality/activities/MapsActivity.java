@@ -45,13 +45,15 @@ import ra.inge.ucr.location.NavigationHelper;
 import ra.inge.ucr.location.SensorHelper;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.Vuforia.VideoPlayback.app.VideoPlayback.Arrow;
+import ra.inge.ucr.ucraumentedreality.adapters.CustomBottomSheetDialog;
 import ra.inge.ucr.ucraumentedreality.utils.Utils;
 
 /**
  * Class to hadle the usage of maps
  */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener {
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener ,
+         CustomBottomSheetDialog.OnButtonInteractionListener {
 
     /**
      * The google map components
@@ -87,7 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Polyline polyline;
     private Polyline[] polylines;
     private ImageView arrowUp, arrowLeft, arrowRight;
-
+    private CustomBottomSheetDialog bottomSheetDialog;
     private TextView angleText;
 
 
@@ -123,6 +125,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         arrowRight = (ImageView) findViewById(R.id.arrow_right);
         arrowRight.bringToFront();
         arrowRight.setVisibility(View.GONE);
+
+        bottomSheetDialog = new CustomBottomSheetDialog();
+        bottomSheetDialog.setOnButtonInteractionListener(this);
 
         angleText = (TextView) findViewById(R.id.angle);
     }
@@ -275,14 +280,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(hasObjective){
             paths = newDestination(objective);
             polylines = new Polyline[paths.size()];
-            for(int i = 0; i < paths.size(); i++){
-                polylines[i] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(i).getPoints(), googleMap, i);
-            }
+            openChooseDialog();
+//
+//            for(int i = 0; i < paths.size(); i++){
+//                polylines[i] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(i).getPoints(), googleMap, i);
+//            }
 
             Log.d("konri", "aquí se debería escoger la ruta");
-            route = paths.get(0).getPoints();
+//            route = paths.get(0).getPoints();
         }
         previousLocation = mLastLocation;
+    }
+
+    void openChooseDialog() {
+
+
+
+
+
     }
 
     /**
@@ -333,10 +348,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             route.set(0, new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
             Location next = new Location("Next");
-
             next.setLatitude(route.get(1).latitude);
-
             next.setLongitude(route.get(1).longitude);
+
             if(route.size() == 1){
                 Utils.toastLog("¡Llegaste a "+ objective.getName() +"!", getApplicationContext());
                 hasObjective = false;
@@ -344,6 +358,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
             if(mLastLocation.distanceTo(next) < 6){
+
                 //ya estoy en el punto
                 route.remove(1);
                 directionSound(route.get(0), route.get(1));
@@ -523,5 +538,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 arrowRight.setVisibility(View.GONE);
                 break;
         }
+    }
+
+
+    @Override
+    public void onRouseChosen(int choice) {
+        polylines[choice] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(choice).getPoints(), googleMap, choice);
+        route = paths.get(choice).getPoints();
     }
 }
