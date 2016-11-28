@@ -150,7 +150,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public void onShake() {
-        if (prefs.getBoolean("accessibility", false) == true && getCallingActivity().getClass().equals(HomeActivity.class)) {
+
+        if (prefs.getBoolean("accessibility", false) == true) {
 
             if (showingPopUp == false) {
                 promptSpeechInput();
@@ -165,6 +166,23 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userNameTextView.setText(prefs.getString("name", "Fofi"));
         userMailTextView.setText(prefs.getString("mail", "fofijones@gmail.com"));
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.shakeHandler = null;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (shakeHandler == null) {
+
+            shakeHandler = new ShakeHandler(this);
+            vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            shakeHandler.setOnShakeListener(this);
+        }
     }
 
     /**
