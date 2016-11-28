@@ -1,6 +1,6 @@
-com.enrico.businesslogic
-com.enrico.dataaccess
 ra.inge.ucr.da
+ra.inge.ucr.da.entity
+ra.inge.ucr.da.parser
 ra.inge.ucr.location
 ra.inge.ucr.location.listener
 ra.inge.ucr.ucraumentedreality
