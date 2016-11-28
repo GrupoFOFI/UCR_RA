@@ -16,9 +16,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import ra.inge.ucr.da.Data;
+import ra.inge.ucr.da.entity.TargetObject;
 import ra.inge.ucr.ucraumentedreality.R;
 import ra.inge.ucr.ucraumentedreality.activities.HomeActivity;
 import ra.inge.ucr.ucraumentedreality.adapters.TargetAdapter;
@@ -77,7 +79,13 @@ public class TakeMeFragment extends Fragment implements HomeActivity.OnSearchInt
         recyclerView.setAdapter(mAdapter);
         setHasOptionsMenu(true);
 
-        mAdapter.setTargetObjects(Data.targetObjects);
+        ArrayList<TargetObject> objects = new ArrayList<TargetObject>();
+        for(int i=0;i<Data.targetObjects.size();i++){
+            if(Data.targetObjects.get(i).getEntrances() != null){
+                objects.add(Data.targetObjects.get(i));
+            }
+        }
+        mAdapter.setTargetObjects(objects);
         mAdapter.setHomeActivity((HomeActivity) getActivity());
         return root;
     }

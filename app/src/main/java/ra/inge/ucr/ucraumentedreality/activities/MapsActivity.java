@@ -125,6 +125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         arrowRight.setVisibility(View.GONE);
 
         angleText = (TextView) findViewById(R.id.angle);
+        angleText.setText("");
     }
 
 
@@ -460,7 +461,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             direccion -= 360;
         if(direccion < 0)
             direccion = 360+direccion;
-        angleText.setText("Azimuth: " + String.valueOf(azimuth) + "\n Angle: " + String.valueOf(angle)+ "\n Dirección: " + String.valueOf(direccion));
+        //angleText.setText("Azimuth: " + String.valueOf(azimuth) + "\n Angle: " + String.valueOf(angle)+ "\n Dirección: " + String.valueOf(direccion));
         if(direccion <= 45 && direccion > -45) {
             showArrow(Arrow.UP);
             try {
