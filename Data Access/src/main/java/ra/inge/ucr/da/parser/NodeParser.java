@@ -66,6 +66,12 @@ public class NodeParser {
         return m_Nodes;
     }
 
+    /**
+     * Returns the amount of lines of a resource file
+     *
+     * @param resourceId the resource id of the file
+     * @return the amount of lines
+     */
     private int getLineAmount(int resourceId) {
         try {
             InputStream inputStream = m_Context.getResources().openRawResource(resourceId);
@@ -189,6 +195,11 @@ public class NodeParser {
         return null;
     }
 
+    /**
+     * Loads the paths matrix into memory
+     *
+     * @return the paths matrix
+     */
     public int[][] getPathsMatrix() {
         if (m_Paths == null) {
             try {

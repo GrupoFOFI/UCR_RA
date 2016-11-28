@@ -182,11 +182,12 @@ public class NavigationHelper {
         return map.addPolyline( options );
     }
 
+    /**
+     * Returns the node parser used by this class
+     *
+     * @return the node parser object
+     */
     public NodeParser getNodeParser() {
         return nodeParser;
-    }
-
-    public void setNodeParser(NodeParser nodeParser) {
-        this.nodeParser = nodeParser;
     }
 }

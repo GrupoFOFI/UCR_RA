@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * <h1>Path</h1>
- * Class used to...
+ * Represents a list of points between two points that create a path
  *
  * @author
  */

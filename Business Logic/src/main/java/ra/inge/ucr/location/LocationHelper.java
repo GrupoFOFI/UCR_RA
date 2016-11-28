@@ -240,19 +240,30 @@ public class LocationHelper {
         return a;
     }
 
-
-
+    /**
+     * Calculates the closest buildings and monuments based on the specified location
+     *
+     * @param location the user's location
+     */
     public void calculateClosest(Location location) {
         closeBuildings = getClosestBuildings(location, TARGET_AMMOUNT);
         closeMonuments = getClosestMonuments(location, TARGET_AMMOUNT);
     }
 
-
-
+    /**
+     * Returns the closest monuments previously calculated
+     *
+     * @return the closest monuments
+     */
     public TargetObject[] getCloseMonuments() {
         return closeMonuments;
     }
 
+    /**
+     * Returns the closest buildings previously calculated
+     *
+     * @return the closest buildings
+     */
     public TargetObject[] getCloseBuildings() {
         return closeBuildings;
     }

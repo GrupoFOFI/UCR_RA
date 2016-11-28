@@ -63,6 +63,12 @@ public class Data {
     public static double[] distances = new double[targetObjects.size()];
 
 
+    /**
+     * Finds a target object by name
+     *
+     * @param name the target object's name
+     * @return the TargetObject if found, otherwise null
+     */
     public static TargetObject getByName(String name) {
         for (TargetObject to : targetObjects) {
             if (to.getName().contains(name)) {
