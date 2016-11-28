@@ -51,7 +51,11 @@ public class SingleTargetObjectActivity extends AppCompatActivity implements Cus
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    bottomSheetDialog.show(getSupportFragmentManager(), "Custom Bottom Sheet");
+                    //  bottomSheetDialog.show(getSupportFragmentManager(), "Custom Bottom Sheet");
+
+                    Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+                    intent.putExtra("TargetName", targetFound.getName());
+                    startActivity(intent);
                 }
             });
 
