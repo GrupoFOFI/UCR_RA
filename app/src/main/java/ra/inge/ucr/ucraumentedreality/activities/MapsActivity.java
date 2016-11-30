@@ -52,8 +52,8 @@ import ra.inge.ucr.ucraumentedreality.utils.Utils;
  * Class to hadle the usage of maps
  */
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener ,
-         CustomBottomSheetDialog.OnButtonInteractionListener {
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerClickListener, LocationListener,
+        CustomBottomSheetDialog.OnButtonInteractionListener {
 
     /**
      * The google map components
@@ -104,7 +104,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         sensorHelper.start();
         buildGoogleApiClient();
 
-        if(getIntent().hasExtra("TargetName")){
+        if (getIntent().hasExtra("TargetName")) {
 
             TargetObject to = Data.getByName(getIntent().getStringExtra("TargetName"));
             hasObjective = true;
@@ -173,6 +173,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .position(new LatLng(0.0, 0.0)).title(""));
         }
 
+
 //        locationHelper = new LocationHelper();
 //        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(locationHelper.getLastLocation().latitude,
 //                locationHelper.getLastLocation().longitude), 12);
@@ -209,7 +210,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onResume() {
         super.onResume();
         mMapView.onResume();
-        if(getIntent().hasExtra("Objective index")){
+        if (getIntent().hasExtra("Objective index")) {
             TargetObject to = Data.targetObjects.get(getIntent().getIntExtra("Objective index", 0));
             hasObjective = true;
             objective = to;
@@ -278,7 +279,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12);
             googleMap.animateCamera(cameraUpdate);
         }
-        if(hasObjective){
+        if (hasObjective) {
+
             paths = newDestination(objective);
             polylines = new Polyline[paths.size()];
             openChooseDialog();
@@ -287,16 +289,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                polylines[i] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(i).getPoints(), googleMap, i);
 //            }
 
+
             Log.d("konri", "aquí se debería escoger la ruta");
-//            route = paths.get(0).getPoints();
+
+            route = paths.get(0).getPoints();
+//            bottomSheetDialog.show(getSupportFragmentManager(), "Custom Bottom Sheet");
+
         }
         previousLocation = mLastLocation;
     }
 
     void openChooseDialog() {
-
-
-
 
 
     }
@@ -344,21 +347,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             addMarkers();
         }
-        if(hasObjective) {
+        if (hasObjective) {
             polyline.remove();
+
+            //
             route.set(0, new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
 
             Location next = new Location("Next");
             next.setLatitude(route.get(1).latitude);
             next.setLongitude(route.get(1).longitude);
 
-            if(route.size() == 1){
-                Utils.toastLog("¡Llegaste a "+ objective.getName() +"!", getApplicationContext());
+            if (route.size() == 1) {
+                Utils.toastLog("¡Llegaste a " + objective.getName() + "!", getApplicationContext());
                 hasObjective = false;
                 objective = null;
                 return;
             }
-            if(mLastLocation.distanceTo(next) < 6){
+            if (mLastLocation.distanceTo(next) < 6) {
 
                 //ya estoy en el punto
                 route.remove(1);
@@ -371,7 +376,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 directionSound(route.get(0), route.get(1));
                 previousLocation = mLastLocation;
             }
-            polyline = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)route, googleMap);
+            polyline = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>) route, googleMap);
 
         }
     }
@@ -429,14 +434,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 nodes = na.getNodeParser().getNodes();
                 double minDist = Integer.MAX_VALUE;
                 for (int e : entrances) {
-                    double temp = LocationHelper.distance(nodes[e].latitude,mLastLocation.getLatitude(),nodes[e].longitude,mLastLocation.getLongitude(),0,0);
-                    if(temp < minDist){
+                    double temp = LocationHelper.distance(nodes[e].latitude, mLastLocation.getLatitude(), nodes[e].longitude, mLastLocation.getLongitude(), 0, 0);
+                    if (temp < minDist) {
                         minDist = temp;
                         entrance = e;
                     }
                 }
             }
-            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance-1);
+            paths = na.getPathsToPoint(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), entrance - 1);
             if (paths != null && !paths.isEmpty()) {
                 polyline = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(0).getPoints(), googleMap);
             }
@@ -444,9 +449,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return paths;
     }
 
-    public void directionSound(LatLng point1, LatLng point2){
+    public void directionSound(LatLng point1, LatLng point2) {
         double azimuth = sensorHelper.getAzimuth();
-        if(mLastLocation.hasBearing()){
+        if (mLastLocation.hasBearing()) {
             azimuth = mLastLocation.getBearing();
         }
 
@@ -468,16 +473,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         p2.setLongitude(point2.longitude);
         p2.setLatitude(point2.latitude);
         double angle = p1.bearingTo(p2);
-        if(angle < 0 ) angle += 360;
+        if (angle < 0) angle += 360;
 
         double direccion = azimuth - angle;
 
-        if(direccion > 315)
+        if (direccion > 315)
             direccion -= 360;
-        if(direccion < 0)
-            direccion = 360+direccion;
+        if (direccion < 0)
+            direccion = 360 + direccion;
         //angleText.setText("Azimuth: " + String.valueOf(azimuth) + "\n Angle: " + String.valueOf(angle)+ "\n Dirección: " + String.valueOf(direccion));
-        if(direccion <= 45 && direccion > -45) {
+        if (direccion <= 45 && direccion > -45) {
             showArrow(Arrow.UP);
             try {
                 AssetFileDescriptor afd = getAssets().openFd("Continue.mp3");
@@ -485,9 +490,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                 player.prepare();
                 player.start();
-            }catch (Exception e){}
-        }
-        else if(direccion <= 315 && direccion > 225) {
+            } catch (Exception e) {
+            }
+        } else if (direccion <= 315 && direccion > 225) {
             showArrow(Arrow.RIGHT);
             try {
                 AssetFileDescriptor afd = getAssets().openFd("Derecha.mp3");
@@ -495,9 +500,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                 player.prepare();
                 player.start();
-            }catch (Exception e){}
-        }
-        else if(direccion <= 225 && direccion > 135) {
+            } catch (Exception e) {
+            }
+        } else if (direccion <= 225 && direccion > 135) {
             arrowLeft.setVisibility(View.GONE);
             arrowRight.setVisibility(View.GONE);
             arrowUp.setVisibility(View.GONE);
@@ -507,9 +512,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                 player.prepare();
                 player.start();
-            }catch (Exception e){}
-        }
-        else if(direccion <= 135 && direccion > 45){
+            } catch (Exception e) {
+            }
+        } else if (direccion <= 135 && direccion > 45) {
             showArrow(Arrow.LEFT);
             try {
                 AssetFileDescriptor afd = getAssets().openFd("Izquierda.mp3");
@@ -517,7 +522,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
                 player.prepare();
                 player.start();
-            }catch (Exception e){}
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -544,7 +550,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onRouseChosen(int choice) {
-        polylines[choice] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>)paths.get(choice).getPoints(), googleMap, choice);
+        polylines[choice] = NavigationHelper.drawPrimaryLinePath((ArrayList<LatLng>) paths.get(choice).getPoints(), googleMap, choice);
         route = paths.get(choice).getPoints();
     }
 }

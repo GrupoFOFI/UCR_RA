@@ -78,12 +78,12 @@ public class SingleTargetObjectActivity extends AppCompatActivity {
             descriptionTextView.setText(targetFound.getDescription());
 
             TextView websiteTextView = (TextView) findViewById(R.id.targetWebsite);
-            websiteTextView.setText(targetFound.getWebsite());
+            websiteTextView.setText("http://www." +  targetFound.getWebsite());
 
             websiteTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(targetFound.getWebsite()));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www." + targetFound.getWebsite()));
                     startActivity(browserIntent);
                 }
             });
